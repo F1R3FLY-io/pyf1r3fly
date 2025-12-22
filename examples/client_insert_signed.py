@@ -1,9 +1,9 @@
 # https://github.com/tgrospic/rnode-client-js/blob/master/src/nodejs/client-insert-signed.js
 # the logic below mostly copied from the logic of the link above
 
-from rchain.crypto import PrivateKey, blake2b_32
-from rchain.client import RClient
-from rchain.pb.RhoTypes_pb2 import Par, Expr, ETuple, Bundle, GPrivate, GUnforgeable
+from f1r3fly.crypto import PrivateKey, blake2b_32
+from f1r3fly.client import RClient
+from f1r3fly.pb.RhoTypes_pb2 import Par, Expr, ETuple, Bundle, GPrivate, GUnforgeable
 
 host = "localhost"
 port = 40402

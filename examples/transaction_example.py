@@ -1,7 +1,7 @@
-from rchain.client import RClient
-from rchain.crypto import PrivateKey
-from rchain.pb.RhoTypes_pb2 import GPrivate, GUnforgeable, Par
-from rchain.vault import VaultAPI
+from f1r3fly.client import RClient
+from f1r3fly.crypto import PrivateKey
+from f1r3fly.pb.RhoTypes_pb2 import GPrivate, GUnforgeable, Par
+from f1r3fly.vault import VaultAPI
 
 TESTNET_SERVER = ['node0.testnet.rchain-dev.tk',
                   'node1.testnet.rchain-dev.tk',
@@ -24,7 +24,7 @@ READONLY_SERVER = ['observer-asia.services.mainnet.rchain.coop',
                    'observer-eu.services.mainnet.rchain.coop']
 
 with RClient(TESTNET_READONLY[0], 40401) as client:
-    from rchain.param import testnet_param
+    from f1r3fly.param import testnet_param
 
     # these param are fixed when the network starts on the genesis
     # the param will never change except hard-fork
@@ -34,7 +34,7 @@ with RClient(TESTNET_READONLY[0], 40401) as client:
     testnet_transactions = client.get_transaction(block_hash)
 
 with RClient(READONLY_SERVER[0], 40401) as client:
-    from rchain.param import mainnet_param
+    from f1r3fly.param import mainnet_param
 
     # these param are fixed when the network starts on the genesis
     # the param will never change except hard-fork

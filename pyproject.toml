@@ -3,12 +3,12 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "pyrchain"
-version = "0.3.12"
-description = "Interface to RChain RNode RPC"
+name = "pyf1r3fly"
+version = "0.1.0"
+description = "Interface to F1R3fly Node RPC"
 readme = "README.md"
 authors = [
-    { name = "RChain Cooperative", email = "rchain-makers@rchain.coop" }
+    { name = "F1R3fly Team" } # TODO: add email
 ]
 requires-python = ">=3.10"
 dependencies = [
@@ -24,10 +24,10 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/rchain/pyrchain"
+Homepage = "https://github.com/F1R3FLY-io/pyf1r3fly"
 
 [project.scripts]
-pyrchain = "rchain.__main__:cli"
+pyf1r3fly = "f1r3fly.__main__:cli"
 
 [project.optional-dependencies]
 dev = [
@@ -44,12 +44,12 @@ dev = [
 zip-safe = false
 
 [tool.setuptools.packages.find]
-include = ["rchain", "rchain.*"]
+include = ["f1r3fly", "f1r3fly.*"]
 
 [tool.setuptools.package-data]
-"rchain.vault" = ["*.rho.tpl"]
-"rchain.pb" = ["*.pyi"]
-"rchain.pb.scalapb" = ["*.pyi"]
+"f1r3fly.vault" = ["*.rho.tpl"]
+"f1r3fly.pb" = ["*.pyi"]
+"f1r3fly.pb.scalapb" = ["*.pyi"]
 
 [tool.isort]
 combine_as_imports = true
@@ -57,7 +57,7 @@ default_section = "THIRDPARTY"
 include_trailing_comma = true
 line_length = 79
 multi_line_output = 5
-skip = ["rchain/pb", "venv"]
+skip = ["f1r3fly/pb", "venv"]
 
 [tool.mypy]
 namespace_packages = true
@@ -65,18 +65,18 @@ ignore_missing_imports = true
 disallow_untyped_defs = true
 
 [[tool.mypy.overrides]]
-module = "rchain.pb.*"
+module = "f1r3fly.pb.*"
 ignore_errors = true
 
 [[tool.mypy.overrides]]
-module = "rchain.meta"
+module = "f1r3fly.meta"
 ignore_errors = true
 
 [[tool.mypy.overrides]]
-module = "rchain.interface"
+module = "f1r3fly.interface"
 ignore_errors = true
 
 [[tool.mypy.overrides]]
-module = "rchain.tests.*"
+module = "f1r3fly.tests.*"
 ignore_errors = true
 

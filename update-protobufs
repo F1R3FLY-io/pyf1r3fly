@@ -1,10 +1,36 @@
 #!/bin/sh
 set -e
 
-branch_rchain=dev
+branch_f1r3fly=main
 branch_scalapb=master
 out_dir=protobuf
+tmp_dir=$(mktemp -d)
 
 mkdir -p $out_dir
-svn export --force https://github.com/rchain/rchain/branches/$branch_rchain/models/src/main/protobuf $out_dir
-svn export --force https://github.com/scalapb/ScalaPB/branches/$branch_scalapb/protobuf $out_dir
+
+# Clone f1r3node repo (sparse checkout for just protobuf files)
+echo "Fetching protobufs from F1R3FLY-io/f1r3node..."
+git clone --depth 1 --filter=blob:none --sparse \
+    https://github.com/F1R3FLY-io/f1r3node.git \
+    --branch $branch_f1r3fly \
+    "$tmp_dir/f1r3node"
+cd "$tmp_dir/f1r3node"
+git sparse-checkout set models/src/main/protobuf
+cp -r models/src/main/protobuf/* "$OLDPWD/$out_dir/"
+cd "$OLDPWD"
+
+# Clone ScalaPB repo (sparse checkout for just protobuf files)
+echo "Fetching protobufs from scalapb/ScalaPB..."
+git clone --depth 1 --filter=blob:none --sparse \
+    https://github.com/scalapb/ScalaPB.git \
+    --branch $branch_scalapb \
+    "$tmp_dir/scalapb"
+cd "$tmp_dir/scalapb"
+git sparse-checkout set protobuf
+cp -r protobuf/* "$OLDPWD/$out_dir/"
+cd "$OLDPWD"
+
+# Cleanup
+rm -rf "$tmp_dir"
+
+echo "Done! Protobufs updated in $out_dir/"
