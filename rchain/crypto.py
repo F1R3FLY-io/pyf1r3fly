@@ -99,7 +99,8 @@ class PublicKey:
 class PrivateKey:
     @classmethod
     def from_eth_keyfile(cls, path: str, password: Optional[str] = None) -> 'PrivateKey':
-        key_bytes = extract_key_from_keyfile(path, password)
+        password_bytes = password.encode('utf-8') if password is not None else b''
+        key_bytes = extract_key_from_keyfile(path, password_bytes)
         return cls.from_bytes(key_bytes)
 
     @classmethod
