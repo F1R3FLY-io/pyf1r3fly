@@ -10,7 +10,7 @@ install it for current user by running:
 
 	pip3 install -U pyrchain
 
-See `setup.py` for information about 3rd party library dependencies.
+See `pyproject.toml` for information about 3rd party library dependencies.
 
 
 ## Examples
@@ -24,21 +24,46 @@ The features below are provided in pyrchain.
 
 ## Development
 
-To install the development package:
+### Local Development Setup
 
-    pip install -e .[dev]
+1. Clone the repository and navigate to the project directory
+
+2. Create and activate a virtual environment:
+    ```bash
+    python3 -m venv venv
+    source venv/bin/activate  # On Windows: venv\Scripts\activate
+    ```
+
+3. Install the package with development dependencies:
+    ```bash
+    pip install -e ".[dev]"
+    ```
+
+### Running Examples
+
+After installing the package, you can run the examples:
+
+```bash
+python examples/keys_example.py
+python examples/grpc_api_example.py
+python examples/vault_example.py
+```
+
+Note: Some examples require a running RNode instance to connect to.
+
+### Updating Protocol Buffers
 
 To update protocol buffers from upstream run:
 
-	./update-protobufs
-	./update-generated
+    ./update-protobufs
+    ./update-generated
 
-This first command will fetch latest RChain `*.proto` files from `dev` branch
-into `./protobuf` directory. The second command will generate gRPC Python code
-corresponding to the protcol buffers into `rchain.pb` package (`./rchain/pb`).
+The first command fetches latest RChain `*.proto` files from `dev` branch
+into `./protobuf` directory. The second command generates gRPC Python code
+into `rchain.pb` package (`./rchain/pb`).
 
-To run integration tests run:
+### Running Tests and Linting
 
-	python -m pytest rchain/tests
+    python -m pytest rchain/tests
     python -m mypy rchain
     isort --recursive --check-only rchain

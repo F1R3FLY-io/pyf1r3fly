@@ -1,0 +1,83 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pyrchain"
+version = "0.3.12"
+description = "Interface to RChain RNode RPC"
+readme = "README.md"
+authors = [
+    { name = "RChain Cooperative", email = "rchain-makers@rchain.coop" }
+]
+requires-python = ">=3.7"
+dependencies = [
+    "grpcio",
+    "protobuf",
+    "ecdsa",
+    "python-bitcoinlib",
+    "cryptography",
+    "eth_hash",
+    "pycryptodome",
+    "eth-keyfile",
+    "dataclasses",
+    "click",
+]
+
+[project.urls]
+Homepage = "https://github.com/rchain/pyrchain"
+
+[project.scripts]
+pyrchain = "rchain.__main__:cli"
+
+[project.optional-dependencies]
+dev = [
+    "grpcio-tools",
+    "mypy",
+    "typing-extensions",
+    "mypy-protobuf",
+    "isort",
+    "pytest==4.6.9",
+    "sphinx",
+]
+
+[tool.setuptools]
+zip-safe = false
+
+[tool.setuptools.packages.find]
+include = ["rchain", "rchain.*"]
+
+[tool.setuptools.package-data]
+"rchain.vault" = ["*.rho.tpl"]
+"rchain.pb" = ["*.pyi"]
+"rchain.pb.scalapb" = ["*.pyi"]
+
+[tool.isort]
+combine_as_imports = true
+default_section = "THIRDPARTY"
+include_trailing_comma = true
+line_length = 79
+multi_line_output = 5
+skip = ["rchain/pb", "venv"]
+
+[tool.mypy]
+namespace_packages = true
+ignore_missing_imports = true
+disallow_untyped_defs = true
+
+[[tool.mypy.overrides]]
+module = "rchain.pb.*"
+ignore_errors = true
+
+[[tool.mypy.overrides]]
+module = "rchain.meta"
+ignore_errors = true
+
+[[tool.mypy.overrides]]
+module = "rchain.interface"
+ignore_errors = true
+
+[[tool.mypy.overrides]]
+module = "rchain.tests.*"
+ignore_errors = true
+
