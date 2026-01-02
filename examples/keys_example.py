@@ -1,4 +1,4 @@
-from rchain.crypto import PrivateKey, PublicKey
+from f1r3fly.crypto import PrivateKey, PublicKey
 
 # randomly generate private key
 PrivateKey.generate()
@@ -12,8 +12,8 @@ PrivateKey.from_bytes(b'\xff+\xa0\x92RK\xaf\xdb\xc8_\xa0\xc7\xed\xdb+A\xc6\x9b\x
 # generate private key from seed
 PrivateKey.from_seed(1)
 
-# generate private key from eth key path
-PrivateKey.from_eth_keyfile('/path/to/the/key', 'password')
+# generate private key from eth key path (requires actual file)
+# Example: PrivateKey.from_eth_keyfile('/path/to/your/keyfile.json', 'password')
 
 # generate public key from private key
 PrivateKey.generate().get_public_key()

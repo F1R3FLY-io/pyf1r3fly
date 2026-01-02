@@ -5,9 +5,9 @@ name: Python package
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
   build:
@@ -15,12 +15,12 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.7, 3.8, 3.9]
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
@@ -28,10 +28,10 @@ jobs:
         pip install -e .[dev]
     - name: mypy check
       run: |
-        python -m mypy rchain
+        python -m mypy f1r3fly
     - name: isort check
       run: |
-        isort --recursive --check-only rchain
+        isort --check-only f1r3fly
     - name: Test with pytest
       run: |
-        pytest rchain/tests
+        pytest f1r3fly/tests

@@ -2,10 +2,10 @@ import time
 
 import grpc
 
-from rchain.client import RClient
-from rchain.crypto import PrivateKey
-from rchain.util import create_deploy_data
-from rchain.vault import (
+from f1r3fly.client import RClient
+from f1r3fly.crypto import PrivateKey
+from f1r3fly.util import create_deploy_data
+from f1r3fly.vault import (
     TRANSFER_PHLO_LIMIT, TRANSFER_PHLO_PRICE, TRANSFER_RHO_TPL,
     render_contract_template,
 )

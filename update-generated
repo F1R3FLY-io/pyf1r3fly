@@ -2,11 +2,11 @@
 set -e
 
 src_dir=protobuf
-out_dir=rchain/pb
-stub_dir=rchain/pb
+out_dir=f1r3fly/pb
+stub_dir=f1r3fly/pb
 
 mkdir -p $out_dir
-python -m grpc_tools.protoc \
+python3 -m grpc_tools.protoc \
 	-I $src_dir \
 	--python_out=$out_dir \
 	--grpc_python_out=$out_dir \
@@ -14,11 +14,12 @@ python -m grpc_tools.protoc \
 	$(find $src_dir -name '*.proto')
 
 # https://github.com/protocolbuffers/protobuf/issues/1491#issuecomment-438138293
-sed -i -E \
-	-e 's/^import.*_pb2/from . \0/' \
-	-e 's/^from scalapb/from .scalapb/' \
-	$(find $out_dir -name '*.py')
+# Fix imports in .py files
+for f in $(find $out_dir -name '*.py'); do
+	sed -i '' -E -e 's/^import (.*)_pb2/from . import \1_pb2/' -e 's/^from scalapb/from .scalapb/' "$f"
+done
 
-sed -i -E \
-	-e 's/^from (.*_pb2)/from .\1/' \
-	$(find $out_dir -name '*.pyi')
+# Fix imports in .pyi files  
+for f in $(find $out_dir -name '*.pyi'); do
+	sed -i '' -E -e 's/^from ([a-zA-Z_]*_pb2)/from .\1/' "$f"
+done

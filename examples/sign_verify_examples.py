@@ -1,7 +1,7 @@
 import time
 
-from rchain.crypto import PrivateKey, PublicKey
-from rchain.util import create_deploy_data, verify_deploy_data
+from f1r3fly.crypto import PrivateKey, PublicKey
+from f1r3fly.util import create_deploy_data, verify_deploy_data
 
 private_key = PrivateKey.generate()
 public_key = private_key.get_public_key()
