@@ -1,7 +1,18 @@
 import time
+from typing import Optional, Sequence
 
 from .crypto import PrivateKey, PublicKey
-from .pb.CasperMessage_pb2 import DeployDataProto
+from .pb.CasperMessage_pb2 import (
+    DeployDataProto, DeployParameter, RholangValue,
+)
+
+__all__ = [
+    'sign_deploy_data',
+    'verify_deploy_data',
+    'create_deploy_data',
+    'DeployParameter',
+    'RholangValue',
+]
 
 
 def _gen_deploy_sig_content(data: DeployDataProto) -> bytes:
@@ -11,6 +22,9 @@ def _gen_deploy_sig_content(data: DeployDataProto) -> bytes:
     signed_data.phloLimit = data.phloLimit
     signed_data.phloPrice = data.phloPrice
     signed_data.validAfterBlockNumber = data.validAfterBlockNumber
+    # Include parameters in signed content if present
+    for param in data.parameters:
+        signed_data.parameters.append(param)
     return signed_data.SerializeToString()
 
 
@@ -29,7 +43,23 @@ def create_deploy_data(
         phlo_limit: int,
         valid_after_block_no: int = -1,
         timestamp_millis: int = -1,
+        parameters: Optional[Sequence[DeployParameter]] = None,
 ) -> DeployDataProto:
+    """Create a signed deploy data proto.
+
+    Args:
+        key: Private key used for signing.
+        term: Rholang source code to deploy.
+        phlo_price: Price per unit of phlo.
+        phlo_limit: Maximum phlo to consume.
+        valid_after_block_no: Block number after which deploy is valid.
+        timestamp_millis: Timestamp in milliseconds. Defaults to current time.
+        parameters: Optional typed parameters accessible via URI syntax
+            (e.g., ``new myBytes(`rho:deploy:param:myBytes`) in { ... }``).
+
+    Returns:
+        Signed DeployDataProto ready for submission.
+    """
     if timestamp_millis < 0:
         timestamp_millis = int(time.time() * 1000)
     data = DeployDataProto(
@@ -41,5 +71,8 @@ def create_deploy_data(
         timestamp=timestamp_millis,
         sigAlgorithm='secp256k1',
     )
+    if parameters:
+        for param in parameters:
+            data.parameters.append(param)
     data.sig = sign_deploy_data(key, data)
     return data
