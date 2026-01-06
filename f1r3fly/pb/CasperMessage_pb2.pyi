@@ -411,6 +411,7 @@ class DeployDataProto(google.protobuf.message.Message):
     VALIDAFTERBLOCKNUMBER_FIELD_NUMBER: builtins.int
     SHARDID_FIELD_NUMBER: builtins.int
     LANGUAGE_FIELD_NUMBER: builtins.int
+    PARAMETERS_FIELD_NUMBER: builtins.int
     deployer: builtins.bytes
     """public key"""
     term: builtins.str
@@ -430,6 +431,10 @@ class DeployDataProto(google.protobuf.message.Message):
     """shard ID to prevent replay of deploys between shards"""
     language: builtins.str
     """language (rholang or metta) of the source code"""
+    @property
+    def parameters(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[Global___DeployParameter]:
+        """optional typed values injected into term via URI syntax"""
+
     def __init__(
         self,
         *,
@@ -443,11 +448,79 @@ class DeployDataProto(google.protobuf.message.Message):
         validAfterBlockNumber: builtins.int = ...,
         shardId: builtins.str = ...,
         language: builtins.str = ...,
+        parameters: collections.abc.Iterable[Global___DeployParameter] | None = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["deployer", b"deployer", "language", b"language", "phloLimit", b"phloLimit", "phloPrice", b"phloPrice", "shardId", b"shardId", "sig", b"sig", "sigAlgorithm", b"sigAlgorithm", "term", b"term", "timestamp", b"timestamp", "validAfterBlockNumber", b"validAfterBlockNumber"]
+    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["deployer", b"deployer", "language", b"language", "parameters", b"parameters", "phloLimit", b"phloLimit", "phloPrice", b"phloPrice", "shardId", b"shardId", "sig", b"sig", "sigAlgorithm", b"sigAlgorithm", "term", b"term", "timestamp", b"timestamp", "validAfterBlockNumber", b"validAfterBlockNumber"]
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
 Global___DeployDataProto: typing_extensions.TypeAlias = DeployDataProto
+
+@typing.final
+class RholangValue(google.protobuf.message.Message):
+    """*
+    Typed Rholang value for injection into term.
+    These values are accessible in Rholang via URI syntax:
+    `new myBytes(\\`rho:deploy:param:myBytes\\`) in { ... }`
+    """
+
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    BOOL_VALUE_FIELD_NUMBER: builtins.int
+    INT_VALUE_FIELD_NUMBER: builtins.int
+    STRING_VALUE_FIELD_NUMBER: builtins.int
+    BYTES_VALUE_FIELD_NUMBER: builtins.int
+    bool_value: builtins.bool
+    int_value: builtins.int
+    string_value: builtins.str
+    bytes_value: builtins.bytes
+    """Raw binary data - no encoding needed"""
+    def __init__(
+        self,
+        *,
+        bool_value: builtins.bool = ...,
+        int_value: builtins.int = ...,
+        string_value: builtins.str = ...,
+        bytes_value: builtins.bytes = ...,
+    ) -> None: ...
+    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["bool_value", b"bool_value", "bytes_value", b"bytes_value", "int_value", b"int_value", "string_value", b"string_value", "value", b"value"]
+    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
+    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["bool_value", b"bool_value", "bytes_value", b"bytes_value", "int_value", b"int_value", "string_value", b"string_value", "value", b"value"]
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    _WhichOneofReturnType_value: typing_extensions.TypeAlias = typing.Literal["bool_value", "int_value", "string_value", "bytes_value"]
+    _WhichOneofArgType_value: typing_extensions.TypeAlias = typing.Literal["value", b"value"]
+    def WhichOneof(self, oneof_group: _WhichOneofArgType_value) -> _WhichOneofReturnType_value | None: ...
+
+Global___RholangValue: typing_extensions.TypeAlias = RholangValue
+
+@typing.final
+class DeployParameter(google.protobuf.message.Message):
+    """*
+    Named parameter for parameterized deploy.
+    The name becomes accessible as `rho:deploy:param:<name>` in the term.
+    """
+
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    NAME_FIELD_NUMBER: builtins.int
+    VALUE_FIELD_NUMBER: builtins.int
+    name: builtins.str
+    """Parameter name (e.g., "myBytes")"""
+    @property
+    def value(self) -> Global___RholangValue:
+        """The typed value"""
+
+    def __init__(
+        self,
+        *,
+        name: builtins.str = ...,
+        value: Global___RholangValue | None = ...,
+    ) -> None: ...
+    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["value", b"value"]
+    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
+    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["name", b"name", "value", b"value"]
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___DeployParameter: typing_extensions.TypeAlias = DeployParameter
 
 @typing.final
 class ProcessedDeployProto(google.protobuf.message.Message):

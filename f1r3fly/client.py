@@ -1,13 +1,13 @@
 import logging
 import re
 from types import TracebackType
-from typing import Iterable, List, Optional, Tuple, Type, TypeVar, Union
+from typing import Iterable, List, Optional, Sequence, Tuple, Type, TypeVar, Union
 
 import grpc
 
 from .crypto import PrivateKey, PublicKey
 from .param import Params
-from .pb.CasperMessage_pb2 import DeployDataProto
+from .pb.CasperMessage_pb2 import DeployDataProto, DeployParameter
 from .pb.DeployServiceCommon_pb2 import (
     BlockInfo, BlockQuery, BlocksQuery, BlocksQueryByHeight,
     ContinuationAtNameQuery, DataAtNameByBlockQuery, DataAtNameQuery,
@@ -104,7 +104,8 @@ class RClient:
             term: str,
             phlo_price: int,
             phlo_limit: int,
-            timestamp_millis: int = -1
+            timestamp_millis: int = -1,
+            parameters: Optional[Sequence[DeployParameter]] = None,
     ) -> str:
         latest_blocks = self.show_blocks(1)
         # when the genesis block is not ready, it would be empty in show_blocks
@@ -112,7 +113,7 @@ class RClient:
         assert len(latest_blocks) >= 1, "No latest block found"
         latest_block = latest_blocks[0]
         latest_block_num = latest_block.blockNumber
-        return self.deploy(key, term, phlo_price, phlo_limit, latest_block_num, timestamp_millis)
+        return self.deploy(key, term, phlo_price, phlo_limit, latest_block_num, timestamp_millis, parameters)
 
     def exploratory_deploy(self, term: str, blockHash: str, usePreStateHash: bool = False) -> List[Par]:
         exploratory_query = ExploratoryDeployQuery(term=term, blockHash=blockHash, usePreStateHash=usePreStateHash)
@@ -127,10 +128,11 @@ class RClient:
             phlo_price: int,
             phlo_limit: int,
             valid_after_block_no: int = -1,
-            timestamp_millis: int = -1
+            timestamp_millis: int = -1,
+            parameters: Optional[Sequence[DeployParameter]] = None,
     ) -> str:
         deploy_data = create_deploy_data(
-            key, term, phlo_price, phlo_limit, valid_after_block_no, timestamp_millis
+            key, term, phlo_price, phlo_limit, valid_after_block_no, timestamp_millis, parameters
         )
         return self.send_deploy(deploy_data)
 
