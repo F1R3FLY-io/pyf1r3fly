@@ -1,7 +1,9 @@
 import logging
 import re
 from types import TracebackType
-from typing import Iterable, List, Optional, Sequence, Tuple, Type, TypeVar, Union
+from typing import (
+    Iterable, List, Optional, Sequence, Tuple, Type, TypeVar, Union,
+)
 
 import grpc
 

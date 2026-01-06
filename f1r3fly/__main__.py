@@ -5,7 +5,9 @@ import click
 
 from f1r3fly.client import RClient
 from f1r3fly.crypto import PrivateKey, PublicKey, generate_rev_addr_from_eth
-from f1r3fly.pb.CasperMessage_pb2 import DeployDataProto, DeployParameter, RholangValue
+from f1r3fly.pb.CasperMessage_pb2 import (
+    DeployDataProto, DeployParameter, RholangValue,
+)
 from f1r3fly.util import create_deploy_data
 
 

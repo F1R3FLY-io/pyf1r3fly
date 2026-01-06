@@ -2,9 +2,9 @@ import time
 from typing import Optional, Sequence
 
 from .crypto import PrivateKey, PublicKey
-from .pb.CasperMessage_pb2 import DeployDataProto, DeployParameter, RholangValue
-
-
+from .pb.CasperMessage_pb2 import (
+    DeployDataProto, DeployParameter, RholangValue,
+)
 
 __all__ = [
     'sign_deploy_data',
