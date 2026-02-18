@@ -43,9 +43,9 @@ T = TypeVar("T")
 propose_result_match = re.compile(r'Success! Block (?P<block_hash>[0-9a-f]+) created and added.')
 
 
-class RClientException(Exception):
+class F1r3flyClientException(Exception):
 
-    def _init__(self, message: str) -> None:
+    def __init__(self, message: str) -> None:
         super().__init__(message)
 
 
@@ -63,7 +63,7 @@ class DataQueries:
         return Par(unforgeables=[g_unforgeable])
 
 
-class RClient:
+class F1r3flyClient:
 
     def __init__(self, host: str, port: int, grpc_options: Optional[Tuple[Tuple[str, Union[str, int]], ...]] = None,
                  compress: bool = False):
@@ -75,7 +75,7 @@ class RClient:
     def close(self) -> None:
         self.channel.close()
 
-    def __enter__(self) -> 'RClient':
+    def __enter__(self) -> 'F1r3flyClient':
         return self
 
     def __exit__(self, exc_type: Optional[Type[BaseException]],
@@ -89,7 +89,7 @@ class RClient:
     def _check_response(self, response: GRPC_Response_T) -> None:
         logging.debug('gRPC response: %s', str(response))
         if response.WhichOneof("message") == 'error':
-            raise RClientException('\n'.join(response.error.messages))
+            raise F1r3flyClientException('\n'.join(response.error.messages))
 
     def _handle_stream(self, response: Iterable[GRPC_StreamResponse_T]) -> List[GRPC_StreamResponse_T]:
         result = []

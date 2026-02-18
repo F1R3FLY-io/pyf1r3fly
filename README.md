@@ -48,7 +48,7 @@ python examples/grpc_api_example.py
 python examples/vault_example.py
 ```
 
-Note: Some examples require a running RNode instance to connect to.
+Note: Some examples require a running F1R3fly Node instance to connect to.
 
 ### Updating Protocol Buffers
 

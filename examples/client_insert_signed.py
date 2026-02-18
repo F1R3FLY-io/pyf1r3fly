@@ -1,8 +1,8 @@
-# https://github.com/tgrospic/rnode-client-js/blob/master/src/nodejs/client-insert-signed.js
+# https://github.com/F1R3FLY-io/f1r3node-client-js/blob/master/src/nodejs/client-insert-signed.js
 # the logic below mostly copied from the logic of the link above
 
 from f1r3fly.crypto import PrivateKey, blake2b_32
-from f1r3fly.client import RClient
+from f1r3fly.client import F1r3flyClient
 from f1r3fly.pb.RhoTypes_pb2 import Par, Expr, ETuple, Bundle, GPrivate, GUnforgeable
 
 host = "localhost"
@@ -13,7 +13,7 @@ timestamp = 1559156356769
 nonce = 9223372036854775807
 publicKey = deployKey.get_public_key()
 
-with RClient(host, port) as client:
+with F1r3flyClient(host, port) as client:
     ret = client.previewPrivateNames(publicKey, timestamp, 3)
     unforgeable = ret.payload.ids[0]
 

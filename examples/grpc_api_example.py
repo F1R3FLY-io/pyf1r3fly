@@ -2,21 +2,11 @@ import time
 
 import grpc
 
-from f1r3fly.client import RClient
+from f1r3fly.client import F1r3flyClient
 from f1r3fly.crypto import PrivateKey
 
-MAINNET_SERVER = ['node0.root-shard.mainnet.rchain.coop',
-                  'node1.root-shard.mainnet.rchain.coop',
-                  'node2.root-shard.mainnet.rchain.coop',
-                  'node3.root-shard.mainnet.rchain.coop',
-                  'node4.root-shard.mainnet.rchain.coop',
-                  'node5.root-shard.mainnet.rchain.coop',
-                  'node6.root-shard.mainnet.rchain.coop',
-                  'node7.root-shard.mainnet.rchain.coop',
-                  'node8.root-shard.mainnet.rchain.coop']
-READONLY_SERVER = ['observer-asia.services.mainnet.rchain.coop',
-                   'observer-us.services.mainnet.rchain.coop',
-                   'observer-eu.services.mainnet.rchain.coop']
+MAINNET_SERVER = []  # TODO: populate when f1r3fly mainnet servers are available
+READONLY_SERVER = []  # TODO: populate when f1r3fly read-only servers are available
 
 admin_key = PrivateKey.generate()
 contract = "@1!(2)"
@@ -27,11 +17,11 @@ block_hash = '4d135ce5773a05a782d1c52a7dfb42c4142b1a471bc3c57d77eee4d5affdef9a'
 find_deploy = '3045022100c4cdd5e8bb05b1627c2302ffd90393cf30ed0ad693ef63d46e5d8b99856a44c40220055b2dff342934b59b3fac5ac1f81c7b7763db9ee945809d86b04dbd48867bd4'
 
 # read-only node can not deploy with deploy request
-with RClient(READONLY_SERVER[0], 40401) as client:
-    # get the latest 10 block in the rnode
+with F1r3flyClient(READONLY_SERVER[0], 40401) as client:
+    # get the latest 10 block in the f1r3node
     block_infos = client.show_blocks(depth=10)
 
-    # get the detailed info in the rnode
+    # get the detailed info in the f1r3node
     block = client.show_block(block_hash)
 
     # get the last finalize block from the node
@@ -53,7 +43,7 @@ with RClient(READONLY_SERVER[0], 40401) as client:
 
 # only valid validator can process deploy request
 # all the methods above can be processed by the validator except exploratory deploy
-with RClient(MAINNET_SERVER[1], 40401) as client:
+with F1r3flyClient(MAINNET_SERVER[1], 40401) as client:
 
     # normal deploy
     deploy_id = client.deploy(key=admin_key, term=contract, phlo_price=1, phlo_limit=1000000, valid_after_block_no=100,

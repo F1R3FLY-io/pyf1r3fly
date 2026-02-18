@@ -5,7 +5,7 @@ from typing import Generator, Tuple, Union
 import grpc
 import pytest
 
-from f1r3fly.client import RClient
+from f1r3fly.client import F1r3flyClient
 from f1r3fly.crypto import PrivateKey
 from f1r3fly.pb.CasperMessage_pb2 import DeployDataProto
 from f1r3fly.pb.DeployServiceCommon_pb2 import (
@@ -59,7 +59,7 @@ def test_client_deploy(key: PrivateKey, terms: str, phlo_price: int, phlo_limit:
             return DeployResponse(result=request.sig.hex())
 
     with deploy_service(DummyDeploySerivce()) as (server, port), \
-            RClient(TEST_HOST, port) as client:
+            F1r3flyClient(TEST_HOST, port) as client:
         ret = client.deploy(key, terms, phlo_price, phlo_limit, valid_after_block_no, timestamp_millis)
         assert verify_deploy_data(key.get_public_key(), bytes.fromhex(ret),
                                   create_deploy_data(key, terms, phlo_price, phlo_limit, valid_after_block_no,
@@ -72,7 +72,7 @@ def test_client_show_block() -> None:
     seqNum = 1
     sig = "sig"
     sigAlgorithm = "sigal"
-    shardId = "rchain"
+    shardId = "f1r3fly"
     extraBytes = b"extraBytes"
     version = 1
     timestamp = 10000000
@@ -113,7 +113,7 @@ def test_client_show_block() -> None:
             ), deploys=[deploy]))
 
     with deploy_service(DummyDeploySerivce()) as (server, port), \
-            RClient(TEST_HOST, port) as client:
+            F1r3flyClient(TEST_HOST, port) as client:
         block = client.show_block(request_block_hash)
         block_info = block.blockInfo
         assert block_info.blockHash == request_block_hash
@@ -158,7 +158,7 @@ def test_client_show_blocks() -> None:
     seqNum = 1
     sig = "sig"
     sigAlgorithm = "sigal"
-    shardId = "rchain"
+    shardId = "f1r3fly"
     extraBytes = b"extraBytes"
     version = 1
     timestamp = 10000000
@@ -185,7 +185,7 @@ def test_client_show_blocks() -> None:
                 deployCount=deployCount, faultTolerance=faultTolerance))
 
     with deploy_service(DummyDeploySerivce()) as (server, port), \
-            RClient(TEST_HOST, port) as client:
+            F1r3flyClient(TEST_HOST, port) as client:
         blocks = client.show_blocks()
         block_info = blocks[0]
         assert len(blocks) == 1
@@ -220,7 +220,7 @@ def test_client_propose() -> None:
             return ProposeResponse(result="Success! Block {} created and added.".format(block_hash))
 
     with deploy_service(DummyProposeService()) as (server, port), \
-            RClient(TEST_HOST, port) as client:
+            F1r3flyClient(TEST_HOST, port) as client:
         hash = client.propose()
         assert hash == block_hash
 
@@ -233,7 +233,7 @@ def test_client_find_deploy() -> None:
             return FindDeployResponse(blockInfo=LightBlockInfo())
 
     with deploy_service(DummyDeployService()) as (server, port), \
-            RClient(TEST_HOST, port) as client:
+            F1r3flyClient(TEST_HOST, port) as client:
         assert client.find_deploy(deploy_id)
 
 
@@ -244,7 +244,7 @@ def test_client_last_finalized_block() -> None:
             return LastFinalizedBlockResponse(blockInfo=BlockInfo())
 
     with deploy_service(DummyDeployService()) as (server, port), \
-            RClient(TEST_HOST, port) as client:
+            F1r3flyClient(TEST_HOST, port) as client:
         assert client.last_finalized_block()
 
 
@@ -254,5 +254,5 @@ def test_client_is_finalized_block() -> None:
             return IsFinalizedResponse(isFinalized=True)
 
     with deploy_service(DummyDeployService()) as (server, port), \
-            RClient(TEST_HOST, port) as client:
+            F1r3flyClient(TEST_HOST, port) as client:
         assert client.is_finalized('asd')
