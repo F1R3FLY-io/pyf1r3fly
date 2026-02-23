@@ -11,6 +11,7 @@ def _gen_deploy_sig_content(data: DeployDataProto) -> bytes:
     signed_data.phloLimit = data.phloLimit
     signed_data.phloPrice = data.phloPrice
     signed_data.validAfterBlockNumber = data.validAfterBlockNumber
+    signed_data.shardId = data.shardId
     return signed_data.SerializeToString()
 
 
@@ -29,6 +30,7 @@ def create_deploy_data(
         phlo_limit: int,
         valid_after_block_no: int = -1,
         timestamp_millis: int = -1,
+        shard_id: str = '',
 ) -> DeployDataProto:
     if timestamp_millis < 0:
         timestamp_millis = int(time.time() * 1000)
@@ -39,7 +41,9 @@ def create_deploy_data(
         phloLimit=phlo_limit,
         validAfterBlockNumber=valid_after_block_no,
         timestamp=timestamp_millis,
+        shardId=shard_id,
         sigAlgorithm='secp256k1',
     )
     data.sig = sign_deploy_data(key, data)
     return data
+
