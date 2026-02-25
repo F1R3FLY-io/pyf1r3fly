@@ -2,8 +2,8 @@ import json
 
 import click
 
-from f1r3fly.client import RClient
-from f1r3fly.crypto import PrivateKey, PublicKey, generate_rev_addr_from_eth
+from f1r3fly.client import F1r3flyClient
+from f1r3fly.crypto import PrivateKey, PublicKey, generate_vault_addr_from_eth
 from f1r3fly.pb.CasperMessage_pb2 import DeployDataProto
 from f1r3fly.util import create_deploy_data
 
@@ -20,24 +20,24 @@ def cli(ctx: click.core.Context, json_output: bool) -> None:
 @click.option('--input-type', type=click.Choice(['eth', 'public', 'private'], case_sensitive=False),
               help='the kind of the input you are going to provide.')
 @click.option('--input', help='the concrete content of your input type')
-def get_rev_addr(ctx: click.core.Context, input_type: str, input: str) -> None:
+def get_vault_addr(ctx: click.core.Context, input_type: str, input: str) -> None:
     if input_type == 'eth':
         if input.startswith("0x"):
             input = input[2:]
-        addr = generate_rev_addr_from_eth(input)
+        addr = generate_vault_addr_from_eth(input)
     elif input_type == 'public':
         pub = PublicKey.from_hex(input)
-        addr = pub.get_rev_address()
+        addr = pub.get_vault_address()
     elif input_type == 'private':
         private = PrivateKey.from_hex(input)
-        addr  = private.get_public_key().get_rev_address()
+        addr  = private.get_public_key().get_vault_address()
     else:
         raise NotImplementedError("Not supported type {}".format(input_type))
 
     if ctx.obj['json_output']:
-        click.echo(json.dumps({"revAddress": addr}))
+        click.echo(json.dumps({"vaultAddress": addr}))
     else:
-        click.echo("Rev Address is : {}".format(addr))
+        click.echo("Vault Address is : {}".format(addr))
 
 
 @cli.command()
@@ -92,7 +92,7 @@ def submit_deploy(ctx: click.core.Context, deployer: str, term: str, phlo_price:
         sigAlgorithm='secp256k1',
         sig=bytes.fromhex(sig)
     )
-    with RClient(host, port) as client:
+    with F1r3flyClient(host, port) as client:
         ret = client.send_deploy(deploy)
 
     if ctx.obj["json_output"]:

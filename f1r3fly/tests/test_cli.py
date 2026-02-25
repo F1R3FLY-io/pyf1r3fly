@@ -16,48 +16,48 @@ from .test_client import deploy_service
 key = PrivateKey.generate()
 
 
-def test_get_rev_from_private():
+def test_get_vault_addr_from_private():
     runner = CliRunner()
-    result = runner.invoke(cli, ['get-rev-addr', '--input-type', 'private', '--input',
+    result = runner.invoke(cli, ['get-vault-addr', '--input-type', 'private', '--input',
                                  "1000000000000000000000000000000000000000000000000000000000000000"])
     assert result.exit_code == 0
-    assert result.output == 'Rev Address is : 1111cnoFDAa7GubxBMHpPLbbediPegnjSdZwNjxg9oqYvSvSmfqQL\n'
+    assert result.output == 'Vault Address is : 1111cnoFDAa7GubxBMHpPLbbediPegnjSdZwNjxg9oqYvSvSmfqQL\n'
 
-    result = runner.invoke(cli, ["--json-output",'get-rev-addr', '--input-type', 'private', '--input',
+    result = runner.invoke(cli, ["--json-output",'get-vault-addr', '--input-type', 'private', '--input',
                                  "1000000000000000000000000000000000000000000000000000000000000000"])
     assert result.exit_code == 0
     j = json.loads(result.output)
-    assert j['revAddress'] == "1111cnoFDAa7GubxBMHpPLbbediPegnjSdZwNjxg9oqYvSvSmfqQL"
+    assert j['vaultAddress'] == "1111cnoFDAa7GubxBMHpPLbbediPegnjSdZwNjxg9oqYvSvSmfqQL"
 
-def test_get_rev_from_pub():
+def test_get_vault_addr_from_pub():
     runner = CliRunner()
-    result = runner.invoke(cli, ['get-rev-addr', '--input-type', 'public', '--input',
+    result = runner.invoke(cli, ['get-vault-addr', '--input-type', 'public', '--input',
                                  "0408ea9666139527a8c1dd94ce4f071fd23c8b350c5a4bb33748c4ba111faccae0620efabbc8ee2782e24e7c0cfb95c5d735b783be9cf0f8e955af34a30e62b945"])
     assert result.exit_code == 0
-    assert result.output == 'Rev Address is : 1111cnoFDAa7GubxBMHpPLbbediPegnjSdZwNjxg9oqYvSvSmfqQL\n'
+    assert result.output == 'Vault Address is : 1111cnoFDAa7GubxBMHpPLbbediPegnjSdZwNjxg9oqYvSvSmfqQL\n'
 
-    result = runner.invoke(cli, ["--json-output", 'get-rev-addr', '--input-type', 'public', '--input',
+    result = runner.invoke(cli, ["--json-output", 'get-vault-addr', '--input-type', 'public', '--input',
                                  "0408ea9666139527a8c1dd94ce4f071fd23c8b350c5a4bb33748c4ba111faccae0620efabbc8ee2782e24e7c0cfb95c5d735b783be9cf0f8e955af34a30e62b945"])
     assert result.exit_code == 0
     j = json.loads(result.output)
-    assert j['revAddress'] == "1111cnoFDAa7GubxBMHpPLbbediPegnjSdZwNjxg9oqYvSvSmfqQL"
+    assert j['vaultAddress'] == "1111cnoFDAa7GubxBMHpPLbbediPegnjSdZwNjxg9oqYvSvSmfqQL"
 
-def test_get_rev_from_eth():
+def test_get_vault_addr_from_eth():
     runner = CliRunner()
-    result = runner.invoke(cli, ['get-rev-addr', '--input-type', 'eth', '--input',
+    result = runner.invoke(cli, ['get-vault-addr', '--input-type', 'eth', '--input',
                                  "7b2419e0ee0bd034f7bf24874c12512acac6e21c"])
     assert result.exit_code == 0
-    assert result.output == 'Rev Address is : 1111cnoFDAa7GubxBMHpPLbbediPegnjSdZwNjxg9oqYvSvSmfqQL\n'
+    assert result.output == 'Vault Address is : 1111cnoFDAa7GubxBMHpPLbbediPegnjSdZwNjxg9oqYvSvSmfqQL\n'
 
-    result = runner.invoke(cli, ["--json-output", 'get-rev-addr', '--input-type', 'eth', '--input',
+    result = runner.invoke(cli, ["--json-output", 'get-vault-addr', '--input-type', 'eth', '--input',
                                  "7b2419e0ee0bd034f7bf24874c12512acac6e21c"])
     assert result.exit_code == 0
     j = json.loads(result.output)
-    assert j['revAddress'] == "1111cnoFDAa7GubxBMHpPLbbediPegnjSdZwNjxg9oqYvSvSmfqQL"
+    assert j['vaultAddress'] == "1111cnoFDAa7GubxBMHpPLbbediPegnjSdZwNjxg9oqYvSvSmfqQL"
 
-def test_get_rev_from_err():
+def test_get_vault_addr_from_err():
     runner = CliRunner()
-    result = runner.invoke(cli, ['get-rev-addr', '--input-type', 'eth', '--input',
+    result = runner.invoke(cli, ['get-vault-addr', '--input-type', 'eth', '--input',
                                  "7b2419e0ee0bd034f7bf24874c12512acac6e1c"])
     assert result.exit_code == 1
     assert result.output == ''

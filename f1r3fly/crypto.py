@@ -12,7 +12,7 @@ from google.protobuf.wrappers_pb2 import Int32Value, StringValue
 
 from f1r3fly.pb.CasperMessage_pb2 import BlockMessageProto
 
-REVADDR_LENGTH = 40
+VAULTADDR_LENGTH = 40
 
 
 def blake2b_32(data: bytes = b'') -> hashlib.blake2b:
@@ -35,16 +35,16 @@ def gen_block_hash_from_block(block: BlockMessageProto) -> bytes:
     return blake2b_32(signed_obj).digest()
 
 
-def verify_rev_address(rev_address: str) -> bool:
-    revBytes = bitcoin.base58.decode(rev_address)
-    payload = revBytes[:-4]
-    checksum = revBytes[-4:]
+def verify_vault_address(vault_address: str) -> bool:
+    addrBytes = bitcoin.base58.decode(vault_address)
+    payload = addrBytes[:-4]
+    checksum = addrBytes[-4:]
     checksumCalc = blake2b_32(payload).digest()
     cal = checksumCalc[:4]
-    return checksum == cal and len(revBytes) == REVADDR_LENGTH
+    return checksum == cal and len(addrBytes) == VAULTADDR_LENGTH
 
 
-def generate_rev_addr_from_eth(eth_address: str) -> str:
+def generate_vault_addr_from_eth(eth_address: str) -> str:
     prefix = b'\0\0\0\0'
     pub_key_hash = keccak(bytes.fromhex(eth_address))
     payload = prefix + pub_key_hash
@@ -82,9 +82,9 @@ class PublicKey:
     def to_bytes(self) -> bytes:
         return b'\x04' + self._pub_key.to_string()
 
-    def get_rev_address(self) -> str:
+    def get_vault_address(self) -> str:
         eth_address = self.get_eth_address()
-        return generate_rev_addr_from_eth(eth_address)
+        return generate_vault_addr_from_eth(eth_address)
 
     def get_eth_address(self) -> str:
         return keccak(self.to_bytes()[1:]).hex()[-40:]

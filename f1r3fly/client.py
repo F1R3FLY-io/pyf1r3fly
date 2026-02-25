@@ -43,9 +43,9 @@ T = TypeVar("T")
 propose_result_match = re.compile(r'Success! Block (?P<block_hash>[0-9a-f]+) created and added.')
 
 
-class RClientException(Exception):
+class F1r3flyClientException(Exception):
 
-    def _init__(self, message: str) -> None:
+    def __init__(self, message: str) -> None:
         super().__init__(message)
 
 
@@ -63,7 +63,7 @@ class DataQueries:
         return Par(unforgeables=[g_unforgeable])
 
 
-class RClient:
+class F1r3flyClient:
 
     def __init__(self, host: str, port: int, grpc_options: Optional[Tuple[Tuple[str, Union[str, int]], ...]] = None,
                  compress: bool = False):
@@ -75,7 +75,7 @@ class RClient:
     def close(self) -> None:
         self.channel.close()
 
-    def __enter__(self) -> 'RClient':
+    def __enter__(self) -> 'F1r3flyClient':
         return self
 
     def __exit__(self, exc_type: Optional[Type[BaseException]],
@@ -89,7 +89,7 @@ class RClient:
     def _check_response(self, response: GRPC_Response_T) -> None:
         logging.debug('gRPC response: %s', str(response))
         if response.WhichOneof("message") == 'error':
-            raise RClientException('\n'.join(response.error.messages))
+            raise F1r3flyClientException('\n'.join(response.error.messages))
 
     def _handle_stream(self, response: Iterable[GRPC_StreamResponse_T]) -> List[GRPC_StreamResponse_T]:
         result = []
@@ -104,7 +104,8 @@ class RClient:
             term: str,
             phlo_price: int,
             phlo_limit: int,
-            timestamp_millis: int = -1
+            timestamp_millis: int = -1,
+            shard_id: str = '',
     ) -> str:
         latest_blocks = self.show_blocks(1)
         # when the genesis block is not ready, it would be empty in show_blocks
@@ -112,7 +113,7 @@ class RClient:
         assert len(latest_blocks) >= 1, "No latest block found"
         latest_block = latest_blocks[0]
         latest_block_num = latest_block.blockNumber
-        return self.deploy(key, term, phlo_price, phlo_limit, latest_block_num, timestamp_millis)
+        return self.deploy(key, term, phlo_price, phlo_limit, latest_block_num, timestamp_millis, shard_id)
 
     def exploratory_deploy(self, term: str, blockHash: str, usePreStateHash: bool = False) -> List[Par]:
         exploratory_query = ExploratoryDeployQuery(term=term, blockHash=blockHash, usePreStateHash=usePreStateHash)
@@ -127,10 +128,11 @@ class RClient:
             phlo_price: int,
             phlo_limit: int,
             valid_after_block_no: int = -1,
-            timestamp_millis: int = -1
+            timestamp_millis: int = -1,
+            shard_id: str = '',
     ) -> str:
         deploy_data = create_deploy_data(
-            key, term, phlo_price, phlo_limit, valid_after_block_no, timestamp_millis
+            key, term, phlo_price, phlo_limit, valid_after_block_no, timestamp_millis, shard_id
         )
         return self.send_deploy(deploy_data)
 

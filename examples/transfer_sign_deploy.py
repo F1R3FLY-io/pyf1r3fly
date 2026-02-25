@@ -2,7 +2,7 @@ import time
 
 import grpc
 
-from f1r3fly.client import RClient
+from f1r3fly.client import F1r3flyClient
 from f1r3fly.crypto import PrivateKey
 from f1r3fly.util import create_deploy_data
 from f1r3fly.vault import (
@@ -14,15 +14,15 @@ a = PrivateKey.generate()
 b = PrivateKey.generate()
 
 # get the latest block number
-with RClient('node0.root-shard.mainnet.rchain.coop', 40401) as client:
-    # get the latest 10 block in the rnode
+with F1r3flyClient('localhost', 40401) as client:
+    # get the latest 10 block in the f1r3node
     latest_blocks = client.show_blocks(depth=1)
     latest_block = latest_blocks[0]
     latest_block_num = latest_block.blockNumber
 
 # sign the transfer deploy
-from_addr = a.get_public_key().get_rev_address()
-to_addr = b.get_public_key().get_rev_address()
+from_addr = a.get_public_key().get_vault_address()
+to_addr = b.get_public_key().get_vault_address()
 amount = 10000
 contract = render_contract_template(
     TRANSFER_RHO_TPL, {
@@ -37,6 +37,6 @@ deploy = create_deploy_data(a, contract, TRANSFER_PHLO_PRICE, TRANSFER_PHLO_LIMI
 # deploy.sig is the deployId and you can use find_deploy to fetch the deployed block
 
 
-with RClient('node0.root-shard.mainnet.rchain.coop', 40401) as client:
+with F1r3flyClient('localhost', 40401) as client:
     # send the signed deploy to the network
     resp = client.send_deploy(deploy)

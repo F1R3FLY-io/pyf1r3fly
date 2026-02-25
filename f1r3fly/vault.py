@@ -2,23 +2,23 @@ import string
 import time
 from typing import Mapping
 
-from .client import RClient
+from .client import F1r3flyClient
 from .crypto import PrivateKey
 
 CREATE_VAULT_RHO_TPL = """
-new rl(`rho:registry:lookup`), RevVaultCh in {
-  rl!(`rho:rchain:revVault`, *RevVaultCh) |
-  for (@(_, RevVault) <- RevVaultCh) {
-    @RevVault!("findOrCreateVault", "$addr", Nil)
+new rl(`rho:registry:lookup`), SystemVaultCh in {
+  rl!(`rho:vault:system`, *SystemVaultCh) |
+  for (@(_, SystemVault) <- SystemVaultCh) {
+    @SystemVault!("findOrCreateVault", "$addr", Nil)
   }
 }
 """
 
 GET_BALANCE_RHO_TPL = """
-new return, rl(`rho:registry:lookup`), RevVaultCh, vaultCh, balanceCh in {
-  rl!(`rho:rchain:revVault`, *RevVaultCh) |
-  for (@(_, RevVault) <- RevVaultCh) {
-    @RevVault!("findOrCreate", "$addr", *vaultCh) |
+new return, rl(`rho:registry:lookup`), SystemVaultCh, vaultCh, balanceCh in {
+  rl!(`rho:vault:system`, *SystemVaultCh) |
+  for (@(_, SystemVault) <- SystemVaultCh) {
+    @SystemVault!("findOrCreate", "$addr", *vaultCh) |
     for (@(true, vault) <- vaultCh) {
       @vault!("balance", *balanceCh) |
       for (@balance <- balanceCh) {
@@ -30,12 +30,12 @@ new return, rl(`rho:registry:lookup`), RevVaultCh, vaultCh, balanceCh in {
 """
 
 TRANSFER_RHO_TPL = """
-new rl(`rho:registry:lookup`), RevVaultCh, vaultCh, revVaultKeyCh, deployerId(`rho:rchain:deployerId`), stdout(`rho:io:stdout`), resultCh in {
-  rl!(`rho:rchain:revVault`, *RevVaultCh) |
-  for (@(_, RevVault) <- RevVaultCh) {
-    @RevVault!("findOrCreate", "$from", *vaultCh) |
-    @RevVault!("deployerAuthKey", *deployerId, *revVaultKeyCh) |
-    for (@(true, vault) <- vaultCh; key <- revVaultKeyCh) {
+new rl(`rho:registry:lookup`), SystemVaultCh, vaultCh, authKeyCh, deployerId(`rho:system:deployerId`), stdout(`rho:io:stdout`), resultCh in {
+  rl!(`rho:vault:system`, *SystemVaultCh) |
+  for (@(_, SystemVault) <- SystemVaultCh) {
+    @SystemVault!("findOrCreate", "$from", *vaultCh) |
+    @SystemVault!("deployerAuthKey", *deployerId, *authKeyCh) |
+    for (@(true, vault) <- vaultCh; key <- authKeyCh) {
       @vault!("transfer", "$to", $amount, *key, *resultCh) |
       for (_ <- resultCh) { Nil }
     }
@@ -44,13 +44,13 @@ new rl(`rho:registry:lookup`), RevVaultCh, vaultCh, revVaultKeyCh, deployerId(`r
 """
 
 TRANSFER_ENSURE_TO_RHO_TPL = """
-new rl(`rho:registry:lookup`), RevVaultCh, vaultCh, toVaultCh, deployerId(`rho:rchain:deployerId`), revVaultKeyCh, resultCh in {
-  rl!(`rho:rchain:revVault`, *RevVaultCh) |
-  for (@(_, RevVault) <- RevVaultCh) {
-    @RevVault!("findOrCreate", "$from", *vaultCh) |
-    @RevVault!("findOrCreate", "$to", *toVaultCh) |
-    @RevVault!("deployerAuthKey", *deployerId, *revVaultKeyCh) |
-    for (@(true, vault) <- vaultCh; key <- revVaultKeyCh; @(true, toVault) <- toVaultCh) {
+new rl(`rho:registry:lookup`), SystemVaultCh, vaultCh, toVaultCh, deployerId(`rho:system:deployerId`), authKeyCh, resultCh in {
+  rl!(`rho:vault:system`, *SystemVaultCh) |
+  for (@(_, SystemVault) <- SystemVaultCh) {
+    @SystemVault!("findOrCreate", "$from", *vaultCh) |
+    @SystemVault!("findOrCreate", "$to", *toVaultCh) |
+    @SystemVault!("deployerAuthKey", *deployerId, *authKeyCh) |
+    for (@(true, vault) <- vaultCh; key <- authKeyCh; @(true, toVault) <- toVaultCh) {
       @vault!("transfer", "$to", $amount, *key, *resultCh) |
       for (_ <- resultCh) { Nil }
     }
@@ -69,13 +69,13 @@ def render_contract_template(template: str, substitutions: Mapping[str, str]) ->
 
 class VaultAPI:
 
-    def __init__(self, client: RClient):
+    def __init__(self, client: F1r3flyClient):
         self.client = client
 
-    def get_balance(self, rev_addr: str, block_hash: str='') -> int:
+    def get_balance(self, vault_addr: str, block_hash: str='') -> int:
         contract = render_contract_template(
             GET_BALANCE_RHO_TPL,
-            {'addr': rev_addr},
+            {'addr': vault_addr},
         )
         result = self.client.exploratory_deploy(contract, block_hash)
         return int(result[0].exprs[0].g_int)

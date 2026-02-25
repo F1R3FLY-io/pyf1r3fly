@@ -17,9 +17,9 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'PyRChain'
-copyright = '2020, RChain'
-author = 'RChain'
+project = 'PyF1r3fly'
+copyright = '2026, F1R3FLY'
+author = 'F1R3FLY'
 
 # The full version, including alpha/beta/rc tags
 release = 'beta'

@@ -4,7 +4,7 @@ import pytest
 from ecdsa.keys import BadSignatureError
 
 from f1r3fly.crypto import (
-    PrivateKey, PublicKey, blake2b_32, verify_rev_address,
+    PrivateKey, PublicKey, blake2b_32, verify_vault_address,
 )
 
 
@@ -40,16 +40,16 @@ keys_identities = [
 ]
 
 
-@pytest.mark.parametrize("key_hex,pub_key_hex,rev_address", keys_identities)
-def test_privatekey_function(key_hex: str, pub_key_hex: str, rev_address: str) -> None:
+@pytest.mark.parametrize("key_hex,pub_key_hex,vault_address", keys_identities)
+def test_privatekey_function(key_hex: str, pub_key_hex: str, vault_address: str) -> None:
     key = PrivateKey.from_hex(key_hex)
     pub_key = key.get_public_key()
     actual_pub_key_hex = pub_key.to_bytes().hex()
     assert pub_key_hex == actual_pub_key_hex
 
 
-@pytest.mark.parametrize("key_hex,pub_key_hex,rev_address", keys_identities)
-def test_publickey_from_hex(key_hex: str, pub_key_hex: str, rev_address: str) -> None:
+@pytest.mark.parametrize("key_hex,pub_key_hex,vault_address", keys_identities)
+def test_publickey_from_hex(key_hex: str, pub_key_hex: str, vault_address: str) -> None:
     key = PrivateKey.from_hex(key_hex)
     pub_key = PublicKey.from_hex(pub_key_hex)
     expected_pub_key_bytes = key.get_public_key().to_bytes()
@@ -57,49 +57,49 @@ def test_publickey_from_hex(key_hex: str, pub_key_hex: str, rev_address: str) ->
     assert expected_pub_key_bytes == actual_pub_key_bytes
 
 
-@pytest.mark.parametrize("key_hex,pub_key_hex,rev_address", keys_identities)
-def test_key_to_hex(key_hex: str, pub_key_hex: str, rev_address: str) -> None:
+@pytest.mark.parametrize("key_hex,pub_key_hex,vault_address", keys_identities)
+def test_key_to_hex(key_hex: str, pub_key_hex: str, vault_address: str) -> None:
     private_key = PrivateKey.from_hex(key_hex)
     assert private_key.to_hex() == key_hex
     public_key = PublicKey.from_hex(pub_key_hex)
     assert public_key.to_hex() == pub_key_hex
 
 
-@pytest.mark.parametrize("key_hex,pub_key_hex,rev_address", keys_identities)
-def test_sign_verify_good(key_hex: str, pub_key_hex: str, rev_address: str) -> None:
+@pytest.mark.parametrize("key_hex,pub_key_hex,vault_address", keys_identities)
+def test_sign_verify_good(key_hex: str, pub_key_hex: str, vault_address: str) -> None:
     key = PrivateKey.from_hex(key_hex)
     pub_key = PublicKey.from_hex(pub_key_hex)
-    message = 'hello rchain'.encode()
+    message = 'hello f1r3fly'.encode()
     signature = key.sign(message)
     pub_key.verify(signature, message)
 
 
-@pytest.mark.parametrize("key_hex,pub_key_hex,rev_address", keys_identities)
-def test_sign_verify_bad(key_hex: str, pub_key_hex: str, rev_address: str) -> None:
+@pytest.mark.parametrize("key_hex,pub_key_hex,vault_address", keys_identities)
+def test_sign_verify_bad(key_hex: str, pub_key_hex: str, vault_address: str) -> None:
     key = PrivateKey.from_hex(key_hex)
     pub_key = PublicKey.from_hex(pub_key_hex)
-    sign_message = 'hello rchain'.encode()
+    sign_message = 'hello f1r3fly'.encode()
     verify_message = 'hello world'.encode()
     signature = key.sign(sign_message)
     with pytest.raises(BadSignatureError):
         pub_key.verify(signature, verify_message)
 
 
-@pytest.mark.parametrize("key_hex,pub_key_hex,rev_address", keys_identities)
-def test_sign_block_hash_verify_good(key_hex: str, pub_key_hex: str, rev_address: str) -> None:
+@pytest.mark.parametrize("key_hex,pub_key_hex,vault_address", keys_identities)
+def test_sign_block_hash_verify_good(key_hex: str, pub_key_hex: str, vault_address: str) -> None:
     key = PrivateKey.from_hex(key_hex)
     pub_key = PublicKey.from_hex(pub_key_hex)
-    message = 'hello rchain'.encode()
+    message = 'hello f1r3fly'.encode()
     digest = blake2b_32(message).digest()
     signature = key.sign_block_hash(digest)
     pub_key.verify_block_hash(signature, digest)
 
 
-@pytest.mark.parametrize("key_hex,pub_key_hex,rev_address", keys_identities)
-def test_sign_block_hash_verify_bad(key_hex: str, pub_key_hex: str, rev_address: str) -> None:
+@pytest.mark.parametrize("key_hex,pub_key_hex,vault_address", keys_identities)
+def test_sign_block_hash_verify_bad(key_hex: str, pub_key_hex: str, vault_address: str) -> None:
     key = PrivateKey.from_hex(key_hex)
     pub_key = PublicKey.from_hex(pub_key_hex)
-    sign_message = 'hello rchain'.encode()
+    sign_message = 'hello f1r3fly'.encode()
     verify_message = 'hello world'.encode()
     block_hash = blake2b_32(sign_message).digest()
     signature = key.sign_block_hash(block_hash)
@@ -108,18 +108,18 @@ def test_sign_block_hash_verify_bad(key_hex: str, pub_key_hex: str, rev_address:
         pub_key.verify_block_hash(signature, verify_digest)
 
 
-@pytest.mark.parametrize("key_hex,pub_key_hex,rev_address", keys_identities)
-def test_address(key_hex: str, pub_key_hex: str, rev_address: str) -> None:
+@pytest.mark.parametrize("key_hex,pub_key_hex,vault_address", keys_identities)
+def test_address(key_hex: str, pub_key_hex: str, vault_address: str) -> None:
     pub_key = PublicKey.from_hex(pub_key_hex)
-    actual_address = pub_key.get_rev_address()
-    assert rev_address == actual_address
+    actual_address = pub_key.get_vault_address()
+    assert vault_address == actual_address
 
 
 def test_private_key_from_eth_path():
     key_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'resources/key.json')
     PrivateKey.from_eth_keyfile(key_path, 'testpassword')
 
-def test_rev_address_validation():
+def test_vault_address_validation():
     for i in range(20):
         key = PrivateKey.generate()
-        assert verify_rev_address(key.get_public_key().get_rev_address()) is True
+        assert verify_vault_address(key.get_public_key().get_vault_address()) is True
