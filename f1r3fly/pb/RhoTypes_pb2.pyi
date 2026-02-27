@@ -7,23 +7,23 @@ Rholang Term Structure
 The top level is `Par`.
 """
 
-import builtins
-import collections.abc
-import google.protobuf.descriptor
-import google.protobuf.internal.containers
-import google.protobuf.message
+from collections import abc as _abc
+from google.protobuf import descriptor as _descriptor
+from google.protobuf import message as _message
+from google.protobuf.internal import containers as _containers
+import builtins as _builtins
 import sys
-import typing
+import typing as _typing
 
 if sys.version_info >= (3, 10):
-    import typing as typing_extensions
+    from typing import TypeAlias as _TypeAlias
 else:
-    import typing_extensions
+    from typing_extensions import TypeAlias as _TypeAlias
 
-DESCRIPTOR: google.protobuf.descriptor.FileDescriptor
+DESCRIPTOR: _descriptor.FileDescriptor
 
-@typing.final
-class Par(google.protobuf.message.Message):
+@_typing.final
+class Par(_message.Message):
     """*
     Rholang process
 
@@ -33,197 +33,197 @@ class Par(google.protobuf.message.Message):
     The Nil process is a `Par` with no sends, receives, etc.
     """
 
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+    DESCRIPTOR: _descriptor.Descriptor
 
-    SENDS_FIELD_NUMBER: builtins.int
-    RECEIVES_FIELD_NUMBER: builtins.int
-    NEWS_FIELD_NUMBER: builtins.int
-    EXPRS_FIELD_NUMBER: builtins.int
-    MATCHES_FIELD_NUMBER: builtins.int
-    UNFORGEABLES_FIELD_NUMBER: builtins.int
-    BUNDLES_FIELD_NUMBER: builtins.int
-    CONNECTIVES_FIELD_NUMBER: builtins.int
-    LOCALLYFREE_FIELD_NUMBER: builtins.int
-    CONNECTIVE_USED_FIELD_NUMBER: builtins.int
-    locallyFree: builtins.bytes
-    connective_used: builtins.bool
-    @property
-    def sends(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[Global___Send]: ...
-    @property
-    def receives(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[Global___Receive]: ...
-    @property
-    def news(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[Global___New]: ...
-    @property
-    def exprs(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[Global___Expr]: ...
-    @property
-    def matches(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[Global___Match]: ...
-    @property
-    def unforgeables(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[Global___GUnforgeable]:
+    SENDS_FIELD_NUMBER: _builtins.int
+    RECEIVES_FIELD_NUMBER: _builtins.int
+    NEWS_FIELD_NUMBER: _builtins.int
+    EXPRS_FIELD_NUMBER: _builtins.int
+    MATCHES_FIELD_NUMBER: _builtins.int
+    UNFORGEABLES_FIELD_NUMBER: _builtins.int
+    BUNDLES_FIELD_NUMBER: _builtins.int
+    CONNECTIVES_FIELD_NUMBER: _builtins.int
+    LOCALLYFREE_FIELD_NUMBER: _builtins.int
+    CONNECTIVE_USED_FIELD_NUMBER: _builtins.int
+    locallyFree: _builtins.bytes
+    connective_used: _builtins.bool
+    @_builtins.property
+    def sends(self) -> _containers.RepeatedCompositeFieldContainer[Global___Send]: ...
+    @_builtins.property
+    def receives(self) -> _containers.RepeatedCompositeFieldContainer[Global___Receive]: ...
+    @_builtins.property
+    def news(self) -> _containers.RepeatedCompositeFieldContainer[Global___New]: ...
+    @_builtins.property
+    def exprs(self) -> _containers.RepeatedCompositeFieldContainer[Global___Expr]: ...
+    @_builtins.property
+    def matches(self) -> _containers.RepeatedCompositeFieldContainer[Global___Match]: ...
+    @_builtins.property
+    def unforgeables(self) -> _containers.RepeatedCompositeFieldContainer[Global___GUnforgeable]:
         """unforgeable names"""
 
-    @property
-    def bundles(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[Global___Bundle]: ...
-    @property
-    def connectives(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[Global___Connective]: ...
+    @_builtins.property
+    def bundles(self) -> _containers.RepeatedCompositeFieldContainer[Global___Bundle]: ...
+    @_builtins.property
+    def connectives(self) -> _containers.RepeatedCompositeFieldContainer[Global___Connective]: ...
     def __init__(
         self,
         *,
-        sends: collections.abc.Iterable[Global___Send] | None = ...,
-        receives: collections.abc.Iterable[Global___Receive] | None = ...,
-        news: collections.abc.Iterable[Global___New] | None = ...,
-        exprs: collections.abc.Iterable[Global___Expr] | None = ...,
-        matches: collections.abc.Iterable[Global___Match] | None = ...,
-        unforgeables: collections.abc.Iterable[Global___GUnforgeable] | None = ...,
-        bundles: collections.abc.Iterable[Global___Bundle] | None = ...,
-        connectives: collections.abc.Iterable[Global___Connective] | None = ...,
-        locallyFree: builtins.bytes = ...,
-        connective_used: builtins.bool = ...,
+        sends: _abc.Iterable[Global___Send] | None = ...,
+        receives: _abc.Iterable[Global___Receive] | None = ...,
+        news: _abc.Iterable[Global___New] | None = ...,
+        exprs: _abc.Iterable[Global___Expr] | None = ...,
+        matches: _abc.Iterable[Global___Match] | None = ...,
+        unforgeables: _abc.Iterable[Global___GUnforgeable] | None = ...,
+        bundles: _abc.Iterable[Global___Bundle] | None = ...,
+        connectives: _abc.Iterable[Global___Connective] | None = ...,
+        locallyFree: _builtins.bytes = ...,
+        connective_used: _builtins.bool = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["bundles", b"bundles", "connective_used", b"connective_used", "connectives", b"connectives", "exprs", b"exprs", "locallyFree", b"locallyFree", "matches", b"matches", "news", b"news", "receives", b"receives", "sends", b"sends", "unforgeables", b"unforgeables"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["bundles", b"bundles", "connective_used", b"connective_used", "connectives", b"connectives", "exprs", b"exprs", "locallyFree", b"locallyFree", "matches", b"matches", "news", b"news", "receives", b"receives", "sends", b"sends", "unforgeables", b"unforgeables"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___Par: typing_extensions.TypeAlias = Par
+Global___Par: _TypeAlias = Par  # noqa: Y015
 
-@typing.final
-class TaggedContinuation(google.protobuf.message.Message):
+@_typing.final
+class TaggedContinuation(_message.Message):
     """*
     Either rholang code or code built in to the interpreter.
     """
 
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+    DESCRIPTOR: _descriptor.Descriptor
 
-    PAR_BODY_FIELD_NUMBER: builtins.int
-    SCALA_BODY_REF_FIELD_NUMBER: builtins.int
-    scala_body_ref: builtins.int
-    @property
+    PAR_BODY_FIELD_NUMBER: _builtins.int
+    SCALA_BODY_REF_FIELD_NUMBER: _builtins.int
+    scala_body_ref: _builtins.int
+    @_builtins.property
     def par_body(self) -> Global___ParWithRandom: ...
     def __init__(
         self,
         *,
         par_body: Global___ParWithRandom | None = ...,
-        scala_body_ref: builtins.int = ...,
+        scala_body_ref: _builtins.int = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["par_body", b"par_body", "scala_body_ref", b"scala_body_ref", "tagged_cont", b"tagged_cont"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["par_body", b"par_body", "scala_body_ref", b"scala_body_ref", "tagged_cont", b"tagged_cont"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["par_body", b"par_body", "scala_body_ref", b"scala_body_ref", "tagged_cont", b"tagged_cont"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["par_body", b"par_body", "scala_body_ref", b"scala_body_ref", "tagged_cont", b"tagged_cont"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
-    _WhichOneofReturnType_tagged_cont: typing_extensions.TypeAlias = typing.Literal["par_body", "scala_body_ref"]
-    _WhichOneofArgType_tagged_cont: typing_extensions.TypeAlias = typing.Literal["tagged_cont", b"tagged_cont"]
+    _WhichOneofReturnType_tagged_cont: _TypeAlias = _typing.Literal["par_body", "scala_body_ref"]  # noqa: Y015
+    _WhichOneofArgType_tagged_cont: _TypeAlias = _typing.Literal["tagged_cont", b"tagged_cont"]  # noqa: Y015
     def WhichOneof(self, oneof_group: _WhichOneofArgType_tagged_cont) -> _WhichOneofReturnType_tagged_cont | None: ...
 
-Global___TaggedContinuation: typing_extensions.TypeAlias = TaggedContinuation
+Global___TaggedContinuation: _TypeAlias = TaggedContinuation  # noqa: Y015
 
-@typing.final
-class ParWithRandom(google.protobuf.message.Message):
+@_typing.final
+class ParWithRandom(_message.Message):
     """*
     Rholang code along with the state of a split random number
     generator for generating new unforgeable names.
     """
 
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+    DESCRIPTOR: _descriptor.Descriptor
 
-    BODY_FIELD_NUMBER: builtins.int
-    RANDOMSTATE_FIELD_NUMBER: builtins.int
-    randomState: builtins.bytes
-    @property
+    BODY_FIELD_NUMBER: _builtins.int
+    RANDOMSTATE_FIELD_NUMBER: _builtins.int
+    randomState: _builtins.bytes
+    @_builtins.property
     def body(self) -> Global___Par: ...
     def __init__(
         self,
         *,
         body: Global___Par | None = ...,
-        randomState: builtins.bytes = ...,
+        randomState: _builtins.bytes = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["body", b"body"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["body", b"body", "randomState", b"randomState"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["body", b"body"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["body", b"body", "randomState", b"randomState"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___ParWithRandom: typing_extensions.TypeAlias = ParWithRandom
+Global___ParWithRandom: _TypeAlias = ParWithRandom  # noqa: Y015
 
-@typing.final
-class PCost(google.protobuf.message.Message):
+@_typing.final
+class PCost(_message.Message):
     """*
     Cost of the performed operations.
     """
 
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+    DESCRIPTOR: _descriptor.Descriptor
 
-    COST_FIELD_NUMBER: builtins.int
-    cost: builtins.int
+    COST_FIELD_NUMBER: _builtins.int
+    cost: _builtins.int
     def __init__(
         self,
         *,
-        cost: builtins.int = ...,
+        cost: _builtins.int = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["cost", b"cost"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["cost", b"cost"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___PCost: typing_extensions.TypeAlias = PCost
+Global___PCost: _TypeAlias = PCost  # noqa: Y015
 
-@typing.final
-class ListParWithRandom(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class ListParWithRandom(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    PARS_FIELD_NUMBER: builtins.int
-    RANDOMSTATE_FIELD_NUMBER: builtins.int
-    randomState: builtins.bytes
-    @property
-    def pars(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[Global___Par]: ...
+    PARS_FIELD_NUMBER: _builtins.int
+    RANDOMSTATE_FIELD_NUMBER: _builtins.int
+    randomState: _builtins.bytes
+    @_builtins.property
+    def pars(self) -> _containers.RepeatedCompositeFieldContainer[Global___Par]: ...
     def __init__(
         self,
         *,
-        pars: collections.abc.Iterable[Global___Par] | None = ...,
-        randomState: builtins.bytes = ...,
+        pars: _abc.Iterable[Global___Par] | None = ...,
+        randomState: _builtins.bytes = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["pars", b"pars", "randomState", b"randomState"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["pars", b"pars", "randomState", b"randomState"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___ListParWithRandom: typing_extensions.TypeAlias = ListParWithRandom
+Global___ListParWithRandom: _TypeAlias = ListParWithRandom  # noqa: Y015
 
-@typing.final
-class Var(google.protobuf.message.Message):
+@_typing.final
+class Var(_message.Message):
     """While we use vars in both positions, when producing the normalized
     representation we need a discipline to track whether a var is a name or a
     process.
     These are DeBruijn levels
     """
 
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+    DESCRIPTOR: _descriptor.Descriptor
 
-    @typing.final
-    class WildcardMsg(google.protobuf.message.Message):
-        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+    @_typing.final
+    class WildcardMsg(_message.Message):
+        DESCRIPTOR: _descriptor.Descriptor
 
         def __init__(
             self,
         ) -> None: ...
 
-    BOUND_VAR_FIELD_NUMBER: builtins.int
-    FREE_VAR_FIELD_NUMBER: builtins.int
-    WILDCARD_FIELD_NUMBER: builtins.int
-    bound_var: builtins.int
-    free_var: builtins.int
-    @property
+    BOUND_VAR_FIELD_NUMBER: _builtins.int
+    FREE_VAR_FIELD_NUMBER: _builtins.int
+    WILDCARD_FIELD_NUMBER: _builtins.int
+    bound_var: _builtins.int
+    free_var: _builtins.int
+    @_builtins.property
     def wildcard(self) -> Global___Var.WildcardMsg: ...
     def __init__(
         self,
         *,
-        bound_var: builtins.int = ...,
-        free_var: builtins.int = ...,
+        bound_var: _builtins.int = ...,
+        free_var: _builtins.int = ...,
         wildcard: Global___Var.WildcardMsg | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["bound_var", b"bound_var", "free_var", b"free_var", "var_instance", b"var_instance", "wildcard", b"wildcard"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["bound_var", b"bound_var", "free_var", b"free_var", "var_instance", b"var_instance", "wildcard", b"wildcard"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["bound_var", b"bound_var", "free_var", b"free_var", "var_instance", b"var_instance", "wildcard", b"wildcard"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["bound_var", b"bound_var", "free_var", b"free_var", "var_instance", b"var_instance", "wildcard", b"wildcard"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
-    _WhichOneofReturnType_var_instance: typing_extensions.TypeAlias = typing.Literal["bound_var", "free_var", "wildcard"]
-    _WhichOneofArgType_var_instance: typing_extensions.TypeAlias = typing.Literal["var_instance", b"var_instance"]
+    _WhichOneofReturnType_var_instance: _TypeAlias = _typing.Literal["bound_var", "free_var", "wildcard"]  # noqa: Y015
+    _WhichOneofArgType_var_instance: _TypeAlias = _typing.Literal["var_instance", b"var_instance"]  # noqa: Y015
     def WhichOneof(self, oneof_group: _WhichOneofArgType_var_instance) -> _WhichOneofReturnType_var_instance | None: ...
 
-Global___Var: typing_extensions.TypeAlias = Var
+Global___Var: _TypeAlias = Var  # noqa: Y015
 
-@typing.final
-class Bundle(google.protobuf.message.Message):
+@_typing.final
+class Bundle(_message.Message):
     """*
     Nothing can be received from a (quoted) bundle with `readFlag = false`.
     Likeise nothing can be sent to a (quoted) bundle with `writeFlag = false`.
@@ -231,144 +231,144 @@ class Bundle(google.protobuf.message.Message):
     If both flags are set to false, bundle allows only for equivalance check.
     """
 
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+    DESCRIPTOR: _descriptor.Descriptor
 
-    BODY_FIELD_NUMBER: builtins.int
-    WRITEFLAG_FIELD_NUMBER: builtins.int
-    READFLAG_FIELD_NUMBER: builtins.int
-    writeFlag: builtins.bool
+    BODY_FIELD_NUMBER: _builtins.int
+    WRITEFLAG_FIELD_NUMBER: _builtins.int
+    READFLAG_FIELD_NUMBER: _builtins.int
+    writeFlag: _builtins.bool
     """flag indicating whether bundle is writeable"""
-    readFlag: builtins.bool
+    readFlag: _builtins.bool
     """flag indicating whether bundle is readable"""
-    @property
+    @_builtins.property
     def body(self) -> Global___Par: ...
     def __init__(
         self,
         *,
         body: Global___Par | None = ...,
-        writeFlag: builtins.bool = ...,
-        readFlag: builtins.bool = ...,
+        writeFlag: _builtins.bool = ...,
+        readFlag: _builtins.bool = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["body", b"body"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["body", b"body", "readFlag", b"readFlag", "writeFlag", b"writeFlag"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["body", b"body"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["body", b"body", "readFlag", b"readFlag", "writeFlag", b"writeFlag"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___Bundle: typing_extensions.TypeAlias = Bundle
+Global___Bundle: _TypeAlias = Bundle  # noqa: Y015
 
-@typing.final
-class Send(google.protobuf.message.Message):
+@_typing.final
+class Send(_message.Message):
     """*
     A send is written `chan!(data)` or `chan!!(data)` for a persistent send.
 
     Upon send, all free variables in data are substituted with their values.
     """
 
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+    DESCRIPTOR: _descriptor.Descriptor
 
-    CHAN_FIELD_NUMBER: builtins.int
-    DATA_FIELD_NUMBER: builtins.int
-    PERSISTENT_FIELD_NUMBER: builtins.int
-    LOCALLYFREE_FIELD_NUMBER: builtins.int
-    CONNECTIVE_USED_FIELD_NUMBER: builtins.int
-    persistent: builtins.bool
-    locallyFree: builtins.bytes
-    connective_used: builtins.bool
-    @property
+    CHAN_FIELD_NUMBER: _builtins.int
+    DATA_FIELD_NUMBER: _builtins.int
+    PERSISTENT_FIELD_NUMBER: _builtins.int
+    LOCALLYFREE_FIELD_NUMBER: _builtins.int
+    CONNECTIVE_USED_FIELD_NUMBER: _builtins.int
+    persistent: _builtins.bool
+    locallyFree: _builtins.bytes
+    connective_used: _builtins.bool
+    @_builtins.property
     def chan(self) -> Global___Par: ...
-    @property
-    def data(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[Global___Par]: ...
+    @_builtins.property
+    def data(self) -> _containers.RepeatedCompositeFieldContainer[Global___Par]: ...
     def __init__(
         self,
         *,
         chan: Global___Par | None = ...,
-        data: collections.abc.Iterable[Global___Par] | None = ...,
-        persistent: builtins.bool = ...,
-        locallyFree: builtins.bytes = ...,
-        connective_used: builtins.bool = ...,
+        data: _abc.Iterable[Global___Par] | None = ...,
+        persistent: _builtins.bool = ...,
+        locallyFree: _builtins.bytes = ...,
+        connective_used: _builtins.bool = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["chan", b"chan"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["chan", b"chan", "connective_used", b"connective_used", "data", b"data", "locallyFree", b"locallyFree", "persistent", b"persistent"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["chan", b"chan"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["chan", b"chan", "connective_used", b"connective_used", "data", b"data", "locallyFree", b"locallyFree", "persistent", b"persistent"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___Send: typing_extensions.TypeAlias = Send
+Global___Send: _TypeAlias = Send  # noqa: Y015
 
-@typing.final
-class ReceiveBind(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class ReceiveBind(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    PATTERNS_FIELD_NUMBER: builtins.int
-    SOURCE_FIELD_NUMBER: builtins.int
-    REMAINDER_FIELD_NUMBER: builtins.int
-    FREECOUNT_FIELD_NUMBER: builtins.int
-    freeCount: builtins.int
-    @property
-    def patterns(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[Global___Par]: ...
-    @property
+    PATTERNS_FIELD_NUMBER: _builtins.int
+    SOURCE_FIELD_NUMBER: _builtins.int
+    REMAINDER_FIELD_NUMBER: _builtins.int
+    FREECOUNT_FIELD_NUMBER: _builtins.int
+    freeCount: _builtins.int
+    @_builtins.property
+    def patterns(self) -> _containers.RepeatedCompositeFieldContainer[Global___Par]: ...
+    @_builtins.property
     def source(self) -> Global___Par: ...
-    @property
+    @_builtins.property
     def remainder(self) -> Global___Var: ...
     def __init__(
         self,
         *,
-        patterns: collections.abc.Iterable[Global___Par] | None = ...,
+        patterns: _abc.Iterable[Global___Par] | None = ...,
         source: Global___Par | None = ...,
         remainder: Global___Var | None = ...,
-        freeCount: builtins.int = ...,
+        freeCount: _builtins.int = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["remainder", b"remainder", "source", b"source"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["freeCount", b"freeCount", "patterns", b"patterns", "remainder", b"remainder", "source", b"source"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["remainder", b"remainder", "source", b"source"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["freeCount", b"freeCount", "patterns", b"patterns", "remainder", b"remainder", "source", b"source"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___ReceiveBind: typing_extensions.TypeAlias = ReceiveBind
+Global___ReceiveBind: _TypeAlias = ReceiveBind  # noqa: Y015
 
-@typing.final
-class BindPattern(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class BindPattern(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    PATTERNS_FIELD_NUMBER: builtins.int
-    REMAINDER_FIELD_NUMBER: builtins.int
-    FREECOUNT_FIELD_NUMBER: builtins.int
-    freeCount: builtins.int
-    @property
-    def patterns(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[Global___Par]: ...
-    @property
+    PATTERNS_FIELD_NUMBER: _builtins.int
+    REMAINDER_FIELD_NUMBER: _builtins.int
+    FREECOUNT_FIELD_NUMBER: _builtins.int
+    freeCount: _builtins.int
+    @_builtins.property
+    def patterns(self) -> _containers.RepeatedCompositeFieldContainer[Global___Par]: ...
+    @_builtins.property
     def remainder(self) -> Global___Var: ...
     def __init__(
         self,
         *,
-        patterns: collections.abc.Iterable[Global___Par] | None = ...,
+        patterns: _abc.Iterable[Global___Par] | None = ...,
         remainder: Global___Var | None = ...,
-        freeCount: builtins.int = ...,
+        freeCount: _builtins.int = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["remainder", b"remainder"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["freeCount", b"freeCount", "patterns", b"patterns", "remainder", b"remainder"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["remainder", b"remainder"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["freeCount", b"freeCount", "patterns", b"patterns", "remainder", b"remainder"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___BindPattern: typing_extensions.TypeAlias = BindPattern
+Global___BindPattern: _TypeAlias = BindPattern  # noqa: Y015
 
-@typing.final
-class ListBindPatterns(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class ListBindPatterns(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    PATTERNS_FIELD_NUMBER: builtins.int
-    @property
-    def patterns(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[Global___BindPattern]: ...
+    PATTERNS_FIELD_NUMBER: _builtins.int
+    @_builtins.property
+    def patterns(self) -> _containers.RepeatedCompositeFieldContainer[Global___BindPattern]: ...
     def __init__(
         self,
         *,
-        patterns: collections.abc.Iterable[Global___BindPattern] | None = ...,
+        patterns: _abc.Iterable[Global___BindPattern] | None = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["patterns", b"patterns"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["patterns", b"patterns"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___ListBindPatterns: typing_extensions.TypeAlias = ListBindPatterns
+Global___ListBindPatterns: _TypeAlias = ListBindPatterns  # noqa: Y015
 
-@typing.final
-class Receive(google.protobuf.message.Message):
+@_typing.final
+class Receive(_message.Message):
     """*
     A receive is written `for(binds) { body }`
     i.e. `for(patterns <- source) { body }`
@@ -377,266 +377,266 @@ class Receive(google.protobuf.message.Message):
     It's an error for free Variable to occur more than once in a pattern.
     """
 
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+    DESCRIPTOR: _descriptor.Descriptor
 
-    BINDS_FIELD_NUMBER: builtins.int
-    BODY_FIELD_NUMBER: builtins.int
-    PERSISTENT_FIELD_NUMBER: builtins.int
-    PEEK_FIELD_NUMBER: builtins.int
-    BINDCOUNT_FIELD_NUMBER: builtins.int
-    LOCALLYFREE_FIELD_NUMBER: builtins.int
-    CONNECTIVE_USED_FIELD_NUMBER: builtins.int
-    persistent: builtins.bool
-    peek: builtins.bool
-    bindCount: builtins.int
-    locallyFree: builtins.bytes
-    connective_used: builtins.bool
-    @property
-    def binds(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[Global___ReceiveBind]: ...
-    @property
+    BINDS_FIELD_NUMBER: _builtins.int
+    BODY_FIELD_NUMBER: _builtins.int
+    PERSISTENT_FIELD_NUMBER: _builtins.int
+    PEEK_FIELD_NUMBER: _builtins.int
+    BINDCOUNT_FIELD_NUMBER: _builtins.int
+    LOCALLYFREE_FIELD_NUMBER: _builtins.int
+    CONNECTIVE_USED_FIELD_NUMBER: _builtins.int
+    persistent: _builtins.bool
+    peek: _builtins.bool
+    bindCount: _builtins.int
+    locallyFree: _builtins.bytes
+    connective_used: _builtins.bool
+    @_builtins.property
+    def binds(self) -> _containers.RepeatedCompositeFieldContainer[Global___ReceiveBind]: ...
+    @_builtins.property
     def body(self) -> Global___Par: ...
     def __init__(
         self,
         *,
-        binds: collections.abc.Iterable[Global___ReceiveBind] | None = ...,
+        binds: _abc.Iterable[Global___ReceiveBind] | None = ...,
         body: Global___Par | None = ...,
-        persistent: builtins.bool = ...,
-        peek: builtins.bool = ...,
-        bindCount: builtins.int = ...,
-        locallyFree: builtins.bytes = ...,
-        connective_used: builtins.bool = ...,
+        persistent: _builtins.bool = ...,
+        peek: _builtins.bool = ...,
+        bindCount: _builtins.int = ...,
+        locallyFree: _builtins.bytes = ...,
+        connective_used: _builtins.bool = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["body", b"body"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["bindCount", b"bindCount", "binds", b"binds", "body", b"body", "connective_used", b"connective_used", "locallyFree", b"locallyFree", "peek", b"peek", "persistent", b"persistent"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["body", b"body"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["bindCount", b"bindCount", "binds", b"binds", "body", b"body", "connective_used", b"connective_used", "locallyFree", b"locallyFree", "peek", b"peek", "persistent", b"persistent"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___Receive: typing_extensions.TypeAlias = Receive
+Global___Receive: _TypeAlias = Receive  # noqa: Y015
 
-@typing.final
-class New(google.protobuf.message.Message):
+@_typing.final
+class New(_message.Message):
     """Number of variables bound in the new statement.
     For normalized form, p should not contain solely another new.
     Also for normalized form, the first use should be level+0, next use level+1
     up to level+count for the last used variable.
     """
 
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+    DESCRIPTOR: _descriptor.Descriptor
 
-    @typing.final
-    class InjectionsEntry(google.protobuf.message.Message):
-        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+    @_typing.final
+    class InjectionsEntry(_message.Message):
+        DESCRIPTOR: _descriptor.Descriptor
 
-        KEY_FIELD_NUMBER: builtins.int
-        VALUE_FIELD_NUMBER: builtins.int
-        key: builtins.str
-        @property
+        KEY_FIELD_NUMBER: _builtins.int
+        VALUE_FIELD_NUMBER: _builtins.int
+        key: _builtins.str
+        @_builtins.property
         def value(self) -> Global___Par: ...
         def __init__(
             self,
             *,
-            key: builtins.str = ...,
+            key: _builtins.str = ...,
             value: Global___Par | None = ...,
         ) -> None: ...
-        _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["value", b"value"]
-        def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-        _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["key", b"key", "value", b"value"]
+        _HasFieldArgType: _TypeAlias = _typing.Literal["value", b"value"]  # noqa: Y015
+        def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+        _ClearFieldArgType: _TypeAlias = _typing.Literal["key", b"key", "value", b"value"]  # noqa: Y015
         def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-    BINDCOUNT_FIELD_NUMBER: builtins.int
-    P_FIELD_NUMBER: builtins.int
-    URI_FIELD_NUMBER: builtins.int
-    INJECTIONS_FIELD_NUMBER: builtins.int
-    LOCALLYFREE_FIELD_NUMBER: builtins.int
-    bindCount: builtins.int
+    BINDCOUNT_FIELD_NUMBER: _builtins.int
+    P_FIELD_NUMBER: _builtins.int
+    URI_FIELD_NUMBER: _builtins.int
+    INJECTIONS_FIELD_NUMBER: _builtins.int
+    LOCALLYFREE_FIELD_NUMBER: _builtins.int
+    bindCount: _builtins.int
     """Includes any uris listed below. This makes it easier to substitute or walk a term."""
-    locallyFree: builtins.bytes
-    @property
+    locallyFree: _builtins.bytes
+    @_builtins.property
     def p(self) -> Global___Par: ...
-    @property
-    def uri(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.str]:
+    @_builtins.property
+    def uri(self) -> _containers.RepeatedScalarFieldContainer[_builtins.str]:
         """For normalization, uri-referenced variables come at the end, and in lexicographical order."""
 
-    @property
-    def injections(self) -> google.protobuf.internal.containers.MessageMap[builtins.str, Global___Par]: ...
+    @_builtins.property
+    def injections(self) -> _containers.MessageMap[_builtins.str, Global___Par]: ...
     def __init__(
         self,
         *,
-        bindCount: builtins.int = ...,
+        bindCount: _builtins.int = ...,
         p: Global___Par | None = ...,
-        uri: collections.abc.Iterable[builtins.str] | None = ...,
-        injections: collections.abc.Mapping[builtins.str, Global___Par] | None = ...,
-        locallyFree: builtins.bytes = ...,
+        uri: _abc.Iterable[_builtins.str] | None = ...,
+        injections: _abc.Mapping[_builtins.str, Global___Par] | None = ...,
+        locallyFree: _builtins.bytes = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["p", b"p"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["bindCount", b"bindCount", "injections", b"injections", "locallyFree", b"locallyFree", "p", b"p", "uri", b"uri"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["p", b"p"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["bindCount", b"bindCount", "injections", b"injections", "locallyFree", b"locallyFree", "p", b"p", "uri", b"uri"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___New: typing_extensions.TypeAlias = New
+Global___New: _TypeAlias = New  # noqa: Y015
 
-@typing.final
-class MatchCase(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class MatchCase(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    PATTERN_FIELD_NUMBER: builtins.int
-    SOURCE_FIELD_NUMBER: builtins.int
-    FREECOUNT_FIELD_NUMBER: builtins.int
-    freeCount: builtins.int
-    @property
+    PATTERN_FIELD_NUMBER: _builtins.int
+    SOURCE_FIELD_NUMBER: _builtins.int
+    FREECOUNT_FIELD_NUMBER: _builtins.int
+    freeCount: _builtins.int
+    @_builtins.property
     def pattern(self) -> Global___Par: ...
-    @property
+    @_builtins.property
     def source(self) -> Global___Par: ...
     def __init__(
         self,
         *,
         pattern: Global___Par | None = ...,
         source: Global___Par | None = ...,
-        freeCount: builtins.int = ...,
+        freeCount: _builtins.int = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["pattern", b"pattern", "source", b"source"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["freeCount", b"freeCount", "pattern", b"pattern", "source", b"source"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["pattern", b"pattern", "source", b"source"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["freeCount", b"freeCount", "pattern", b"pattern", "source", b"source"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___MatchCase: typing_extensions.TypeAlias = MatchCase
+Global___MatchCase: _TypeAlias = MatchCase  # noqa: Y015
 
-@typing.final
-class Match(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class Match(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    TARGET_FIELD_NUMBER: builtins.int
-    CASES_FIELD_NUMBER: builtins.int
-    LOCALLYFREE_FIELD_NUMBER: builtins.int
-    CONNECTIVE_USED_FIELD_NUMBER: builtins.int
-    locallyFree: builtins.bytes
-    connective_used: builtins.bool
-    @property
+    TARGET_FIELD_NUMBER: _builtins.int
+    CASES_FIELD_NUMBER: _builtins.int
+    LOCALLYFREE_FIELD_NUMBER: _builtins.int
+    CONNECTIVE_USED_FIELD_NUMBER: _builtins.int
+    locallyFree: _builtins.bytes
+    connective_used: _builtins.bool
+    @_builtins.property
     def target(self) -> Global___Par: ...
-    @property
-    def cases(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[Global___MatchCase]: ...
+    @_builtins.property
+    def cases(self) -> _containers.RepeatedCompositeFieldContainer[Global___MatchCase]: ...
     def __init__(
         self,
         *,
         target: Global___Par | None = ...,
-        cases: collections.abc.Iterable[Global___MatchCase] | None = ...,
-        locallyFree: builtins.bytes = ...,
-        connective_used: builtins.bool = ...,
+        cases: _abc.Iterable[Global___MatchCase] | None = ...,
+        locallyFree: _builtins.bytes = ...,
+        connective_used: _builtins.bool = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["target", b"target"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["cases", b"cases", "connective_used", b"connective_used", "locallyFree", b"locallyFree", "target", b"target"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["target", b"target"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["cases", b"cases", "connective_used", b"connective_used", "locallyFree", b"locallyFree", "target", b"target"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___Match: typing_extensions.TypeAlias = Match
+Global___Match: _TypeAlias = Match  # noqa: Y015
 
-@typing.final
-class Expr(google.protobuf.message.Message):
+@_typing.final
+class Expr(_message.Message):
     """Any process may be an operand to an expression.
     Only processes equivalent to a ground process of compatible type will reduce.
     """
 
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+    DESCRIPTOR: _descriptor.Descriptor
 
-    G_BOOL_FIELD_NUMBER: builtins.int
-    G_INT_FIELD_NUMBER: builtins.int
-    G_STRING_FIELD_NUMBER: builtins.int
-    G_URI_FIELD_NUMBER: builtins.int
-    G_BYTE_ARRAY_FIELD_NUMBER: builtins.int
-    E_NOT_BODY_FIELD_NUMBER: builtins.int
-    E_NEG_BODY_FIELD_NUMBER: builtins.int
-    E_MULT_BODY_FIELD_NUMBER: builtins.int
-    E_DIV_BODY_FIELD_NUMBER: builtins.int
-    E_PLUS_BODY_FIELD_NUMBER: builtins.int
-    E_MINUS_BODY_FIELD_NUMBER: builtins.int
-    E_LT_BODY_FIELD_NUMBER: builtins.int
-    E_LTE_BODY_FIELD_NUMBER: builtins.int
-    E_GT_BODY_FIELD_NUMBER: builtins.int
-    E_GTE_BODY_FIELD_NUMBER: builtins.int
-    E_EQ_BODY_FIELD_NUMBER: builtins.int
-    E_NEQ_BODY_FIELD_NUMBER: builtins.int
-    E_AND_BODY_FIELD_NUMBER: builtins.int
-    E_OR_BODY_FIELD_NUMBER: builtins.int
-    E_VAR_BODY_FIELD_NUMBER: builtins.int
-    E_LIST_BODY_FIELD_NUMBER: builtins.int
-    E_TUPLE_BODY_FIELD_NUMBER: builtins.int
-    E_SET_BODY_FIELD_NUMBER: builtins.int
-    E_MAP_BODY_FIELD_NUMBER: builtins.int
-    E_METHOD_BODY_FIELD_NUMBER: builtins.int
-    E_MATCHES_BODY_FIELD_NUMBER: builtins.int
-    E_PERCENT_PERCENT_BODY_FIELD_NUMBER: builtins.int
-    E_PLUS_PLUS_BODY_FIELD_NUMBER: builtins.int
-    E_MINUS_MINUS_BODY_FIELD_NUMBER: builtins.int
-    E_MOD_BODY_FIELD_NUMBER: builtins.int
-    g_bool: builtins.bool
-    g_int: builtins.int
-    g_string: builtins.str
-    g_uri: builtins.str
-    g_byte_array: builtins.bytes
-    @property
+    G_BOOL_FIELD_NUMBER: _builtins.int
+    G_INT_FIELD_NUMBER: _builtins.int
+    G_STRING_FIELD_NUMBER: _builtins.int
+    G_URI_FIELD_NUMBER: _builtins.int
+    G_BYTE_ARRAY_FIELD_NUMBER: _builtins.int
+    E_NOT_BODY_FIELD_NUMBER: _builtins.int
+    E_NEG_BODY_FIELD_NUMBER: _builtins.int
+    E_MULT_BODY_FIELD_NUMBER: _builtins.int
+    E_DIV_BODY_FIELD_NUMBER: _builtins.int
+    E_PLUS_BODY_FIELD_NUMBER: _builtins.int
+    E_MINUS_BODY_FIELD_NUMBER: _builtins.int
+    E_LT_BODY_FIELD_NUMBER: _builtins.int
+    E_LTE_BODY_FIELD_NUMBER: _builtins.int
+    E_GT_BODY_FIELD_NUMBER: _builtins.int
+    E_GTE_BODY_FIELD_NUMBER: _builtins.int
+    E_EQ_BODY_FIELD_NUMBER: _builtins.int
+    E_NEQ_BODY_FIELD_NUMBER: _builtins.int
+    E_AND_BODY_FIELD_NUMBER: _builtins.int
+    E_OR_BODY_FIELD_NUMBER: _builtins.int
+    E_VAR_BODY_FIELD_NUMBER: _builtins.int
+    E_LIST_BODY_FIELD_NUMBER: _builtins.int
+    E_TUPLE_BODY_FIELD_NUMBER: _builtins.int
+    E_SET_BODY_FIELD_NUMBER: _builtins.int
+    E_MAP_BODY_FIELD_NUMBER: _builtins.int
+    E_METHOD_BODY_FIELD_NUMBER: _builtins.int
+    E_MATCHES_BODY_FIELD_NUMBER: _builtins.int
+    E_PERCENT_PERCENT_BODY_FIELD_NUMBER: _builtins.int
+    E_PLUS_PLUS_BODY_FIELD_NUMBER: _builtins.int
+    E_MINUS_MINUS_BODY_FIELD_NUMBER: _builtins.int
+    E_MOD_BODY_FIELD_NUMBER: _builtins.int
+    g_bool: _builtins.bool
+    g_int: _builtins.int
+    g_string: _builtins.str
+    g_uri: _builtins.str
+    g_byte_array: _builtins.bytes
+    @_builtins.property
     def e_not_body(self) -> Global___ENot: ...
-    @property
+    @_builtins.property
     def e_neg_body(self) -> Global___ENeg: ...
-    @property
+    @_builtins.property
     def e_mult_body(self) -> Global___EMult: ...
-    @property
+    @_builtins.property
     def e_div_body(self) -> Global___EDiv: ...
-    @property
+    @_builtins.property
     def e_plus_body(self) -> Global___EPlus: ...
-    @property
+    @_builtins.property
     def e_minus_body(self) -> Global___EMinus: ...
-    @property
+    @_builtins.property
     def e_lt_body(self) -> Global___ELt: ...
-    @property
+    @_builtins.property
     def e_lte_body(self) -> Global___ELte: ...
-    @property
+    @_builtins.property
     def e_gt_body(self) -> Global___EGt: ...
-    @property
+    @_builtins.property
     def e_gte_body(self) -> Global___EGte: ...
-    @property
+    @_builtins.property
     def e_eq_body(self) -> Global___EEq: ...
-    @property
+    @_builtins.property
     def e_neq_body(self) -> Global___ENeq: ...
-    @property
+    @_builtins.property
     def e_and_body(self) -> Global___EAnd: ...
-    @property
+    @_builtins.property
     def e_or_body(self) -> Global___EOr: ...
-    @property
+    @_builtins.property
     def e_var_body(self) -> Global___EVar: ...
-    @property
+    @_builtins.property
     def e_list_body(self) -> Global___EList: ...
-    @property
+    @_builtins.property
     def e_tuple_body(self) -> Global___ETuple: ...
-    @property
+    @_builtins.property
     def e_set_body(self) -> Global___ESet: ...
-    @property
+    @_builtins.property
     def e_map_body(self) -> Global___EMap: ...
-    @property
+    @_builtins.property
     def e_method_body(self) -> Global___EMethod: ...
-    @property
+    @_builtins.property
     def e_matches_body(self) -> Global___EMatches: ...
-    @property
+    @_builtins.property
     def e_percent_percent_body(self) -> Global___EPercentPercent:
         """string interpolation"""
 
-    @property
+    @_builtins.property
     def e_plus_plus_body(self) -> Global___EPlusPlus:
         """concatenation"""
 
-    @property
+    @_builtins.property
     def e_minus_minus_body(self) -> Global___EMinusMinus:
         """set difference"""
 
-    @property
+    @_builtins.property
     def e_mod_body(self) -> Global___EMod: ...
     def __init__(
         self,
         *,
-        g_bool: builtins.bool = ...,
-        g_int: builtins.int = ...,
-        g_string: builtins.str = ...,
-        g_uri: builtins.str = ...,
-        g_byte_array: builtins.bytes = ...,
+        g_bool: _builtins.bool = ...,
+        g_int: _builtins.int = ...,
+        g_string: _builtins.str = ...,
+        g_uri: _builtins.str = ...,
+        g_byte_array: _builtins.bytes = ...,
         e_not_body: Global___ENot | None = ...,
         e_neg_body: Global___ENeg | None = ...,
         e_mult_body: Global___EMult | None = ...,
@@ -663,171 +663,171 @@ class Expr(google.protobuf.message.Message):
         e_minus_minus_body: Global___EMinusMinus | None = ...,
         e_mod_body: Global___EMod | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["e_and_body", b"e_and_body", "e_div_body", b"e_div_body", "e_eq_body", b"e_eq_body", "e_gt_body", b"e_gt_body", "e_gte_body", b"e_gte_body", "e_list_body", b"e_list_body", "e_lt_body", b"e_lt_body", "e_lte_body", b"e_lte_body", "e_map_body", b"e_map_body", "e_matches_body", b"e_matches_body", "e_method_body", b"e_method_body", "e_minus_body", b"e_minus_body", "e_minus_minus_body", b"e_minus_minus_body", "e_mod_body", b"e_mod_body", "e_mult_body", b"e_mult_body", "e_neg_body", b"e_neg_body", "e_neq_body", b"e_neq_body", "e_not_body", b"e_not_body", "e_or_body", b"e_or_body", "e_percent_percent_body", b"e_percent_percent_body", "e_plus_body", b"e_plus_body", "e_plus_plus_body", b"e_plus_plus_body", "e_set_body", b"e_set_body", "e_tuple_body", b"e_tuple_body", "e_var_body", b"e_var_body", "expr_instance", b"expr_instance", "g_bool", b"g_bool", "g_byte_array", b"g_byte_array", "g_int", b"g_int", "g_string", b"g_string", "g_uri", b"g_uri"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["e_and_body", b"e_and_body", "e_div_body", b"e_div_body", "e_eq_body", b"e_eq_body", "e_gt_body", b"e_gt_body", "e_gte_body", b"e_gte_body", "e_list_body", b"e_list_body", "e_lt_body", b"e_lt_body", "e_lte_body", b"e_lte_body", "e_map_body", b"e_map_body", "e_matches_body", b"e_matches_body", "e_method_body", b"e_method_body", "e_minus_body", b"e_minus_body", "e_minus_minus_body", b"e_minus_minus_body", "e_mod_body", b"e_mod_body", "e_mult_body", b"e_mult_body", "e_neg_body", b"e_neg_body", "e_neq_body", b"e_neq_body", "e_not_body", b"e_not_body", "e_or_body", b"e_or_body", "e_percent_percent_body", b"e_percent_percent_body", "e_plus_body", b"e_plus_body", "e_plus_plus_body", b"e_plus_plus_body", "e_set_body", b"e_set_body", "e_tuple_body", b"e_tuple_body", "e_var_body", b"e_var_body", "expr_instance", b"expr_instance", "g_bool", b"g_bool", "g_byte_array", b"g_byte_array", "g_int", b"g_int", "g_string", b"g_string", "g_uri", b"g_uri"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["e_and_body", b"e_and_body", "e_div_body", b"e_div_body", "e_eq_body", b"e_eq_body", "e_gt_body", b"e_gt_body", "e_gte_body", b"e_gte_body", "e_list_body", b"e_list_body", "e_lt_body", b"e_lt_body", "e_lte_body", b"e_lte_body", "e_map_body", b"e_map_body", "e_matches_body", b"e_matches_body", "e_method_body", b"e_method_body", "e_minus_body", b"e_minus_body", "e_minus_minus_body", b"e_minus_minus_body", "e_mod_body", b"e_mod_body", "e_mult_body", b"e_mult_body", "e_neg_body", b"e_neg_body", "e_neq_body", b"e_neq_body", "e_not_body", b"e_not_body", "e_or_body", b"e_or_body", "e_percent_percent_body", b"e_percent_percent_body", "e_plus_body", b"e_plus_body", "e_plus_plus_body", b"e_plus_plus_body", "e_set_body", b"e_set_body", "e_tuple_body", b"e_tuple_body", "e_var_body", b"e_var_body", "expr_instance", b"expr_instance", "g_bool", b"g_bool", "g_byte_array", b"g_byte_array", "g_int", b"g_int", "g_string", b"g_string", "g_uri", b"g_uri"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["e_and_body", b"e_and_body", "e_div_body", b"e_div_body", "e_eq_body", b"e_eq_body", "e_gt_body", b"e_gt_body", "e_gte_body", b"e_gte_body", "e_list_body", b"e_list_body", "e_lt_body", b"e_lt_body", "e_lte_body", b"e_lte_body", "e_map_body", b"e_map_body", "e_matches_body", b"e_matches_body", "e_method_body", b"e_method_body", "e_minus_body", b"e_minus_body", "e_minus_minus_body", b"e_minus_minus_body", "e_mod_body", b"e_mod_body", "e_mult_body", b"e_mult_body", "e_neg_body", b"e_neg_body", "e_neq_body", b"e_neq_body", "e_not_body", b"e_not_body", "e_or_body", b"e_or_body", "e_percent_percent_body", b"e_percent_percent_body", "e_plus_body", b"e_plus_body", "e_plus_plus_body", b"e_plus_plus_body", "e_set_body", b"e_set_body", "e_tuple_body", b"e_tuple_body", "e_var_body", b"e_var_body", "expr_instance", b"expr_instance", "g_bool", b"g_bool", "g_byte_array", b"g_byte_array", "g_int", b"g_int", "g_string", b"g_string", "g_uri", b"g_uri"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
-    _WhichOneofReturnType_expr_instance: typing_extensions.TypeAlias = typing.Literal["g_bool", "g_int", "g_string", "g_uri", "g_byte_array", "e_not_body", "e_neg_body", "e_mult_body", "e_div_body", "e_plus_body", "e_minus_body", "e_lt_body", "e_lte_body", "e_gt_body", "e_gte_body", "e_eq_body", "e_neq_body", "e_and_body", "e_or_body", "e_var_body", "e_list_body", "e_tuple_body", "e_set_body", "e_map_body", "e_method_body", "e_matches_body", "e_percent_percent_body", "e_plus_plus_body", "e_minus_minus_body", "e_mod_body"]
-    _WhichOneofArgType_expr_instance: typing_extensions.TypeAlias = typing.Literal["expr_instance", b"expr_instance"]
+    _WhichOneofReturnType_expr_instance: _TypeAlias = _typing.Literal["g_bool", "g_int", "g_string", "g_uri", "g_byte_array", "e_not_body", "e_neg_body", "e_mult_body", "e_div_body", "e_plus_body", "e_minus_body", "e_lt_body", "e_lte_body", "e_gt_body", "e_gte_body", "e_eq_body", "e_neq_body", "e_and_body", "e_or_body", "e_var_body", "e_list_body", "e_tuple_body", "e_set_body", "e_map_body", "e_method_body", "e_matches_body", "e_percent_percent_body", "e_plus_plus_body", "e_minus_minus_body", "e_mod_body"]  # noqa: Y015
+    _WhichOneofArgType_expr_instance: _TypeAlias = _typing.Literal["expr_instance", b"expr_instance"]  # noqa: Y015
     def WhichOneof(self, oneof_group: _WhichOneofArgType_expr_instance) -> _WhichOneofReturnType_expr_instance | None: ...
 
-Global___Expr: typing_extensions.TypeAlias = Expr
+Global___Expr: _TypeAlias = Expr  # noqa: Y015
 
-@typing.final
-class EList(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class EList(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    PS_FIELD_NUMBER: builtins.int
-    LOCALLYFREE_FIELD_NUMBER: builtins.int
-    CONNECTIVE_USED_FIELD_NUMBER: builtins.int
-    REMAINDER_FIELD_NUMBER: builtins.int
-    locallyFree: builtins.bytes
-    connective_used: builtins.bool
-    @property
-    def ps(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[Global___Par]: ...
-    @property
+    PS_FIELD_NUMBER: _builtins.int
+    LOCALLYFREE_FIELD_NUMBER: _builtins.int
+    CONNECTIVE_USED_FIELD_NUMBER: _builtins.int
+    REMAINDER_FIELD_NUMBER: _builtins.int
+    locallyFree: _builtins.bytes
+    connective_used: _builtins.bool
+    @_builtins.property
+    def ps(self) -> _containers.RepeatedCompositeFieldContainer[Global___Par]: ...
+    @_builtins.property
     def remainder(self) -> Global___Var: ...
     def __init__(
         self,
         *,
-        ps: collections.abc.Iterable[Global___Par] | None = ...,
-        locallyFree: builtins.bytes = ...,
-        connective_used: builtins.bool = ...,
+        ps: _abc.Iterable[Global___Par] | None = ...,
+        locallyFree: _builtins.bytes = ...,
+        connective_used: _builtins.bool = ...,
         remainder: Global___Var | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["remainder", b"remainder"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["connective_used", b"connective_used", "locallyFree", b"locallyFree", "ps", b"ps", "remainder", b"remainder"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["remainder", b"remainder"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["connective_used", b"connective_used", "locallyFree", b"locallyFree", "ps", b"ps", "remainder", b"remainder"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___EList: typing_extensions.TypeAlias = EList
+Global___EList: _TypeAlias = EList  # noqa: Y015
 
-@typing.final
-class ETuple(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class ETuple(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    PS_FIELD_NUMBER: builtins.int
-    LOCALLYFREE_FIELD_NUMBER: builtins.int
-    CONNECTIVE_USED_FIELD_NUMBER: builtins.int
-    locallyFree: builtins.bytes
-    connective_used: builtins.bool
-    @property
-    def ps(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[Global___Par]: ...
+    PS_FIELD_NUMBER: _builtins.int
+    LOCALLYFREE_FIELD_NUMBER: _builtins.int
+    CONNECTIVE_USED_FIELD_NUMBER: _builtins.int
+    locallyFree: _builtins.bytes
+    connective_used: _builtins.bool
+    @_builtins.property
+    def ps(self) -> _containers.RepeatedCompositeFieldContainer[Global___Par]: ...
     def __init__(
         self,
         *,
-        ps: collections.abc.Iterable[Global___Par] | None = ...,
-        locallyFree: builtins.bytes = ...,
-        connective_used: builtins.bool = ...,
+        ps: _abc.Iterable[Global___Par] | None = ...,
+        locallyFree: _builtins.bytes = ...,
+        connective_used: _builtins.bool = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["connective_used", b"connective_used", "locallyFree", b"locallyFree", "ps", b"ps"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["connective_used", b"connective_used", "locallyFree", b"locallyFree", "ps", b"ps"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___ETuple: typing_extensions.TypeAlias = ETuple
+Global___ETuple: _TypeAlias = ETuple  # noqa: Y015
 
-@typing.final
-class ESet(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class ESet(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    PS_FIELD_NUMBER: builtins.int
-    LOCALLYFREE_FIELD_NUMBER: builtins.int
-    CONNECTIVE_USED_FIELD_NUMBER: builtins.int
-    REMAINDER_FIELD_NUMBER: builtins.int
-    locallyFree: builtins.bytes
-    connective_used: builtins.bool
-    @property
-    def ps(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[Global___Par]: ...
-    @property
+    PS_FIELD_NUMBER: _builtins.int
+    LOCALLYFREE_FIELD_NUMBER: _builtins.int
+    CONNECTIVE_USED_FIELD_NUMBER: _builtins.int
+    REMAINDER_FIELD_NUMBER: _builtins.int
+    locallyFree: _builtins.bytes
+    connective_used: _builtins.bool
+    @_builtins.property
+    def ps(self) -> _containers.RepeatedCompositeFieldContainer[Global___Par]: ...
+    @_builtins.property
     def remainder(self) -> Global___Var: ...
     def __init__(
         self,
         *,
-        ps: collections.abc.Iterable[Global___Par] | None = ...,
-        locallyFree: builtins.bytes = ...,
-        connective_used: builtins.bool = ...,
+        ps: _abc.Iterable[Global___Par] | None = ...,
+        locallyFree: _builtins.bytes = ...,
+        connective_used: _builtins.bool = ...,
         remainder: Global___Var | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["remainder", b"remainder"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["connective_used", b"connective_used", "locallyFree", b"locallyFree", "ps", b"ps", "remainder", b"remainder"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["remainder", b"remainder"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["connective_used", b"connective_used", "locallyFree", b"locallyFree", "ps", b"ps", "remainder", b"remainder"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___ESet: typing_extensions.TypeAlias = ESet
+Global___ESet: _TypeAlias = ESet  # noqa: Y015
 
-@typing.final
-class EMap(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class EMap(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    KVS_FIELD_NUMBER: builtins.int
-    LOCALLYFREE_FIELD_NUMBER: builtins.int
-    CONNECTIVE_USED_FIELD_NUMBER: builtins.int
-    REMAINDER_FIELD_NUMBER: builtins.int
-    locallyFree: builtins.bytes
-    connective_used: builtins.bool
-    @property
-    def kvs(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[Global___KeyValuePair]: ...
-    @property
+    KVS_FIELD_NUMBER: _builtins.int
+    LOCALLYFREE_FIELD_NUMBER: _builtins.int
+    CONNECTIVE_USED_FIELD_NUMBER: _builtins.int
+    REMAINDER_FIELD_NUMBER: _builtins.int
+    locallyFree: _builtins.bytes
+    connective_used: _builtins.bool
+    @_builtins.property
+    def kvs(self) -> _containers.RepeatedCompositeFieldContainer[Global___KeyValuePair]: ...
+    @_builtins.property
     def remainder(self) -> Global___Var: ...
     def __init__(
         self,
         *,
-        kvs: collections.abc.Iterable[Global___KeyValuePair] | None = ...,
-        locallyFree: builtins.bytes = ...,
-        connective_used: builtins.bool = ...,
+        kvs: _abc.Iterable[Global___KeyValuePair] | None = ...,
+        locallyFree: _builtins.bytes = ...,
+        connective_used: _builtins.bool = ...,
         remainder: Global___Var | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["remainder", b"remainder"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["connective_used", b"connective_used", "kvs", b"kvs", "locallyFree", b"locallyFree", "remainder", b"remainder"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["remainder", b"remainder"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["connective_used", b"connective_used", "kvs", b"kvs", "locallyFree", b"locallyFree", "remainder", b"remainder"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___EMap: typing_extensions.TypeAlias = EMap
+Global___EMap: _TypeAlias = EMap  # noqa: Y015
 
-@typing.final
-class EMethod(google.protobuf.message.Message):
+@_typing.final
+class EMethod(_message.Message):
     """*
     `target.method(arguments)`
     """
 
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+    DESCRIPTOR: _descriptor.Descriptor
 
-    METHODNAME_FIELD_NUMBER: builtins.int
-    TARGET_FIELD_NUMBER: builtins.int
-    ARGUMENTS_FIELD_NUMBER: builtins.int
-    LOCALLYFREE_FIELD_NUMBER: builtins.int
-    CONNECTIVE_USED_FIELD_NUMBER: builtins.int
-    methodName: builtins.str
-    locallyFree: builtins.bytes
-    connective_used: builtins.bool
-    @property
+    METHODNAME_FIELD_NUMBER: _builtins.int
+    TARGET_FIELD_NUMBER: _builtins.int
+    ARGUMENTS_FIELD_NUMBER: _builtins.int
+    LOCALLYFREE_FIELD_NUMBER: _builtins.int
+    CONNECTIVE_USED_FIELD_NUMBER: _builtins.int
+    methodName: _builtins.str
+    locallyFree: _builtins.bytes
+    connective_used: _builtins.bool
+    @_builtins.property
     def target(self) -> Global___Par: ...
-    @property
-    def arguments(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[Global___Par]: ...
+    @_builtins.property
+    def arguments(self) -> _containers.RepeatedCompositeFieldContainer[Global___Par]: ...
     def __init__(
         self,
         *,
-        methodName: builtins.str = ...,
+        methodName: _builtins.str = ...,
         target: Global___Par | None = ...,
-        arguments: collections.abc.Iterable[Global___Par] | None = ...,
-        locallyFree: builtins.bytes = ...,
-        connective_used: builtins.bool = ...,
+        arguments: _abc.Iterable[Global___Par] | None = ...,
+        locallyFree: _builtins.bytes = ...,
+        connective_used: _builtins.bool = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["target", b"target"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["arguments", b"arguments", "connective_used", b"connective_used", "locallyFree", b"locallyFree", "methodName", b"methodName", "target", b"target"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["target", b"target"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["arguments", b"arguments", "connective_used", b"connective_used", "locallyFree", b"locallyFree", "methodName", b"methodName", "target", b"target"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___EMethod: typing_extensions.TypeAlias = EMethod
+Global___EMethod: _TypeAlias = EMethod  # noqa: Y015
 
-@typing.final
-class KeyValuePair(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class KeyValuePair(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    KEY_FIELD_NUMBER: builtins.int
-    VALUE_FIELD_NUMBER: builtins.int
-    @property
+    KEY_FIELD_NUMBER: _builtins.int
+    VALUE_FIELD_NUMBER: _builtins.int
+    @_builtins.property
     def key(self) -> Global___Par: ...
-    @property
+    @_builtins.property
     def value(self) -> Global___Par: ...
     def __init__(
         self,
@@ -835,85 +835,85 @@ class KeyValuePair(google.protobuf.message.Message):
         key: Global___Par | None = ...,
         value: Global___Par | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["key", b"key", "value", b"value"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["key", b"key", "value", b"value"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["key", b"key", "value", b"value"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["key", b"key", "value", b"value"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___KeyValuePair: typing_extensions.TypeAlias = KeyValuePair
+Global___KeyValuePair: _TypeAlias = KeyValuePair  # noqa: Y015
 
-@typing.final
-class EVar(google.protobuf.message.Message):
+@_typing.final
+class EVar(_message.Message):
     """A variable used as a var should be bound in a process context, not a name
     context. For example:
     `for (@x <- c1; @y <- c2) { z!(x + y) }` is fine, but
     `for (x <- c1; y <- c2) { z!(x + y) }` should raise an error.
     """
 
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+    DESCRIPTOR: _descriptor.Descriptor
 
-    V_FIELD_NUMBER: builtins.int
-    @property
+    V_FIELD_NUMBER: _builtins.int
+    @_builtins.property
     def v(self) -> Global___Var: ...
     def __init__(
         self,
         *,
         v: Global___Var | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["v", b"v"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["v", b"v"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["v", b"v"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["v", b"v"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___EVar: typing_extensions.TypeAlias = EVar
+Global___EVar: _TypeAlias = EVar  # noqa: Y015
 
-@typing.final
-class ENot(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class ENot(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    P_FIELD_NUMBER: builtins.int
-    @property
+    P_FIELD_NUMBER: _builtins.int
+    @_builtins.property
     def p(self) -> Global___Par: ...
     def __init__(
         self,
         *,
         p: Global___Par | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["p", b"p"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["p", b"p"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["p", b"p"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["p", b"p"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___ENot: typing_extensions.TypeAlias = ENot
+Global___ENot: _TypeAlias = ENot  # noqa: Y015
 
-@typing.final
-class ENeg(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class ENeg(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    P_FIELD_NUMBER: builtins.int
-    @property
+    P_FIELD_NUMBER: _builtins.int
+    @_builtins.property
     def p(self) -> Global___Par: ...
     def __init__(
         self,
         *,
         p: Global___Par | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["p", b"p"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["p", b"p"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["p", b"p"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["p", b"p"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___ENeg: typing_extensions.TypeAlias = ENeg
+Global___ENeg: _TypeAlias = ENeg  # noqa: Y015
 
-@typing.final
-class EMult(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class EMult(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    P1_FIELD_NUMBER: builtins.int
-    P2_FIELD_NUMBER: builtins.int
-    @property
+    P1_FIELD_NUMBER: _builtins.int
+    P2_FIELD_NUMBER: _builtins.int
+    @_builtins.property
     def p1(self) -> Global___Par: ...
-    @property
+    @_builtins.property
     def p2(self) -> Global___Par: ...
     def __init__(
         self,
@@ -921,22 +921,22 @@ class EMult(google.protobuf.message.Message):
         p1: Global___Par | None = ...,
         p2: Global___Par | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["p1", b"p1", "p2", b"p2"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["p1", b"p1", "p2", b"p2"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["p1", b"p1", "p2", b"p2"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["p1", b"p1", "p2", b"p2"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___EMult: typing_extensions.TypeAlias = EMult
+Global___EMult: _TypeAlias = EMult  # noqa: Y015
 
-@typing.final
-class EDiv(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class EDiv(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    P1_FIELD_NUMBER: builtins.int
-    P2_FIELD_NUMBER: builtins.int
-    @property
+    P1_FIELD_NUMBER: _builtins.int
+    P2_FIELD_NUMBER: _builtins.int
+    @_builtins.property
     def p1(self) -> Global___Par: ...
-    @property
+    @_builtins.property
     def p2(self) -> Global___Par: ...
     def __init__(
         self,
@@ -944,22 +944,22 @@ class EDiv(google.protobuf.message.Message):
         p1: Global___Par | None = ...,
         p2: Global___Par | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["p1", b"p1", "p2", b"p2"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["p1", b"p1", "p2", b"p2"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["p1", b"p1", "p2", b"p2"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["p1", b"p1", "p2", b"p2"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___EDiv: typing_extensions.TypeAlias = EDiv
+Global___EDiv: _TypeAlias = EDiv  # noqa: Y015
 
-@typing.final
-class EMod(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class EMod(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    P1_FIELD_NUMBER: builtins.int
-    P2_FIELD_NUMBER: builtins.int
-    @property
+    P1_FIELD_NUMBER: _builtins.int
+    P2_FIELD_NUMBER: _builtins.int
+    @_builtins.property
     def p1(self) -> Global___Par: ...
-    @property
+    @_builtins.property
     def p2(self) -> Global___Par: ...
     def __init__(
         self,
@@ -967,22 +967,22 @@ class EMod(google.protobuf.message.Message):
         p1: Global___Par | None = ...,
         p2: Global___Par | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["p1", b"p1", "p2", b"p2"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["p1", b"p1", "p2", b"p2"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["p1", b"p1", "p2", b"p2"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["p1", b"p1", "p2", b"p2"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___EMod: typing_extensions.TypeAlias = EMod
+Global___EMod: _TypeAlias = EMod  # noqa: Y015
 
-@typing.final
-class EPlus(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class EPlus(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    P1_FIELD_NUMBER: builtins.int
-    P2_FIELD_NUMBER: builtins.int
-    @property
+    P1_FIELD_NUMBER: _builtins.int
+    P2_FIELD_NUMBER: _builtins.int
+    @_builtins.property
     def p1(self) -> Global___Par: ...
-    @property
+    @_builtins.property
     def p2(self) -> Global___Par: ...
     def __init__(
         self,
@@ -990,22 +990,22 @@ class EPlus(google.protobuf.message.Message):
         p1: Global___Par | None = ...,
         p2: Global___Par | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["p1", b"p1", "p2", b"p2"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["p1", b"p1", "p2", b"p2"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["p1", b"p1", "p2", b"p2"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["p1", b"p1", "p2", b"p2"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___EPlus: typing_extensions.TypeAlias = EPlus
+Global___EPlus: _TypeAlias = EPlus  # noqa: Y015
 
-@typing.final
-class EMinus(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class EMinus(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    P1_FIELD_NUMBER: builtins.int
-    P2_FIELD_NUMBER: builtins.int
-    @property
+    P1_FIELD_NUMBER: _builtins.int
+    P2_FIELD_NUMBER: _builtins.int
+    @_builtins.property
     def p1(self) -> Global___Par: ...
-    @property
+    @_builtins.property
     def p2(self) -> Global___Par: ...
     def __init__(
         self,
@@ -1013,22 +1013,22 @@ class EMinus(google.protobuf.message.Message):
         p1: Global___Par | None = ...,
         p2: Global___Par | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["p1", b"p1", "p2", b"p2"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["p1", b"p1", "p2", b"p2"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["p1", b"p1", "p2", b"p2"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["p1", b"p1", "p2", b"p2"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___EMinus: typing_extensions.TypeAlias = EMinus
+Global___EMinus: _TypeAlias = EMinus  # noqa: Y015
 
-@typing.final
-class ELt(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class ELt(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    P1_FIELD_NUMBER: builtins.int
-    P2_FIELD_NUMBER: builtins.int
-    @property
+    P1_FIELD_NUMBER: _builtins.int
+    P2_FIELD_NUMBER: _builtins.int
+    @_builtins.property
     def p1(self) -> Global___Par: ...
-    @property
+    @_builtins.property
     def p2(self) -> Global___Par: ...
     def __init__(
         self,
@@ -1036,22 +1036,22 @@ class ELt(google.protobuf.message.Message):
         p1: Global___Par | None = ...,
         p2: Global___Par | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["p1", b"p1", "p2", b"p2"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["p1", b"p1", "p2", b"p2"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["p1", b"p1", "p2", b"p2"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["p1", b"p1", "p2", b"p2"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___ELt: typing_extensions.TypeAlias = ELt
+Global___ELt: _TypeAlias = ELt  # noqa: Y015
 
-@typing.final
-class ELte(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class ELte(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    P1_FIELD_NUMBER: builtins.int
-    P2_FIELD_NUMBER: builtins.int
-    @property
+    P1_FIELD_NUMBER: _builtins.int
+    P2_FIELD_NUMBER: _builtins.int
+    @_builtins.property
     def p1(self) -> Global___Par: ...
-    @property
+    @_builtins.property
     def p2(self) -> Global___Par: ...
     def __init__(
         self,
@@ -1059,22 +1059,22 @@ class ELte(google.protobuf.message.Message):
         p1: Global___Par | None = ...,
         p2: Global___Par | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["p1", b"p1", "p2", b"p2"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["p1", b"p1", "p2", b"p2"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["p1", b"p1", "p2", b"p2"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["p1", b"p1", "p2", b"p2"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___ELte: typing_extensions.TypeAlias = ELte
+Global___ELte: _TypeAlias = ELte  # noqa: Y015
 
-@typing.final
-class EGt(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class EGt(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    P1_FIELD_NUMBER: builtins.int
-    P2_FIELD_NUMBER: builtins.int
-    @property
+    P1_FIELD_NUMBER: _builtins.int
+    P2_FIELD_NUMBER: _builtins.int
+    @_builtins.property
     def p1(self) -> Global___Par: ...
-    @property
+    @_builtins.property
     def p2(self) -> Global___Par: ...
     def __init__(
         self,
@@ -1082,22 +1082,22 @@ class EGt(google.protobuf.message.Message):
         p1: Global___Par | None = ...,
         p2: Global___Par | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["p1", b"p1", "p2", b"p2"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["p1", b"p1", "p2", b"p2"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["p1", b"p1", "p2", b"p2"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["p1", b"p1", "p2", b"p2"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___EGt: typing_extensions.TypeAlias = EGt
+Global___EGt: _TypeAlias = EGt  # noqa: Y015
 
-@typing.final
-class EGte(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class EGte(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    P1_FIELD_NUMBER: builtins.int
-    P2_FIELD_NUMBER: builtins.int
-    @property
+    P1_FIELD_NUMBER: _builtins.int
+    P2_FIELD_NUMBER: _builtins.int
+    @_builtins.property
     def p1(self) -> Global___Par: ...
-    @property
+    @_builtins.property
     def p2(self) -> Global___Par: ...
     def __init__(
         self,
@@ -1105,22 +1105,22 @@ class EGte(google.protobuf.message.Message):
         p1: Global___Par | None = ...,
         p2: Global___Par | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["p1", b"p1", "p2", b"p2"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["p1", b"p1", "p2", b"p2"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["p1", b"p1", "p2", b"p2"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["p1", b"p1", "p2", b"p2"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___EGte: typing_extensions.TypeAlias = EGte
+Global___EGte: _TypeAlias = EGte  # noqa: Y015
 
-@typing.final
-class EEq(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class EEq(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    P1_FIELD_NUMBER: builtins.int
-    P2_FIELD_NUMBER: builtins.int
-    @property
+    P1_FIELD_NUMBER: _builtins.int
+    P2_FIELD_NUMBER: _builtins.int
+    @_builtins.property
     def p1(self) -> Global___Par: ...
-    @property
+    @_builtins.property
     def p2(self) -> Global___Par: ...
     def __init__(
         self,
@@ -1128,22 +1128,22 @@ class EEq(google.protobuf.message.Message):
         p1: Global___Par | None = ...,
         p2: Global___Par | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["p1", b"p1", "p2", b"p2"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["p1", b"p1", "p2", b"p2"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["p1", b"p1", "p2", b"p2"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["p1", b"p1", "p2", b"p2"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___EEq: typing_extensions.TypeAlias = EEq
+Global___EEq: _TypeAlias = EEq  # noqa: Y015
 
-@typing.final
-class ENeq(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class ENeq(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    P1_FIELD_NUMBER: builtins.int
-    P2_FIELD_NUMBER: builtins.int
-    @property
+    P1_FIELD_NUMBER: _builtins.int
+    P2_FIELD_NUMBER: _builtins.int
+    @_builtins.property
     def p1(self) -> Global___Par: ...
-    @property
+    @_builtins.property
     def p2(self) -> Global___Par: ...
     def __init__(
         self,
@@ -1151,22 +1151,22 @@ class ENeq(google.protobuf.message.Message):
         p1: Global___Par | None = ...,
         p2: Global___Par | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["p1", b"p1", "p2", b"p2"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["p1", b"p1", "p2", b"p2"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["p1", b"p1", "p2", b"p2"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["p1", b"p1", "p2", b"p2"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___ENeq: typing_extensions.TypeAlias = ENeq
+Global___ENeq: _TypeAlias = ENeq  # noqa: Y015
 
-@typing.final
-class EAnd(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class EAnd(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    P1_FIELD_NUMBER: builtins.int
-    P2_FIELD_NUMBER: builtins.int
-    @property
+    P1_FIELD_NUMBER: _builtins.int
+    P2_FIELD_NUMBER: _builtins.int
+    @_builtins.property
     def p1(self) -> Global___Par: ...
-    @property
+    @_builtins.property
     def p2(self) -> Global___Par: ...
     def __init__(
         self,
@@ -1174,22 +1174,22 @@ class EAnd(google.protobuf.message.Message):
         p1: Global___Par | None = ...,
         p2: Global___Par | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["p1", b"p1", "p2", b"p2"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["p1", b"p1", "p2", b"p2"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["p1", b"p1", "p2", b"p2"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["p1", b"p1", "p2", b"p2"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___EAnd: typing_extensions.TypeAlias = EAnd
+Global___EAnd: _TypeAlias = EAnd  # noqa: Y015
 
-@typing.final
-class EOr(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class EOr(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    P1_FIELD_NUMBER: builtins.int
-    P2_FIELD_NUMBER: builtins.int
-    @property
+    P1_FIELD_NUMBER: _builtins.int
+    P2_FIELD_NUMBER: _builtins.int
+    @_builtins.property
     def p1(self) -> Global___Par: ...
-    @property
+    @_builtins.property
     def p2(self) -> Global___Par: ...
     def __init__(
         self,
@@ -1197,22 +1197,22 @@ class EOr(google.protobuf.message.Message):
         p1: Global___Par | None = ...,
         p2: Global___Par | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["p1", b"p1", "p2", b"p2"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["p1", b"p1", "p2", b"p2"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["p1", b"p1", "p2", b"p2"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["p1", b"p1", "p2", b"p2"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___EOr: typing_extensions.TypeAlias = EOr
+Global___EOr: _TypeAlias = EOr  # noqa: Y015
 
-@typing.final
-class EMatches(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class EMatches(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    TARGET_FIELD_NUMBER: builtins.int
-    PATTERN_FIELD_NUMBER: builtins.int
-    @property
+    TARGET_FIELD_NUMBER: _builtins.int
+    PATTERN_FIELD_NUMBER: _builtins.int
+    @_builtins.property
     def target(self) -> Global___Par: ...
-    @property
+    @_builtins.property
     def pattern(self) -> Global___Par: ...
     def __init__(
         self,
@@ -1220,28 +1220,28 @@ class EMatches(google.protobuf.message.Message):
         target: Global___Par | None = ...,
         pattern: Global___Par | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["pattern", b"pattern", "target", b"target"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["pattern", b"pattern", "target", b"target"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["pattern", b"pattern", "target", b"target"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["pattern", b"pattern", "target", b"target"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___EMatches: typing_extensions.TypeAlias = EMatches
+Global___EMatches: _TypeAlias = EMatches  # noqa: Y015
 
-@typing.final
-class EPercentPercent(google.protobuf.message.Message):
+@_typing.final
+class EPercentPercent(_message.Message):
     """*
     String interpolation
 
     `"Hello, {name}" %% {"name": "Bob"}` denotes `"Hello, Bob"`
     """
 
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+    DESCRIPTOR: _descriptor.Descriptor
 
-    P1_FIELD_NUMBER: builtins.int
-    P2_FIELD_NUMBER: builtins.int
-    @property
+    P1_FIELD_NUMBER: _builtins.int
+    P2_FIELD_NUMBER: _builtins.int
+    @_builtins.property
     def p1(self) -> Global___Par: ...
-    @property
+    @_builtins.property
     def p2(self) -> Global___Par: ...
     def __init__(
         self,
@@ -1249,24 +1249,24 @@ class EPercentPercent(google.protobuf.message.Message):
         p1: Global___Par | None = ...,
         p2: Global___Par | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["p1", b"p1", "p2", b"p2"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["p1", b"p1", "p2", b"p2"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["p1", b"p1", "p2", b"p2"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["p1", b"p1", "p2", b"p2"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___EPercentPercent: typing_extensions.TypeAlias = EPercentPercent
+Global___EPercentPercent: _TypeAlias = EPercentPercent  # noqa: Y015
 
-@typing.final
-class EPlusPlus(google.protobuf.message.Message):
+@_typing.final
+class EPlusPlus(_message.Message):
     """Concatenation"""
 
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+    DESCRIPTOR: _descriptor.Descriptor
 
-    P1_FIELD_NUMBER: builtins.int
-    P2_FIELD_NUMBER: builtins.int
-    @property
+    P1_FIELD_NUMBER: _builtins.int
+    P2_FIELD_NUMBER: _builtins.int
+    @_builtins.property
     def p1(self) -> Global___Par: ...
-    @property
+    @_builtins.property
     def p2(self) -> Global___Par: ...
     def __init__(
         self,
@@ -1274,24 +1274,24 @@ class EPlusPlus(google.protobuf.message.Message):
         p1: Global___Par | None = ...,
         p2: Global___Par | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["p1", b"p1", "p2", b"p2"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["p1", b"p1", "p2", b"p2"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["p1", b"p1", "p2", b"p2"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["p1", b"p1", "p2", b"p2"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___EPlusPlus: typing_extensions.TypeAlias = EPlusPlus
+Global___EPlusPlus: _TypeAlias = EPlusPlus  # noqa: Y015
 
-@typing.final
-class EMinusMinus(google.protobuf.message.Message):
+@_typing.final
+class EMinusMinus(_message.Message):
     """Set difference"""
 
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+    DESCRIPTOR: _descriptor.Descriptor
 
-    P1_FIELD_NUMBER: builtins.int
-    P2_FIELD_NUMBER: builtins.int
-    @property
+    P1_FIELD_NUMBER: _builtins.int
+    P2_FIELD_NUMBER: _builtins.int
+    @_builtins.property
     def p1(self) -> Global___Par: ...
-    @property
+    @_builtins.property
     def p2(self) -> Global___Par: ...
     def __init__(
         self,
@@ -1299,38 +1299,38 @@ class EMinusMinus(google.protobuf.message.Message):
         p1: Global___Par | None = ...,
         p2: Global___Par | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["p1", b"p1", "p2", b"p2"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["p1", b"p1", "p2", b"p2"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["p1", b"p1", "p2", b"p2"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["p1", b"p1", "p2", b"p2"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___EMinusMinus: typing_extensions.TypeAlias = EMinusMinus
+Global___EMinusMinus: _TypeAlias = EMinusMinus  # noqa: Y015
 
-@typing.final
-class Connective(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class Connective(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    CONN_AND_BODY_FIELD_NUMBER: builtins.int
-    CONN_OR_BODY_FIELD_NUMBER: builtins.int
-    CONN_NOT_BODY_FIELD_NUMBER: builtins.int
-    VAR_REF_BODY_FIELD_NUMBER: builtins.int
-    CONN_BOOL_FIELD_NUMBER: builtins.int
-    CONN_INT_FIELD_NUMBER: builtins.int
-    CONN_STRING_FIELD_NUMBER: builtins.int
-    CONN_URI_FIELD_NUMBER: builtins.int
-    CONN_BYTE_ARRAY_FIELD_NUMBER: builtins.int
-    conn_bool: builtins.bool
-    conn_int: builtins.bool
-    conn_string: builtins.bool
-    conn_uri: builtins.bool
-    conn_byte_array: builtins.bool
-    @property
+    CONN_AND_BODY_FIELD_NUMBER: _builtins.int
+    CONN_OR_BODY_FIELD_NUMBER: _builtins.int
+    CONN_NOT_BODY_FIELD_NUMBER: _builtins.int
+    VAR_REF_BODY_FIELD_NUMBER: _builtins.int
+    CONN_BOOL_FIELD_NUMBER: _builtins.int
+    CONN_INT_FIELD_NUMBER: _builtins.int
+    CONN_STRING_FIELD_NUMBER: _builtins.int
+    CONN_URI_FIELD_NUMBER: _builtins.int
+    CONN_BYTE_ARRAY_FIELD_NUMBER: _builtins.int
+    conn_bool: _builtins.bool
+    conn_int: _builtins.bool
+    conn_string: _builtins.bool
+    conn_uri: _builtins.bool
+    conn_byte_array: _builtins.bool
+    @_builtins.property
     def conn_and_body(self) -> Global___ConnectiveBody: ...
-    @property
+    @_builtins.property
     def conn_or_body(self) -> Global___ConnectiveBody: ...
-    @property
+    @_builtins.property
     def conn_not_body(self) -> Global___Par: ...
-    @property
+    @_builtins.property
     def var_ref_body(self) -> Global___VarRef: ...
     def __init__(
         self,
@@ -1339,110 +1339,110 @@ class Connective(google.protobuf.message.Message):
         conn_or_body: Global___ConnectiveBody | None = ...,
         conn_not_body: Global___Par | None = ...,
         var_ref_body: Global___VarRef | None = ...,
-        conn_bool: builtins.bool = ...,
-        conn_int: builtins.bool = ...,
-        conn_string: builtins.bool = ...,
-        conn_uri: builtins.bool = ...,
-        conn_byte_array: builtins.bool = ...,
+        conn_bool: _builtins.bool = ...,
+        conn_int: _builtins.bool = ...,
+        conn_string: _builtins.bool = ...,
+        conn_uri: _builtins.bool = ...,
+        conn_byte_array: _builtins.bool = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["conn_and_body", b"conn_and_body", "conn_bool", b"conn_bool", "conn_byte_array", b"conn_byte_array", "conn_int", b"conn_int", "conn_not_body", b"conn_not_body", "conn_or_body", b"conn_or_body", "conn_string", b"conn_string", "conn_uri", b"conn_uri", "connective_instance", b"connective_instance", "var_ref_body", b"var_ref_body"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["conn_and_body", b"conn_and_body", "conn_bool", b"conn_bool", "conn_byte_array", b"conn_byte_array", "conn_int", b"conn_int", "conn_not_body", b"conn_not_body", "conn_or_body", b"conn_or_body", "conn_string", b"conn_string", "conn_uri", b"conn_uri", "connective_instance", b"connective_instance", "var_ref_body", b"var_ref_body"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["conn_and_body", b"conn_and_body", "conn_bool", b"conn_bool", "conn_byte_array", b"conn_byte_array", "conn_int", b"conn_int", "conn_not_body", b"conn_not_body", "conn_or_body", b"conn_or_body", "conn_string", b"conn_string", "conn_uri", b"conn_uri", "connective_instance", b"connective_instance", "var_ref_body", b"var_ref_body"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["conn_and_body", b"conn_and_body", "conn_bool", b"conn_bool", "conn_byte_array", b"conn_byte_array", "conn_int", b"conn_int", "conn_not_body", b"conn_not_body", "conn_or_body", b"conn_or_body", "conn_string", b"conn_string", "conn_uri", b"conn_uri", "connective_instance", b"connective_instance", "var_ref_body", b"var_ref_body"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
-    _WhichOneofReturnType_connective_instance: typing_extensions.TypeAlias = typing.Literal["conn_and_body", "conn_or_body", "conn_not_body", "var_ref_body", "conn_bool", "conn_int", "conn_string", "conn_uri", "conn_byte_array"]
-    _WhichOneofArgType_connective_instance: typing_extensions.TypeAlias = typing.Literal["connective_instance", b"connective_instance"]
+    _WhichOneofReturnType_connective_instance: _TypeAlias = _typing.Literal["conn_and_body", "conn_or_body", "conn_not_body", "var_ref_body", "conn_bool", "conn_int", "conn_string", "conn_uri", "conn_byte_array"]  # noqa: Y015
+    _WhichOneofArgType_connective_instance: _TypeAlias = _typing.Literal["connective_instance", b"connective_instance"]  # noqa: Y015
     def WhichOneof(self, oneof_group: _WhichOneofArgType_connective_instance) -> _WhichOneofReturnType_connective_instance | None: ...
 
-Global___Connective: typing_extensions.TypeAlias = Connective
+Global___Connective: _TypeAlias = Connective  # noqa: Y015
 
-@typing.final
-class VarRef(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class VarRef(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    INDEX_FIELD_NUMBER: builtins.int
-    DEPTH_FIELD_NUMBER: builtins.int
-    index: builtins.int
-    depth: builtins.int
+    INDEX_FIELD_NUMBER: _builtins.int
+    DEPTH_FIELD_NUMBER: _builtins.int
+    index: _builtins.int
+    depth: _builtins.int
     def __init__(
         self,
         *,
-        index: builtins.int = ...,
-        depth: builtins.int = ...,
+        index: _builtins.int = ...,
+        depth: _builtins.int = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["depth", b"depth", "index", b"index"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["depth", b"depth", "index", b"index"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___VarRef: typing_extensions.TypeAlias = VarRef
+Global___VarRef: _TypeAlias = VarRef  # noqa: Y015
 
-@typing.final
-class ConnectiveBody(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class ConnectiveBody(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    PS_FIELD_NUMBER: builtins.int
-    @property
-    def ps(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[Global___Par]: ...
+    PS_FIELD_NUMBER: _builtins.int
+    @_builtins.property
+    def ps(self) -> _containers.RepeatedCompositeFieldContainer[Global___Par]: ...
     def __init__(
         self,
         *,
-        ps: collections.abc.Iterable[Global___Par] | None = ...,
+        ps: _abc.Iterable[Global___Par] | None = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["ps", b"ps"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["ps", b"ps"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___ConnectiveBody: typing_extensions.TypeAlias = ConnectiveBody
+Global___ConnectiveBody: _TypeAlias = ConnectiveBody  # noqa: Y015
 
-@typing.final
-class DeployId(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class DeployId(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    SIG_FIELD_NUMBER: builtins.int
-    sig: builtins.bytes
+    SIG_FIELD_NUMBER: _builtins.int
+    sig: _builtins.bytes
     def __init__(
         self,
         *,
-        sig: builtins.bytes = ...,
+        sig: _builtins.bytes = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["sig", b"sig"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["sig", b"sig"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___DeployId: typing_extensions.TypeAlias = DeployId
+Global___DeployId: _TypeAlias = DeployId  # noqa: Y015
 
-@typing.final
-class DeployerId(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class DeployerId(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    PUBLICKEY_FIELD_NUMBER: builtins.int
-    publicKey: builtins.bytes
+    PUBLICKEY_FIELD_NUMBER: _builtins.int
+    publicKey: _builtins.bytes
     def __init__(
         self,
         *,
-        publicKey: builtins.bytes = ...,
+        publicKey: _builtins.bytes = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["publicKey", b"publicKey"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["publicKey", b"publicKey"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___DeployerId: typing_extensions.TypeAlias = DeployerId
+Global___DeployerId: _TypeAlias = DeployerId  # noqa: Y015
 
-@typing.final
-class GUnforgeable(google.protobuf.message.Message):
+@_typing.final
+class GUnforgeable(_message.Message):
     """Unforgeable names resulting from `new x { ... }`
     These should only occur as the program is being evaluated. There is no way in
     the grammar to construct them.
     """
 
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+    DESCRIPTOR: _descriptor.Descriptor
 
-    G_PRIVATE_BODY_FIELD_NUMBER: builtins.int
-    G_DEPLOY_ID_BODY_FIELD_NUMBER: builtins.int
-    G_DEPLOYER_ID_BODY_FIELD_NUMBER: builtins.int
-    G_SYS_AUTH_TOKEN_BODY_FIELD_NUMBER: builtins.int
-    @property
+    G_PRIVATE_BODY_FIELD_NUMBER: _builtins.int
+    G_DEPLOY_ID_BODY_FIELD_NUMBER: _builtins.int
+    G_DEPLOYER_ID_BODY_FIELD_NUMBER: _builtins.int
+    G_SYS_AUTH_TOKEN_BODY_FIELD_NUMBER: _builtins.int
+    @_builtins.property
     def g_private_body(self) -> Global___GPrivate: ...
-    @property
+    @_builtins.property
     def g_deploy_id_body(self) -> Global___GDeployId: ...
-    @property
+    @_builtins.property
     def g_deployer_id_body(self) -> Global___GDeployerId: ...
-    @property
+    @_builtins.property
     def g_sys_auth_token_body(self) -> Global___GSysAuthToken: ...
     def __init__(
         self,
@@ -1452,70 +1452,70 @@ class GUnforgeable(google.protobuf.message.Message):
         g_deployer_id_body: Global___GDeployerId | None = ...,
         g_sys_auth_token_body: Global___GSysAuthToken | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["g_deploy_id_body", b"g_deploy_id_body", "g_deployer_id_body", b"g_deployer_id_body", "g_private_body", b"g_private_body", "g_sys_auth_token_body", b"g_sys_auth_token_body", "unf_instance", b"unf_instance"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["g_deploy_id_body", b"g_deploy_id_body", "g_deployer_id_body", b"g_deployer_id_body", "g_private_body", b"g_private_body", "g_sys_auth_token_body", b"g_sys_auth_token_body", "unf_instance", b"unf_instance"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["g_deploy_id_body", b"g_deploy_id_body", "g_deployer_id_body", b"g_deployer_id_body", "g_private_body", b"g_private_body", "g_sys_auth_token_body", b"g_sys_auth_token_body", "unf_instance", b"unf_instance"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["g_deploy_id_body", b"g_deploy_id_body", "g_deployer_id_body", b"g_deployer_id_body", "g_private_body", b"g_private_body", "g_sys_auth_token_body", b"g_sys_auth_token_body", "unf_instance", b"unf_instance"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
-    _WhichOneofReturnType_unf_instance: typing_extensions.TypeAlias = typing.Literal["g_private_body", "g_deploy_id_body", "g_deployer_id_body", "g_sys_auth_token_body"]
-    _WhichOneofArgType_unf_instance: typing_extensions.TypeAlias = typing.Literal["unf_instance", b"unf_instance"]
+    _WhichOneofReturnType_unf_instance: _TypeAlias = _typing.Literal["g_private_body", "g_deploy_id_body", "g_deployer_id_body", "g_sys_auth_token_body"]  # noqa: Y015
+    _WhichOneofArgType_unf_instance: _TypeAlias = _typing.Literal["unf_instance", b"unf_instance"]  # noqa: Y015
     def WhichOneof(self, oneof_group: _WhichOneofArgType_unf_instance) -> _WhichOneofReturnType_unf_instance | None: ...
 
-Global___GUnforgeable: typing_extensions.TypeAlias = GUnforgeable
+Global___GUnforgeable: _TypeAlias = GUnforgeable  # noqa: Y015
 
-@typing.final
-class GPrivate(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class GPrivate(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    ID_FIELD_NUMBER: builtins.int
-    id: builtins.bytes
+    ID_FIELD_NUMBER: _builtins.int
+    id: _builtins.bytes
     def __init__(
         self,
         *,
-        id: builtins.bytes = ...,
+        id: _builtins.bytes = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["id", b"id"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["id", b"id"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___GPrivate: typing_extensions.TypeAlias = GPrivate
+Global___GPrivate: _TypeAlias = GPrivate  # noqa: Y015
 
-@typing.final
-class GDeployId(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class GDeployId(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    SIG_FIELD_NUMBER: builtins.int
-    sig: builtins.bytes
+    SIG_FIELD_NUMBER: _builtins.int
+    sig: _builtins.bytes
     def __init__(
         self,
         *,
-        sig: builtins.bytes = ...,
+        sig: _builtins.bytes = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["sig", b"sig"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["sig", b"sig"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___GDeployId: typing_extensions.TypeAlias = GDeployId
+Global___GDeployId: _TypeAlias = GDeployId  # noqa: Y015
 
-@typing.final
-class GDeployerId(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class GDeployerId(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    PUBLICKEY_FIELD_NUMBER: builtins.int
-    publicKey: builtins.bytes
+    PUBLICKEY_FIELD_NUMBER: _builtins.int
+    publicKey: _builtins.bytes
     def __init__(
         self,
         *,
-        publicKey: builtins.bytes = ...,
+        publicKey: _builtins.bytes = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["publicKey", b"publicKey"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["publicKey", b"publicKey"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___GDeployerId: typing_extensions.TypeAlias = GDeployerId
+Global___GDeployerId: _TypeAlias = GDeployerId  # noqa: Y015
 
-@typing.final
-class GSysAuthToken(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class GSysAuthToken(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
     def __init__(
         self,
     ) -> None: ...
 
-Global___GSysAuthToken: typing_extensions.TypeAlias = GSysAuthToken
+Global___GSysAuthToken: _TypeAlias = GSysAuthToken  # noqa: Y015

@@ -3,59 +3,59 @@
 isort:skip_file
 """
 
-import builtins
-import google.protobuf.descriptor
-import google.protobuf.message
+from google.protobuf import descriptor as _descriptor
+from google.protobuf import message as _message
+import builtins as _builtins
 import sys
-import typing
+import typing as _typing
 
 if sys.version_info >= (3, 10):
-    import typing as typing_extensions
+    from typing import TypeAlias as _TypeAlias
 else:
-    import typing_extensions
+    from typing_extensions import TypeAlias as _TypeAlias
 
-DESCRIPTOR: google.protobuf.descriptor.FileDescriptor
+DESCRIPTOR: _descriptor.FileDescriptor
 
-@typing.final
-class PrintUnmatchedSendsQuery(google.protobuf.message.Message):
+@_typing.final
+class PrintUnmatchedSendsQuery(_message.Message):
     """TODO remove it"""
 
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+    DESCRIPTOR: _descriptor.Descriptor
 
-    PRINTUNMATCHEDSENDS_FIELD_NUMBER: builtins.int
-    printUnmatchedSends: builtins.bool
+    PRINTUNMATCHEDSENDS_FIELD_NUMBER: _builtins.int
+    printUnmatchedSends: _builtins.bool
     def __init__(
         self,
         *,
-        printUnmatchedSends: builtins.bool = ...,
+        printUnmatchedSends: _builtins.bool = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["printUnmatchedSends", b"printUnmatchedSends"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["printUnmatchedSends", b"printUnmatchedSends"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___PrintUnmatchedSendsQuery: typing_extensions.TypeAlias = PrintUnmatchedSendsQuery
+Global___PrintUnmatchedSendsQuery: _TypeAlias = PrintUnmatchedSendsQuery  # noqa: Y015
 
-@typing.final
-class ProposeResultQuery(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class ProposeResultQuery(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
     def __init__(
         self,
     ) -> None: ...
 
-Global___ProposeResultQuery: typing_extensions.TypeAlias = ProposeResultQuery
+Global___ProposeResultQuery: _TypeAlias = ProposeResultQuery  # noqa: Y015
 
-@typing.final
-class ProposeQuery(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class ProposeQuery(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    ISASYNC_FIELD_NUMBER: builtins.int
-    isAsync: builtins.bool
+    ISASYNC_FIELD_NUMBER: _builtins.int
+    isAsync: _builtins.bool
     def __init__(
         self,
         *,
-        isAsync: builtins.bool = ...,
+        isAsync: _builtins.bool = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["isAsync", b"isAsync"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["isAsync", b"isAsync"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___ProposeQuery: typing_extensions.TypeAlias = ProposeQuery
+Global___ProposeQuery: _TypeAlias = ProposeQuery  # noqa: Y015

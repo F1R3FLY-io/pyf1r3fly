@@ -18,6 +18,8 @@ from .pb.DeployServiceCommon_pb2 import (
 from .pb.DeployServiceV1_pb2 import (
     BlockInfoResponse, BlockResponse, ContinuationAtNameResponse,
     DeployResponse, EventInfoResponse, ExploratoryDeployResponse,
+    FileDownloadChunk, FileDownloadRequest, FileUploadChunk,
+    FileUploadMetadata, FileUploadResponse, FileUploadResult,
     ListeningNameDataPayload as Data, ListeningNameDataResponse,
     PrivateNamePreviewResponse, RhoDataPayload, VisualizeBlocksResponse,
 )
@@ -27,7 +29,7 @@ from .pb.ProposeServiceV1_pb2 import ProposeResponse
 from .pb.ProposeServiceV1_pb2_grpc import ProposeServiceStub
 from .pb.RhoTypes_pb2 import Expr, GDeployId, GUnforgeable, Par
 from .report import DeployWithTransaction, Report, Transaction
-from .util import create_deploy_data
+from .util import blake2b_256_hex, create_deploy_data, create_file_upload_metadata
 
 GRPC_Response_T = Union[ProposeResponse,
                         DeployResponse,
@@ -230,6 +232,112 @@ class F1r3flyClient:
         response = self._deploy_stub.visualizeDag(query)
         result = self._handle_stream(response)
         return ''.join(list(map(lambda x: x.content, result)))  # type: ignore
+
+    def upload_file(
+        self,
+        metadata: FileUploadMetadata,
+        data: bytes,
+        chunk_size: int = 4 * 1024 * 1024,
+    ) -> FileUploadResult:
+        """Upload a file via the streaming uploadFile RPC.
+
+        Sends the metadata as the first chunk, followed by binary data
+        chunks. Returns the FileUploadResult on success.
+
+        Args:
+            metadata: Signed FileUploadMetadata (use create_file_upload_metadata).
+            data: Raw file bytes to upload.
+            chunk_size: Size of each data chunk (default 4MB).
+
+        Returns:
+            FileUploadResult with fileHash, deployId, and cost info.
+
+        Raises:
+            F1r3flyClientException: On server-side errors.
+        """
+        def _chunk_iterator():
+            yield FileUploadChunk(metadata=metadata)
+            offset = 0
+            while offset < len(data):
+                end = min(offset + chunk_size, len(data))
+                yield FileUploadChunk(data=data[offset:end])
+                offset = end
+
+        response = self._deploy_stub.uploadFile(_chunk_iterator())
+        self._check_response(response)
+        return response.result
+
+    def upload_file_from_path(
+        self,
+        key: 'PrivateKey',
+        file_path: str,
+        phlo_price: int,
+        phlo_limit: int,
+        valid_after_block_no: int = -1,
+        shard_id: str = '',
+        chunk_size: int = 4 * 1024 * 1024,
+    ) -> FileUploadResult:
+        """Upload a file by path with automatic metadata construction.
+
+        Reads the file, computes Blake2b-256 hash, builds signed metadata,
+        and streams the upload.
+
+        Args:
+            key: Private key for signing.
+            file_path: Path to the file to upload.
+            phlo_price: Phlo price per unit.
+            phlo_limit: Maximum phlo to spend.
+            valid_after_block_no: Block number validity constraint.
+            shard_id: Target shard identifier.
+            chunk_size: Size of each data chunk (default 4MB).
+
+        Returns:
+            FileUploadResult with fileHash, deployId, and cost info.
+        """
+        import os
+        with open(file_path, 'rb') as f:
+            data = f.read()
+
+        file_hash = blake2b_256_hex(data)
+        file_name = os.path.basename(file_path)
+        file_size = len(data)
+
+        metadata = create_file_upload_metadata(
+            key=key,
+            file_hash=file_hash,
+            file_size=file_size,
+            file_name=file_name,
+            phlo_price=phlo_price,
+            phlo_limit=phlo_limit,
+            valid_after_block_no=valid_after_block_no,
+            shard_id=shard_id,
+        )
+        return self.upload_file(metadata, data, chunk_size)
+
+    def download_file(self, file_hash: str, offset: int = 0) -> bytes:
+        """Download a file via the streaming downloadFile RPC.
+
+        Only works on observer (read-only) nodes.
+
+        Args:
+            file_hash: Blake2b-256 hash of the file.
+            offset: Resume offset in bytes (0 = start from beginning).
+
+        Returns:
+            Raw file bytes.
+
+        Raises:
+            F1r3flyClientException: On NOT_FOUND, PERMISSION_DENIED, etc.
+        """
+        request = FileDownloadRequest(fileHash=file_hash, offset=offset)
+        response_stream = self._deploy_stub.downloadFile(request)
+        chunks = []
+        for chunk in response_stream:
+            which = chunk.WhichOneof('chunk')
+            if which == 'data':
+                chunks.append(chunk.data)
+            # metadata chunk is informational, skip
+        return b''.join(chunks)
 
     def get_transaction(self, block_hash: str) -> List[DeployWithTransaction]:
         if self.param is None:

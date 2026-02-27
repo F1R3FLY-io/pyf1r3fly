@@ -6,7 +6,7 @@ import warnings
 from . import ExternalCommunicationServiceCommon_pb2 as ExternalCommunicationServiceCommon__pb2
 from . import ExternalCommunicationServiceV1_pb2 as ExternalCommunicationServiceV1__pb2
 
-GRPC_GENERATED_VERSION = '1.76.0'
+GRPC_GENERATED_VERSION = '1.78.0'
 GRPC_VERSION = grpc.__version__
 _version_not_supported = False
 

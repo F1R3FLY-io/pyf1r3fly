@@ -5,537 +5,763 @@ isort:skip_file
 The main API is `DeployService`.
 """
 
-import DeployServiceCommon_pb2
-import RhoTypes_pb2
-import ServiceError_pb2
-import builtins
-import collections.abc
-import google.protobuf.descriptor
-import google.protobuf.internal.containers
-import google.protobuf.message
+from collections import abc as _abc
+from google.protobuf import descriptor as _descriptor
+from google.protobuf import message as _message
+from google.protobuf.internal import containers as _containers
+import DeployServiceCommon_pb2 as _DeployServiceCommon_pb2
+import RhoTypes_pb2 as _RhoTypes_pb2
+import ServiceError_pb2 as _ServiceError_pb2
+import builtins as _builtins
 import sys
-import typing
+import typing as _typing
 
 if sys.version_info >= (3, 10):
-    import typing as typing_extensions
+    from typing import TypeAlias as _TypeAlias
 else:
-    import typing_extensions
+    from typing_extensions import TypeAlias as _TypeAlias
 
-DESCRIPTOR: google.protobuf.descriptor.FileDescriptor
+DESCRIPTOR: _descriptor.FileDescriptor
 
-@typing.final
-class EventInfoResponse(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class EventInfoResponse(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    ERROR_FIELD_NUMBER: builtins.int
-    RESULT_FIELD_NUMBER: builtins.int
-    @property
-    def error(self) -> ServiceError_pb2.ServiceError: ...
-    @property
-    def result(self) -> DeployServiceCommon_pb2.BlockEventInfo: ...
+    ERROR_FIELD_NUMBER: _builtins.int
+    RESULT_FIELD_NUMBER: _builtins.int
+    @_builtins.property
+    def error(self) -> _ServiceError_pb2.ServiceError: ...
+    @_builtins.property
+    def result(self) -> _DeployServiceCommon_pb2.BlockEventInfo: ...
     def __init__(
         self,
         *,
-        error: ServiceError_pb2.ServiceError | None = ...,
-        result: DeployServiceCommon_pb2.BlockEventInfo | None = ...,
+        error: _ServiceError_pb2.ServiceError | None = ...,
+        result: _DeployServiceCommon_pb2.BlockEventInfo | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["error", b"error", "message", b"message", "result", b"result"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["error", b"error", "message", b"message", "result", b"result"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["error", b"error", "message", b"message", "result", b"result"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["error", b"error", "message", b"message", "result", b"result"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
-    _WhichOneofReturnType_message: typing_extensions.TypeAlias = typing.Literal["error", "result"]
-    _WhichOneofArgType_message: typing_extensions.TypeAlias = typing.Literal["message", b"message"]
+    _WhichOneofReturnType_message: _TypeAlias = _typing.Literal["error", "result"]  # noqa: Y015
+    _WhichOneofArgType_message: _TypeAlias = _typing.Literal["message", b"message"]  # noqa: Y015
     def WhichOneof(self, oneof_group: _WhichOneofArgType_message) -> _WhichOneofReturnType_message | None: ...
 
-Global___EventInfoResponse: typing_extensions.TypeAlias = EventInfoResponse
+Global___EventInfoResponse: _TypeAlias = EventInfoResponse  # noqa: Y015
 
-@typing.final
-class ExploratoryDeployResponse(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class ExploratoryDeployResponse(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    ERROR_FIELD_NUMBER: builtins.int
-    RESULT_FIELD_NUMBER: builtins.int
-    @property
-    def error(self) -> ServiceError_pb2.ServiceError: ...
-    @property
-    def result(self) -> DeployServiceCommon_pb2.DataWithBlockInfo: ...
+    ERROR_FIELD_NUMBER: _builtins.int
+    RESULT_FIELD_NUMBER: _builtins.int
+    @_builtins.property
+    def error(self) -> _ServiceError_pb2.ServiceError: ...
+    @_builtins.property
+    def result(self) -> _DeployServiceCommon_pb2.DataWithBlockInfo: ...
     def __init__(
         self,
         *,
-        error: ServiceError_pb2.ServiceError | None = ...,
-        result: DeployServiceCommon_pb2.DataWithBlockInfo | None = ...,
+        error: _ServiceError_pb2.ServiceError | None = ...,
+        result: _DeployServiceCommon_pb2.DataWithBlockInfo | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["error", b"error", "message", b"message", "result", b"result"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["error", b"error", "message", b"message", "result", b"result"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["error", b"error", "message", b"message", "result", b"result"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["error", b"error", "message", b"message", "result", b"result"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
-    _WhichOneofReturnType_message: typing_extensions.TypeAlias = typing.Literal["error", "result"]
-    _WhichOneofArgType_message: typing_extensions.TypeAlias = typing.Literal["message", b"message"]
+    _WhichOneofReturnType_message: _TypeAlias = _typing.Literal["error", "result"]  # noqa: Y015
+    _WhichOneofArgType_message: _TypeAlias = _typing.Literal["message", b"message"]  # noqa: Y015
     def WhichOneof(self, oneof_group: _WhichOneofArgType_message) -> _WhichOneofReturnType_message | None: ...
 
-Global___ExploratoryDeployResponse: typing_extensions.TypeAlias = ExploratoryDeployResponse
+Global___ExploratoryDeployResponse: _TypeAlias = ExploratoryDeployResponse  # noqa: Y015
 
-@typing.final
-class DeployResponse(google.protobuf.message.Message):
+@_typing.final
+class DeployResponse(_message.Message):
     """doDeploy"""
 
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+    DESCRIPTOR: _descriptor.Descriptor
 
-    ERROR_FIELD_NUMBER: builtins.int
-    RESULT_FIELD_NUMBER: builtins.int
-    result: builtins.str
-    @property
-    def error(self) -> ServiceError_pb2.ServiceError: ...
+    ERROR_FIELD_NUMBER: _builtins.int
+    RESULT_FIELD_NUMBER: _builtins.int
+    result: _builtins.str
+    @_builtins.property
+    def error(self) -> _ServiceError_pb2.ServiceError: ...
     def __init__(
         self,
         *,
-        error: ServiceError_pb2.ServiceError | None = ...,
-        result: builtins.str = ...,
+        error: _ServiceError_pb2.ServiceError | None = ...,
+        result: _builtins.str = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["error", b"error", "message", b"message", "result", b"result"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["error", b"error", "message", b"message", "result", b"result"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["error", b"error", "message", b"message", "result", b"result"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["error", b"error", "message", b"message", "result", b"result"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
-    _WhichOneofReturnType_message: typing_extensions.TypeAlias = typing.Literal["error", "result"]
-    _WhichOneofArgType_message: typing_extensions.TypeAlias = typing.Literal["message", b"message"]
+    _WhichOneofReturnType_message: _TypeAlias = _typing.Literal["error", "result"]  # noqa: Y015
+    _WhichOneofArgType_message: _TypeAlias = _typing.Literal["message", b"message"]  # noqa: Y015
     def WhichOneof(self, oneof_group: _WhichOneofArgType_message) -> _WhichOneofReturnType_message | None: ...
 
-Global___DeployResponse: typing_extensions.TypeAlias = DeployResponse
+Global___DeployResponse: _TypeAlias = DeployResponse  # noqa: Y015
 
-@typing.final
-class BlockResponse(google.protobuf.message.Message):
+@_typing.final
+class BlockResponse(_message.Message):
     """getBlock"""
 
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+    DESCRIPTOR: _descriptor.Descriptor
 
-    ERROR_FIELD_NUMBER: builtins.int
-    BLOCKINFO_FIELD_NUMBER: builtins.int
-    @property
-    def error(self) -> ServiceError_pb2.ServiceError: ...
-    @property
-    def blockInfo(self) -> DeployServiceCommon_pb2.BlockInfo: ...
+    ERROR_FIELD_NUMBER: _builtins.int
+    BLOCKINFO_FIELD_NUMBER: _builtins.int
+    @_builtins.property
+    def error(self) -> _ServiceError_pb2.ServiceError: ...
+    @_builtins.property
+    def blockInfo(self) -> _DeployServiceCommon_pb2.BlockInfo: ...
     def __init__(
         self,
         *,
-        error: ServiceError_pb2.ServiceError | None = ...,
-        blockInfo: DeployServiceCommon_pb2.BlockInfo | None = ...,
+        error: _ServiceError_pb2.ServiceError | None = ...,
+        blockInfo: _DeployServiceCommon_pb2.BlockInfo | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["blockInfo", b"blockInfo", "error", b"error", "message", b"message"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["blockInfo", b"blockInfo", "error", b"error", "message", b"message"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["blockInfo", b"blockInfo", "error", b"error", "message", b"message"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["blockInfo", b"blockInfo", "error", b"error", "message", b"message"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
-    _WhichOneofReturnType_message: typing_extensions.TypeAlias = typing.Literal["error", "blockInfo"]
-    _WhichOneofArgType_message: typing_extensions.TypeAlias = typing.Literal["message", b"message"]
+    _WhichOneofReturnType_message: _TypeAlias = _typing.Literal["error", "blockInfo"]  # noqa: Y015
+    _WhichOneofArgType_message: _TypeAlias = _typing.Literal["message", b"message"]  # noqa: Y015
     def WhichOneof(self, oneof_group: _WhichOneofArgType_message) -> _WhichOneofReturnType_message | None: ...
 
-Global___BlockResponse: typing_extensions.TypeAlias = BlockResponse
+Global___BlockResponse: _TypeAlias = BlockResponse  # noqa: Y015
 
-@typing.final
-class VisualizeBlocksResponse(google.protobuf.message.Message):
+@_typing.final
+class VisualizeBlocksResponse(_message.Message):
     """visualizeDag"""
 
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+    DESCRIPTOR: _descriptor.Descriptor
 
-    ERROR_FIELD_NUMBER: builtins.int
-    CONTENT_FIELD_NUMBER: builtins.int
-    content: builtins.str
-    @property
-    def error(self) -> ServiceError_pb2.ServiceError: ...
+    ERROR_FIELD_NUMBER: _builtins.int
+    CONTENT_FIELD_NUMBER: _builtins.int
+    content: _builtins.str
+    @_builtins.property
+    def error(self) -> _ServiceError_pb2.ServiceError: ...
     def __init__(
         self,
         *,
-        error: ServiceError_pb2.ServiceError | None = ...,
-        content: builtins.str = ...,
+        error: _ServiceError_pb2.ServiceError | None = ...,
+        content: _builtins.str = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["content", b"content", "error", b"error", "message", b"message"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["content", b"content", "error", b"error", "message", b"message"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["content", b"content", "error", b"error", "message", b"message"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["content", b"content", "error", b"error", "message", b"message"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
-    _WhichOneofReturnType_message: typing_extensions.TypeAlias = typing.Literal["error", "content"]
-    _WhichOneofArgType_message: typing_extensions.TypeAlias = typing.Literal["message", b"message"]
+    _WhichOneofReturnType_message: _TypeAlias = _typing.Literal["error", "content"]  # noqa: Y015
+    _WhichOneofArgType_message: _TypeAlias = _typing.Literal["message", b"message"]  # noqa: Y015
     def WhichOneof(self, oneof_group: _WhichOneofArgType_message) -> _WhichOneofReturnType_message | None: ...
 
-Global___VisualizeBlocksResponse: typing_extensions.TypeAlias = VisualizeBlocksResponse
+Global___VisualizeBlocksResponse: _TypeAlias = VisualizeBlocksResponse  # noqa: Y015
 
-@typing.final
-class MachineVerifyResponse(google.protobuf.message.Message):
+@_typing.final
+class MachineVerifyResponse(_message.Message):
     """machineVerifiableDag"""
 
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+    DESCRIPTOR: _descriptor.Descriptor
 
-    ERROR_FIELD_NUMBER: builtins.int
-    CONTENT_FIELD_NUMBER: builtins.int
-    content: builtins.str
-    @property
-    def error(self) -> ServiceError_pb2.ServiceError: ...
+    ERROR_FIELD_NUMBER: _builtins.int
+    CONTENT_FIELD_NUMBER: _builtins.int
+    content: _builtins.str
+    @_builtins.property
+    def error(self) -> _ServiceError_pb2.ServiceError: ...
     def __init__(
         self,
         *,
-        error: ServiceError_pb2.ServiceError | None = ...,
-        content: builtins.str = ...,
+        error: _ServiceError_pb2.ServiceError | None = ...,
+        content: _builtins.str = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["content", b"content", "error", b"error", "message", b"message"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["content", b"content", "error", b"error", "message", b"message"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["content", b"content", "error", b"error", "message", b"message"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["content", b"content", "error", b"error", "message", b"message"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
-    _WhichOneofReturnType_message: typing_extensions.TypeAlias = typing.Literal["error", "content"]
-    _WhichOneofArgType_message: typing_extensions.TypeAlias = typing.Literal["message", b"message"]
+    _WhichOneofReturnType_message: _TypeAlias = _typing.Literal["error", "content"]  # noqa: Y015
+    _WhichOneofArgType_message: _TypeAlias = _typing.Literal["message", b"message"]  # noqa: Y015
     def WhichOneof(self, oneof_group: _WhichOneofArgType_message) -> _WhichOneofReturnType_message | None: ...
 
-Global___MachineVerifyResponse: typing_extensions.TypeAlias = MachineVerifyResponse
+Global___MachineVerifyResponse: _TypeAlias = MachineVerifyResponse  # noqa: Y015
 
-@typing.final
-class BlockInfoResponse(google.protobuf.message.Message):
+@_typing.final
+class BlockInfoResponse(_message.Message):
     """showMainChain & getBlocks"""
 
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+    DESCRIPTOR: _descriptor.Descriptor
 
-    ERROR_FIELD_NUMBER: builtins.int
-    BLOCKINFO_FIELD_NUMBER: builtins.int
-    @property
-    def error(self) -> ServiceError_pb2.ServiceError: ...
-    @property
-    def blockInfo(self) -> DeployServiceCommon_pb2.LightBlockInfo: ...
+    ERROR_FIELD_NUMBER: _builtins.int
+    BLOCKINFO_FIELD_NUMBER: _builtins.int
+    @_builtins.property
+    def error(self) -> _ServiceError_pb2.ServiceError: ...
+    @_builtins.property
+    def blockInfo(self) -> _DeployServiceCommon_pb2.LightBlockInfo: ...
     def __init__(
         self,
         *,
-        error: ServiceError_pb2.ServiceError | None = ...,
-        blockInfo: DeployServiceCommon_pb2.LightBlockInfo | None = ...,
+        error: _ServiceError_pb2.ServiceError | None = ...,
+        blockInfo: _DeployServiceCommon_pb2.LightBlockInfo | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["blockInfo", b"blockInfo", "error", b"error", "message", b"message"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["blockInfo", b"blockInfo", "error", b"error", "message", b"message"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["blockInfo", b"blockInfo", "error", b"error", "message", b"message"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["blockInfo", b"blockInfo", "error", b"error", "message", b"message"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
-    _WhichOneofReturnType_message: typing_extensions.TypeAlias = typing.Literal["error", "blockInfo"]
-    _WhichOneofArgType_message: typing_extensions.TypeAlias = typing.Literal["message", b"message"]
+    _WhichOneofReturnType_message: _TypeAlias = _typing.Literal["error", "blockInfo"]  # noqa: Y015
+    _WhichOneofArgType_message: _TypeAlias = _typing.Literal["message", b"message"]  # noqa: Y015
     def WhichOneof(self, oneof_group: _WhichOneofArgType_message) -> _WhichOneofReturnType_message | None: ...
 
-Global___BlockInfoResponse: typing_extensions.TypeAlias = BlockInfoResponse
+Global___BlockInfoResponse: _TypeAlias = BlockInfoResponse  # noqa: Y015
 
-@typing.final
-class ListeningNameDataResponse(google.protobuf.message.Message):
+@_typing.final
+class ListeningNameDataResponse(_message.Message):
     """listenForDataAtName"""
 
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+    DESCRIPTOR: _descriptor.Descriptor
 
-    ERROR_FIELD_NUMBER: builtins.int
-    PAYLOAD_FIELD_NUMBER: builtins.int
-    @property
-    def error(self) -> ServiceError_pb2.ServiceError: ...
-    @property
+    ERROR_FIELD_NUMBER: _builtins.int
+    PAYLOAD_FIELD_NUMBER: _builtins.int
+    @_builtins.property
+    def error(self) -> _ServiceError_pb2.ServiceError: ...
+    @_builtins.property
     def payload(self) -> Global___ListeningNameDataPayload: ...
     def __init__(
         self,
         *,
-        error: ServiceError_pb2.ServiceError | None = ...,
+        error: _ServiceError_pb2.ServiceError | None = ...,
         payload: Global___ListeningNameDataPayload | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["error", b"error", "message", b"message", "payload", b"payload"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["error", b"error", "message", b"message", "payload", b"payload"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["error", b"error", "message", b"message", "payload", b"payload"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["error", b"error", "message", b"message", "payload", b"payload"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
-    _WhichOneofReturnType_message: typing_extensions.TypeAlias = typing.Literal["error", "payload"]
-    _WhichOneofArgType_message: typing_extensions.TypeAlias = typing.Literal["message", b"message"]
+    _WhichOneofReturnType_message: _TypeAlias = _typing.Literal["error", "payload"]  # noqa: Y015
+    _WhichOneofArgType_message: _TypeAlias = _typing.Literal["message", b"message"]  # noqa: Y015
     def WhichOneof(self, oneof_group: _WhichOneofArgType_message) -> _WhichOneofReturnType_message | None: ...
 
-Global___ListeningNameDataResponse: typing_extensions.TypeAlias = ListeningNameDataResponse
+Global___ListeningNameDataResponse: _TypeAlias = ListeningNameDataResponse  # noqa: Y015
 
-@typing.final
-class ListeningNameDataPayload(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class ListeningNameDataPayload(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    BLOCKINFO_FIELD_NUMBER: builtins.int
-    LENGTH_FIELD_NUMBER: builtins.int
-    length: builtins.int
-    @property
-    def blockInfo(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[DeployServiceCommon_pb2.DataWithBlockInfo]: ...
+    BLOCKINFO_FIELD_NUMBER: _builtins.int
+    LENGTH_FIELD_NUMBER: _builtins.int
+    length: _builtins.int
+    @_builtins.property
+    def blockInfo(self) -> _containers.RepeatedCompositeFieldContainer[_DeployServiceCommon_pb2.DataWithBlockInfo]: ...
     def __init__(
         self,
         *,
-        blockInfo: collections.abc.Iterable[DeployServiceCommon_pb2.DataWithBlockInfo] | None = ...,
-        length: builtins.int = ...,
+        blockInfo: _abc.Iterable[_DeployServiceCommon_pb2.DataWithBlockInfo] | None = ...,
+        length: _builtins.int = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["blockInfo", b"blockInfo", "length", b"length"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["blockInfo", b"blockInfo", "length", b"length"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___ListeningNameDataPayload: typing_extensions.TypeAlias = ListeningNameDataPayload
+Global___ListeningNameDataPayload: _TypeAlias = ListeningNameDataPayload  # noqa: Y015
 
-@typing.final
-class RhoDataResponse(google.protobuf.message.Message):
+@_typing.final
+class RhoDataResponse(_message.Message):
     """listenForDataAtPar"""
 
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+    DESCRIPTOR: _descriptor.Descriptor
 
-    ERROR_FIELD_NUMBER: builtins.int
-    PAYLOAD_FIELD_NUMBER: builtins.int
-    @property
-    def error(self) -> ServiceError_pb2.ServiceError: ...
-    @property
+    ERROR_FIELD_NUMBER: _builtins.int
+    PAYLOAD_FIELD_NUMBER: _builtins.int
+    @_builtins.property
+    def error(self) -> _ServiceError_pb2.ServiceError: ...
+    @_builtins.property
     def payload(self) -> Global___RhoDataPayload: ...
     def __init__(
         self,
         *,
-        error: ServiceError_pb2.ServiceError | None = ...,
+        error: _ServiceError_pb2.ServiceError | None = ...,
         payload: Global___RhoDataPayload | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["error", b"error", "message", b"message", "payload", b"payload"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["error", b"error", "message", b"message", "payload", b"payload"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["error", b"error", "message", b"message", "payload", b"payload"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["error", b"error", "message", b"message", "payload", b"payload"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
-    _WhichOneofReturnType_message: typing_extensions.TypeAlias = typing.Literal["error", "payload"]
-    _WhichOneofArgType_message: typing_extensions.TypeAlias = typing.Literal["message", b"message"]
+    _WhichOneofReturnType_message: _TypeAlias = _typing.Literal["error", "payload"]  # noqa: Y015
+    _WhichOneofArgType_message: _TypeAlias = _typing.Literal["message", b"message"]  # noqa: Y015
     def WhichOneof(self, oneof_group: _WhichOneofArgType_message) -> _WhichOneofReturnType_message | None: ...
 
-Global___RhoDataResponse: typing_extensions.TypeAlias = RhoDataResponse
+Global___RhoDataResponse: _TypeAlias = RhoDataResponse  # noqa: Y015
 
-@typing.final
-class RhoDataPayload(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class RhoDataPayload(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    PAR_FIELD_NUMBER: builtins.int
-    BLOCK_FIELD_NUMBER: builtins.int
-    @property
-    def par(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[RhoTypes_pb2.Par]: ...
-    @property
-    def block(self) -> DeployServiceCommon_pb2.LightBlockInfo: ...
+    PAR_FIELD_NUMBER: _builtins.int
+    BLOCK_FIELD_NUMBER: _builtins.int
+    @_builtins.property
+    def par(self) -> _containers.RepeatedCompositeFieldContainer[_RhoTypes_pb2.Par]: ...
+    @_builtins.property
+    def block(self) -> _DeployServiceCommon_pb2.LightBlockInfo: ...
     def __init__(
         self,
         *,
-        par: collections.abc.Iterable[RhoTypes_pb2.Par] | None = ...,
-        block: DeployServiceCommon_pb2.LightBlockInfo | None = ...,
+        par: _abc.Iterable[_RhoTypes_pb2.Par] | None = ...,
+        block: _DeployServiceCommon_pb2.LightBlockInfo | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["block", b"block"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["block", b"block", "par", b"par"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["block", b"block"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["block", b"block", "par", b"par"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___RhoDataPayload: typing_extensions.TypeAlias = RhoDataPayload
+Global___RhoDataPayload: _TypeAlias = RhoDataPayload  # noqa: Y015
 
-@typing.final
-class ContinuationAtNameResponse(google.protobuf.message.Message):
+@_typing.final
+class ContinuationAtNameResponse(_message.Message):
     """listenForContinuationAtName"""
 
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+    DESCRIPTOR: _descriptor.Descriptor
 
-    ERROR_FIELD_NUMBER: builtins.int
-    PAYLOAD_FIELD_NUMBER: builtins.int
-    @property
-    def error(self) -> ServiceError_pb2.ServiceError: ...
-    @property
+    ERROR_FIELD_NUMBER: _builtins.int
+    PAYLOAD_FIELD_NUMBER: _builtins.int
+    @_builtins.property
+    def error(self) -> _ServiceError_pb2.ServiceError: ...
+    @_builtins.property
     def payload(self) -> Global___ContinuationAtNamePayload: ...
     def __init__(
         self,
         *,
-        error: ServiceError_pb2.ServiceError | None = ...,
+        error: _ServiceError_pb2.ServiceError | None = ...,
         payload: Global___ContinuationAtNamePayload | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["error", b"error", "message", b"message", "payload", b"payload"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["error", b"error", "message", b"message", "payload", b"payload"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["error", b"error", "message", b"message", "payload", b"payload"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["error", b"error", "message", b"message", "payload", b"payload"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
-    _WhichOneofReturnType_message: typing_extensions.TypeAlias = typing.Literal["error", "payload"]
-    _WhichOneofArgType_message: typing_extensions.TypeAlias = typing.Literal["message", b"message"]
+    _WhichOneofReturnType_message: _TypeAlias = _typing.Literal["error", "payload"]  # noqa: Y015
+    _WhichOneofArgType_message: _TypeAlias = _typing.Literal["message", b"message"]  # noqa: Y015
     def WhichOneof(self, oneof_group: _WhichOneofArgType_message) -> _WhichOneofReturnType_message | None: ...
 
-Global___ContinuationAtNameResponse: typing_extensions.TypeAlias = ContinuationAtNameResponse
+Global___ContinuationAtNameResponse: _TypeAlias = ContinuationAtNameResponse  # noqa: Y015
 
-@typing.final
-class ContinuationAtNamePayload(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class ContinuationAtNamePayload(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    BLOCKRESULTS_FIELD_NUMBER: builtins.int
-    LENGTH_FIELD_NUMBER: builtins.int
-    length: builtins.int
-    @property
-    def blockResults(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[DeployServiceCommon_pb2.ContinuationsWithBlockInfo]: ...
+    BLOCKRESULTS_FIELD_NUMBER: _builtins.int
+    LENGTH_FIELD_NUMBER: _builtins.int
+    length: _builtins.int
+    @_builtins.property
+    def blockResults(self) -> _containers.RepeatedCompositeFieldContainer[_DeployServiceCommon_pb2.ContinuationsWithBlockInfo]: ...
     def __init__(
         self,
         *,
-        blockResults: collections.abc.Iterable[DeployServiceCommon_pb2.ContinuationsWithBlockInfo] | None = ...,
-        length: builtins.int = ...,
+        blockResults: _abc.Iterable[_DeployServiceCommon_pb2.ContinuationsWithBlockInfo] | None = ...,
+        length: _builtins.int = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["blockResults", b"blockResults", "length", b"length"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["blockResults", b"blockResults", "length", b"length"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___ContinuationAtNamePayload: typing_extensions.TypeAlias = ContinuationAtNamePayload
+Global___ContinuationAtNamePayload: _TypeAlias = ContinuationAtNamePayload  # noqa: Y015
 
-@typing.final
-class FindDeployResponse(google.protobuf.message.Message):
+@_typing.final
+class FindDeployResponse(_message.Message):
     """findDeploy"""
 
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+    DESCRIPTOR: _descriptor.Descriptor
 
-    ERROR_FIELD_NUMBER: builtins.int
-    BLOCKINFO_FIELD_NUMBER: builtins.int
-    @property
-    def error(self) -> ServiceError_pb2.ServiceError: ...
-    @property
-    def blockInfo(self) -> DeployServiceCommon_pb2.LightBlockInfo: ...
+    ERROR_FIELD_NUMBER: _builtins.int
+    BLOCKINFO_FIELD_NUMBER: _builtins.int
+    @_builtins.property
+    def error(self) -> _ServiceError_pb2.ServiceError: ...
+    @_builtins.property
+    def blockInfo(self) -> _DeployServiceCommon_pb2.LightBlockInfo: ...
     def __init__(
         self,
         *,
-        error: ServiceError_pb2.ServiceError | None = ...,
-        blockInfo: DeployServiceCommon_pb2.LightBlockInfo | None = ...,
+        error: _ServiceError_pb2.ServiceError | None = ...,
+        blockInfo: _DeployServiceCommon_pb2.LightBlockInfo | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["blockInfo", b"blockInfo", "error", b"error", "message", b"message"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["blockInfo", b"blockInfo", "error", b"error", "message", b"message"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["blockInfo", b"blockInfo", "error", b"error", "message", b"message"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["blockInfo", b"blockInfo", "error", b"error", "message", b"message"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
-    _WhichOneofReturnType_message: typing_extensions.TypeAlias = typing.Literal["error", "blockInfo"]
-    _WhichOneofArgType_message: typing_extensions.TypeAlias = typing.Literal["message", b"message"]
+    _WhichOneofReturnType_message: _TypeAlias = _typing.Literal["error", "blockInfo"]  # noqa: Y015
+    _WhichOneofArgType_message: _TypeAlias = _typing.Literal["message", b"message"]  # noqa: Y015
     def WhichOneof(self, oneof_group: _WhichOneofArgType_message) -> _WhichOneofReturnType_message | None: ...
 
-Global___FindDeployResponse: typing_extensions.TypeAlias = FindDeployResponse
+Global___FindDeployResponse: _TypeAlias = FindDeployResponse  # noqa: Y015
 
-@typing.final
-class PrivateNamePreviewResponse(google.protobuf.message.Message):
+@_typing.final
+class PrivateNamePreviewResponse(_message.Message):
     """previewPrivateNames"""
 
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+    DESCRIPTOR: _descriptor.Descriptor
 
-    ERROR_FIELD_NUMBER: builtins.int
-    PAYLOAD_FIELD_NUMBER: builtins.int
-    @property
-    def error(self) -> ServiceError_pb2.ServiceError: ...
-    @property
+    ERROR_FIELD_NUMBER: _builtins.int
+    PAYLOAD_FIELD_NUMBER: _builtins.int
+    @_builtins.property
+    def error(self) -> _ServiceError_pb2.ServiceError: ...
+    @_builtins.property
     def payload(self) -> Global___PrivateNamePreviewPayload: ...
     def __init__(
         self,
         *,
-        error: ServiceError_pb2.ServiceError | None = ...,
+        error: _ServiceError_pb2.ServiceError | None = ...,
         payload: Global___PrivateNamePreviewPayload | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["error", b"error", "message", b"message", "payload", b"payload"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["error", b"error", "message", b"message", "payload", b"payload"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["error", b"error", "message", b"message", "payload", b"payload"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["error", b"error", "message", b"message", "payload", b"payload"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
-    _WhichOneofReturnType_message: typing_extensions.TypeAlias = typing.Literal["error", "payload"]
-    _WhichOneofArgType_message: typing_extensions.TypeAlias = typing.Literal["message", b"message"]
+    _WhichOneofReturnType_message: _TypeAlias = _typing.Literal["error", "payload"]  # noqa: Y015
+    _WhichOneofArgType_message: _TypeAlias = _typing.Literal["message", b"message"]  # noqa: Y015
     def WhichOneof(self, oneof_group: _WhichOneofArgType_message) -> _WhichOneofReturnType_message | None: ...
 
-Global___PrivateNamePreviewResponse: typing_extensions.TypeAlias = PrivateNamePreviewResponse
+Global___PrivateNamePreviewResponse: _TypeAlias = PrivateNamePreviewResponse  # noqa: Y015
 
-@typing.final
-class PrivateNamePreviewPayload(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class PrivateNamePreviewPayload(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    IDS_FIELD_NUMBER: builtins.int
-    @property
-    def ids(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.bytes]:
+    IDS_FIELD_NUMBER: _builtins.int
+    @_builtins.property
+    def ids(self) -> _containers.RepeatedScalarFieldContainer[_builtins.bytes]:
         """a la GPrivate"""
 
     def __init__(
         self,
         *,
-        ids: collections.abc.Iterable[builtins.bytes] | None = ...,
+        ids: _abc.Iterable[_builtins.bytes] | None = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["ids", b"ids"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["ids", b"ids"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___PrivateNamePreviewPayload: typing_extensions.TypeAlias = PrivateNamePreviewPayload
+Global___PrivateNamePreviewPayload: _TypeAlias = PrivateNamePreviewPayload  # noqa: Y015
 
-@typing.final
-class LastFinalizedBlockResponse(google.protobuf.message.Message):
+@_typing.final
+class LastFinalizedBlockResponse(_message.Message):
     """lastFinalizedBlock"""
 
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+    DESCRIPTOR: _descriptor.Descriptor
 
-    ERROR_FIELD_NUMBER: builtins.int
-    BLOCKINFO_FIELD_NUMBER: builtins.int
-    @property
-    def error(self) -> ServiceError_pb2.ServiceError: ...
-    @property
-    def blockInfo(self) -> DeployServiceCommon_pb2.BlockInfo: ...
+    ERROR_FIELD_NUMBER: _builtins.int
+    BLOCKINFO_FIELD_NUMBER: _builtins.int
+    @_builtins.property
+    def error(self) -> _ServiceError_pb2.ServiceError: ...
+    @_builtins.property
+    def blockInfo(self) -> _DeployServiceCommon_pb2.BlockInfo: ...
     def __init__(
         self,
         *,
-        error: ServiceError_pb2.ServiceError | None = ...,
-        blockInfo: DeployServiceCommon_pb2.BlockInfo | None = ...,
+        error: _ServiceError_pb2.ServiceError | None = ...,
+        blockInfo: _DeployServiceCommon_pb2.BlockInfo | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["blockInfo", b"blockInfo", "error", b"error", "message", b"message"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["blockInfo", b"blockInfo", "error", b"error", "message", b"message"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["blockInfo", b"blockInfo", "error", b"error", "message", b"message"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["blockInfo", b"blockInfo", "error", b"error", "message", b"message"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
-    _WhichOneofReturnType_message: typing_extensions.TypeAlias = typing.Literal["error", "blockInfo"]
-    _WhichOneofArgType_message: typing_extensions.TypeAlias = typing.Literal["message", b"message"]
+    _WhichOneofReturnType_message: _TypeAlias = _typing.Literal["error", "blockInfo"]  # noqa: Y015
+    _WhichOneofArgType_message: _TypeAlias = _typing.Literal["message", b"message"]  # noqa: Y015
     def WhichOneof(self, oneof_group: _WhichOneofArgType_message) -> _WhichOneofReturnType_message | None: ...
 
-Global___LastFinalizedBlockResponse: typing_extensions.TypeAlias = LastFinalizedBlockResponse
+Global___LastFinalizedBlockResponse: _TypeAlias = LastFinalizedBlockResponse  # noqa: Y015
 
-@typing.final
-class IsFinalizedResponse(google.protobuf.message.Message):
+@_typing.final
+class IsFinalizedResponse(_message.Message):
     """isFinalized"""
 
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+    DESCRIPTOR: _descriptor.Descriptor
 
-    ERROR_FIELD_NUMBER: builtins.int
-    ISFINALIZED_FIELD_NUMBER: builtins.int
-    isFinalized: builtins.bool
-    @property
-    def error(self) -> ServiceError_pb2.ServiceError: ...
+    ERROR_FIELD_NUMBER: _builtins.int
+    ISFINALIZED_FIELD_NUMBER: _builtins.int
+    isFinalized: _builtins.bool
+    @_builtins.property
+    def error(self) -> _ServiceError_pb2.ServiceError: ...
     def __init__(
         self,
         *,
-        error: ServiceError_pb2.ServiceError | None = ...,
-        isFinalized: builtins.bool = ...,
+        error: _ServiceError_pb2.ServiceError | None = ...,
+        isFinalized: _builtins.bool = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["error", b"error", "isFinalized", b"isFinalized", "message", b"message"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["error", b"error", "isFinalized", b"isFinalized", "message", b"message"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["error", b"error", "isFinalized", b"isFinalized", "message", b"message"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["error", b"error", "isFinalized", b"isFinalized", "message", b"message"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
-    _WhichOneofReturnType_message: typing_extensions.TypeAlias = typing.Literal["error", "isFinalized"]
-    _WhichOneofArgType_message: typing_extensions.TypeAlias = typing.Literal["message", b"message"]
+    _WhichOneofReturnType_message: _TypeAlias = _typing.Literal["error", "isFinalized"]  # noqa: Y015
+    _WhichOneofArgType_message: _TypeAlias = _typing.Literal["message", b"message"]  # noqa: Y015
     def WhichOneof(self, oneof_group: _WhichOneofArgType_message) -> _WhichOneofReturnType_message | None: ...
 
-Global___IsFinalizedResponse: typing_extensions.TypeAlias = IsFinalizedResponse
+Global___IsFinalizedResponse: _TypeAlias = IsFinalizedResponse  # noqa: Y015
 
-@typing.final
-class BondStatusResponse(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class BondStatusResponse(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    ERROR_FIELD_NUMBER: builtins.int
-    ISBONDED_FIELD_NUMBER: builtins.int
-    isBonded: builtins.bool
-    @property
-    def error(self) -> ServiceError_pb2.ServiceError: ...
+    ERROR_FIELD_NUMBER: _builtins.int
+    ISBONDED_FIELD_NUMBER: _builtins.int
+    isBonded: _builtins.bool
+    @_builtins.property
+    def error(self) -> _ServiceError_pb2.ServiceError: ...
     def __init__(
         self,
         *,
-        error: ServiceError_pb2.ServiceError | None = ...,
-        isBonded: builtins.bool = ...,
+        error: _ServiceError_pb2.ServiceError | None = ...,
+        isBonded: _builtins.bool = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["error", b"error", "isBonded", b"isBonded", "message", b"message"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["error", b"error", "isBonded", b"isBonded", "message", b"message"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["error", b"error", "isBonded", b"isBonded", "message", b"message"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["error", b"error", "isBonded", b"isBonded", "message", b"message"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
-    _WhichOneofReturnType_message: typing_extensions.TypeAlias = typing.Literal["error", "isBonded"]
-    _WhichOneofArgType_message: typing_extensions.TypeAlias = typing.Literal["message", b"message"]
+    _WhichOneofReturnType_message: _TypeAlias = _typing.Literal["error", "isBonded"]  # noqa: Y015
+    _WhichOneofArgType_message: _TypeAlias = _typing.Literal["message", b"message"]  # noqa: Y015
     def WhichOneof(self, oneof_group: _WhichOneofArgType_message) -> _WhichOneofReturnType_message | None: ...
 
-Global___BondStatusResponse: typing_extensions.TypeAlias = BondStatusResponse
+Global___BondStatusResponse: _TypeAlias = BondStatusResponse  # noqa: Y015
 
-@typing.final
-class StatusResponse(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class StatusResponse(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    ERROR_FIELD_NUMBER: builtins.int
-    STATUS_FIELD_NUMBER: builtins.int
-    @property
-    def error(self) -> ServiceError_pb2.ServiceError: ...
-    @property
-    def status(self) -> DeployServiceCommon_pb2.Status: ...
+    ERROR_FIELD_NUMBER: _builtins.int
+    STATUS_FIELD_NUMBER: _builtins.int
+    @_builtins.property
+    def error(self) -> _ServiceError_pb2.ServiceError: ...
+    @_builtins.property
+    def status(self) -> _DeployServiceCommon_pb2.Status: ...
     def __init__(
         self,
         *,
-        error: ServiceError_pb2.ServiceError | None = ...,
-        status: DeployServiceCommon_pb2.Status | None = ...,
+        error: _ServiceError_pb2.ServiceError | None = ...,
+        status: _DeployServiceCommon_pb2.Status | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["error", b"error", "message", b"message", "status", b"status"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["error", b"error", "message", b"message", "status", b"status"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["error", b"error", "message", b"message", "status", b"status"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["error", b"error", "message", b"message", "status", b"status"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
-    _WhichOneofReturnType_message: typing_extensions.TypeAlias = typing.Literal["error", "status"]
-    _WhichOneofArgType_message: typing_extensions.TypeAlias = typing.Literal["message", b"message"]
+    _WhichOneofReturnType_message: _TypeAlias = _typing.Literal["error", "status"]  # noqa: Y015
+    _WhichOneofArgType_message: _TypeAlias = _typing.Literal["message", b"message"]  # noqa: Y015
     def WhichOneof(self, oneof_group: _WhichOneofArgType_message) -> _WhichOneofReturnType_message | None: ...
 
-Global___StatusResponse: typing_extensions.TypeAlias = StatusResponse
+Global___StatusResponse: _TypeAlias = StatusResponse  # noqa: Y015
+
+@_typing.final
+class FileUploadMetadata(_message.Message):
+    """Upload large files via streaming"""
+
+    DESCRIPTOR: _descriptor.Descriptor
+
+    DEPLOYER_FIELD_NUMBER: _builtins.int
+    TIMESTAMP_FIELD_NUMBER: _builtins.int
+    SIG_FIELD_NUMBER: _builtins.int
+    SIGALGORITHM_FIELD_NUMBER: _builtins.int
+    PHLOPRICE_FIELD_NUMBER: _builtins.int
+    PHLOLIMIT_FIELD_NUMBER: _builtins.int
+    VALIDAFTERBLOCKNUMBER_FIELD_NUMBER: _builtins.int
+    SHARDID_FIELD_NUMBER: _builtins.int
+    FILENAME_FIELD_NUMBER: _builtins.int
+    FILESIZE_FIELD_NUMBER: _builtins.int
+    FILEHASH_FIELD_NUMBER: _builtins.int
+    TERM_FIELD_NUMBER: _builtins.int
+    deployer: _builtins.bytes
+    """public key (same as DeployDataProto)"""
+    timestamp: _builtins.int
+    """millisecond timestamp"""
+    sig: _builtins.bytes
+    """signature of metadata"""
+    sigAlgorithm: _builtins.str
+    """signature algorithm"""
+    phloPrice: _builtins.int
+    """phlo price for storage"""
+    phloLimit: _builtins.int
+    """phlo limit"""
+    validAfterBlockNumber: _builtins.int
+    """validity constraint"""
+    shardId: _builtins.str
+    """shard identifier"""
+    fileName: _builtins.str
+    """original filename (informational)"""
+    fileSize: _builtins.int
+    """total file size in bytes"""
+    fileHash: _builtins.str
+    """Blake2b-256 pre-computed by client (for deduplication)"""
+    term: _builtins.str
+    """Rholang term signed by client (for on-chain registration)"""
+    def __init__(
+        self,
+        *,
+        deployer: _builtins.bytes = ...,
+        timestamp: _builtins.int = ...,
+        sig: _builtins.bytes = ...,
+        sigAlgorithm: _builtins.str = ...,
+        phloPrice: _builtins.int = ...,
+        phloLimit: _builtins.int = ...,
+        validAfterBlockNumber: _builtins.int = ...,
+        shardId: _builtins.str = ...,
+        fileName: _builtins.str = ...,
+        fileSize: _builtins.int = ...,
+        fileHash: _builtins.str = ...,
+        term: _builtins.str = ...,
+    ) -> None: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["deployer", b"deployer", "fileHash", b"fileHash", "fileName", b"fileName", "fileSize", b"fileSize", "phloLimit", b"phloLimit", "phloPrice", b"phloPrice", "shardId", b"shardId", "sig", b"sig", "sigAlgorithm", b"sigAlgorithm", "term", b"term", "timestamp", b"timestamp", "validAfterBlockNumber", b"validAfterBlockNumber"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___FileUploadMetadata: _TypeAlias = FileUploadMetadata  # noqa: Y015
+
+@_typing.final
+class FileUploadChunk(_message.Message):
+    """Streaming message containing either metadata or chunk data"""
+
+    DESCRIPTOR: _descriptor.Descriptor
+
+    METADATA_FIELD_NUMBER: _builtins.int
+    DATA_FIELD_NUMBER: _builtins.int
+    data: _builtins.bytes
+    """Subsequent messages (chunk data)"""
+    @_builtins.property
+    def metadata(self) -> Global___FileUploadMetadata:
+        """First message only"""
+
+    def __init__(
+        self,
+        *,
+        metadata: Global___FileUploadMetadata | None = ...,
+        data: _builtins.bytes = ...,
+    ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _typing.Literal["chunk", b"chunk", "data", b"data", "metadata", b"metadata"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["chunk", b"chunk", "data", b"data", "metadata", b"metadata"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    _WhichOneofReturnType_chunk: _TypeAlias = _typing.Literal["metadata", "data"]  # noqa: Y015
+    _WhichOneofArgType_chunk: _TypeAlias = _typing.Literal["chunk", b"chunk"]  # noqa: Y015
+    def WhichOneof(self, oneof_group: _WhichOneofArgType_chunk) -> _WhichOneofReturnType_chunk | None: ...
+
+Global___FileUploadChunk: _TypeAlias = FileUploadChunk  # noqa: Y015
+
+@_typing.final
+class FileUploadResult(_message.Message):
+    """Result payload for a successful file upload"""
+
+    DESCRIPTOR: _descriptor.Descriptor
+
+    FILEHASH_FIELD_NUMBER: _builtins.int
+    DEPLOYID_FIELD_NUMBER: _builtins.int
+    STORAGEPHLOCOST_FIELD_NUMBER: _builtins.int
+    TOTALPHLOCHARGED_FIELD_NUMBER: _builtins.int
+    fileHash: _builtins.str
+    """Blake2b-256 content hash"""
+    deployId: _builtins.str
+    """signature of the synthetic deploy (tracking ID)"""
+    storagePhloCost: _builtins.int
+    """phlo charged for storage"""
+    totalPhloCharged: _builtins.int
+    """total phlo that will be deducted"""
+    def __init__(
+        self,
+        *,
+        fileHash: _builtins.str = ...,
+        deployId: _builtins.str = ...,
+        storagePhloCost: _builtins.int = ...,
+        totalPhloCharged: _builtins.int = ...,
+    ) -> None: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["deployId", b"deployId", "fileHash", b"fileHash", "storagePhloCost", b"storagePhloCost", "totalPhloCharged", b"totalPhloCharged"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___FileUploadResult: _TypeAlias = FileUploadResult  # noqa: Y015
+
+@_typing.final
+class FileUploadResponse(_message.Message):
+    """Response after file upload attempt"""
+
+    DESCRIPTOR: _descriptor.Descriptor
+
+    ERROR_FIELD_NUMBER: _builtins.int
+    RESULT_FIELD_NUMBER: _builtins.int
+    @_builtins.property
+    def error(self) -> _ServiceError_pb2.ServiceError: ...
+    @_builtins.property
+    def result(self) -> Global___FileUploadResult: ...
+    def __init__(
+        self,
+        *,
+        error: _ServiceError_pb2.ServiceError | None = ...,
+        result: Global___FileUploadResult | None = ...,
+    ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _typing.Literal["error", b"error", "message", b"message", "result", b"result"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["error", b"error", "message", b"message", "result", b"result"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    _WhichOneofReturnType_message: _TypeAlias = _typing.Literal["error", "result"]  # noqa: Y015
+    _WhichOneofArgType_message: _TypeAlias = _typing.Literal["message", b"message"]  # noqa: Y015
+    def WhichOneof(self, oneof_group: _WhichOneofArgType_message) -> _WhichOneofReturnType_message | None: ...
+
+Global___FileUploadResponse: _TypeAlias = FileUploadResponse  # noqa: Y015
+
+@_typing.final
+class FileDownloadRequest(_message.Message):
+    """Request to download a file by content hash"""
+
+    DESCRIPTOR: _descriptor.Descriptor
+
+    FILEHASH_FIELD_NUMBER: _builtins.int
+    OFFSET_FIELD_NUMBER: _builtins.int
+    fileHash: _builtins.str
+    """Blake2b-256 hash"""
+    offset: _builtins.int
+    """resume offset (0 = start from beginning)"""
+    def __init__(
+        self,
+        *,
+        fileHash: _builtins.str = ...,
+        offset: _builtins.int = ...,
+    ) -> None: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["fileHash", b"fileHash", "offset", b"offset"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___FileDownloadRequest: _TypeAlias = FileDownloadRequest  # noqa: Y015
+
+@_typing.final
+class FileDownloadMetadata(_message.Message):
+    """First chunk of a download stream — carries file metadata"""
+
+    DESCRIPTOR: _descriptor.Descriptor
+
+    FILEHASH_FIELD_NUMBER: _builtins.int
+    FILESIZE_FIELD_NUMBER: _builtins.int
+    fileHash: _builtins.str
+    fileSize: _builtins.int
+    def __init__(
+        self,
+        *,
+        fileHash: _builtins.str = ...,
+        fileSize: _builtins.int = ...,
+    ) -> None: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["fileHash", b"fileHash", "fileSize", b"fileSize"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___FileDownloadMetadata: _TypeAlias = FileDownloadMetadata  # noqa: Y015
+
+@_typing.final
+class FileDownloadChunk(_message.Message):
+    """Streaming message: either metadata (first) or binary data chunk"""
+
+    DESCRIPTOR: _descriptor.Descriptor
+
+    METADATA_FIELD_NUMBER: _builtins.int
+    DATA_FIELD_NUMBER: _builtins.int
+    data: _builtins.bytes
+    """subsequent 4MB chunks"""
+    @_builtins.property
+    def metadata(self) -> Global___FileDownloadMetadata:
+        """first message only"""
+
+    def __init__(
+        self,
+        *,
+        metadata: Global___FileDownloadMetadata | None = ...,
+        data: _builtins.bytes = ...,
+    ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _typing.Literal["chunk", b"chunk", "data", b"data", "metadata", b"metadata"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["chunk", b"chunk", "data", b"data", "metadata", b"metadata"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    _WhichOneofReturnType_chunk: _TypeAlias = _typing.Literal["metadata", "data"]  # noqa: Y015
+    _WhichOneofArgType_chunk: _TypeAlias = _typing.Literal["chunk", b"chunk"]  # noqa: Y015
+    def WhichOneof(self, oneof_group: _WhichOneofArgType_chunk) -> _WhichOneofReturnType_chunk | None: ...
+
+Global___FileDownloadChunk: _TypeAlias = FileDownloadChunk  # noqa: Y015

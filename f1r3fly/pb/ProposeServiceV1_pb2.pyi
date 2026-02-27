@@ -3,66 +3,66 @@
 isort:skip_file
 """
 
-import ServiceError_pb2
-import builtins
-import google.protobuf.descriptor
-import google.protobuf.message
+from google.protobuf import descriptor as _descriptor
+from google.protobuf import message as _message
+import ServiceError_pb2 as _ServiceError_pb2
+import builtins as _builtins
 import sys
-import typing
+import typing as _typing
 
 if sys.version_info >= (3, 10):
-    import typing as typing_extensions
+    from typing import TypeAlias as _TypeAlias
 else:
-    import typing_extensions
+    from typing_extensions import TypeAlias as _TypeAlias
 
-DESCRIPTOR: google.protobuf.descriptor.FileDescriptor
+DESCRIPTOR: _descriptor.FileDescriptor
 
-@typing.final
-class ProposeResponse(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class ProposeResponse(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    ERROR_FIELD_NUMBER: builtins.int
-    RESULT_FIELD_NUMBER: builtins.int
-    result: builtins.str
-    @property
-    def error(self) -> ServiceError_pb2.ServiceError: ...
+    ERROR_FIELD_NUMBER: _builtins.int
+    RESULT_FIELD_NUMBER: _builtins.int
+    result: _builtins.str
+    @_builtins.property
+    def error(self) -> _ServiceError_pb2.ServiceError: ...
     def __init__(
         self,
         *,
-        error: ServiceError_pb2.ServiceError | None = ...,
-        result: builtins.str = ...,
+        error: _ServiceError_pb2.ServiceError | None = ...,
+        result: _builtins.str = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["error", b"error", "message", b"message", "result", b"result"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["error", b"error", "message", b"message", "result", b"result"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["error", b"error", "message", b"message", "result", b"result"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["error", b"error", "message", b"message", "result", b"result"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
-    _WhichOneofReturnType_message: typing_extensions.TypeAlias = typing.Literal["error", "result"]
-    _WhichOneofArgType_message: typing_extensions.TypeAlias = typing.Literal["message", b"message"]
+    _WhichOneofReturnType_message: _TypeAlias = _typing.Literal["error", "result"]  # noqa: Y015
+    _WhichOneofArgType_message: _TypeAlias = _typing.Literal["message", b"message"]  # noqa: Y015
     def WhichOneof(self, oneof_group: _WhichOneofArgType_message) -> _WhichOneofReturnType_message | None: ...
 
-Global___ProposeResponse: typing_extensions.TypeAlias = ProposeResponse
+Global___ProposeResponse: _TypeAlias = ProposeResponse  # noqa: Y015
 
-@typing.final
-class ProposeResultResponse(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class ProposeResultResponse(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    ERROR_FIELD_NUMBER: builtins.int
-    RESULT_FIELD_NUMBER: builtins.int
-    result: builtins.str
-    @property
-    def error(self) -> ServiceError_pb2.ServiceError: ...
+    ERROR_FIELD_NUMBER: _builtins.int
+    RESULT_FIELD_NUMBER: _builtins.int
+    result: _builtins.str
+    @_builtins.property
+    def error(self) -> _ServiceError_pb2.ServiceError: ...
     def __init__(
         self,
         *,
-        error: ServiceError_pb2.ServiceError | None = ...,
-        result: builtins.str = ...,
+        error: _ServiceError_pb2.ServiceError | None = ...,
+        result: _builtins.str = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["error", b"error", "message", b"message", "result", b"result"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["error", b"error", "message", b"message", "result", b"result"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["error", b"error", "message", b"message", "result", b"result"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["error", b"error", "message", b"message", "result", b"result"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
-    _WhichOneofReturnType_message: typing_extensions.TypeAlias = typing.Literal["error", "result"]
-    _WhichOneofArgType_message: typing_extensions.TypeAlias = typing.Literal["message", b"message"]
+    _WhichOneofReturnType_message: _TypeAlias = _typing.Literal["error", "result"]  # noqa: Y015
+    _WhichOneofArgType_message: _TypeAlias = _typing.Literal["message", b"message"]  # noqa: Y015
     def WhichOneof(self, oneof_group: _WhichOneofArgType_message) -> _WhichOneofReturnType_message | None: ...
 
-Global___ProposeResultResponse: typing_extensions.TypeAlias = ProposeResultResponse
+Global___ProposeResultResponse: _TypeAlias = ProposeResultResponse  # noqa: Y015

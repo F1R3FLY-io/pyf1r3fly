@@ -3,47 +3,47 @@
 isort:skip_file
 """
 
-import builtins
-import google.protobuf.descriptor
-import google.protobuf.message
+from google.protobuf import descriptor as _descriptor
+from google.protobuf import message as _message
+import builtins as _builtins
 import sys
-import typing
+import typing as _typing
 
 if sys.version_info >= (3, 10):
-    import typing as typing_extensions
+    from typing import TypeAlias as _TypeAlias
 else:
-    import typing_extensions
+    from typing_extensions import TypeAlias as _TypeAlias
 
-DESCRIPTOR: google.protobuf.descriptor.FileDescriptor
+DESCRIPTOR: _descriptor.FileDescriptor
 
-@typing.final
-class UpdateNotification(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class UpdateNotification(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    CLIENTHOST_FIELD_NUMBER: builtins.int
-    CLIENTPORT_FIELD_NUMBER: builtins.int
-    PAYLOAD_FIELD_NUMBER: builtins.int
-    clientHost: builtins.str
-    clientPort: builtins.int
-    payload: builtins.str
+    CLIENTHOST_FIELD_NUMBER: _builtins.int
+    CLIENTPORT_FIELD_NUMBER: _builtins.int
+    PAYLOAD_FIELD_NUMBER: _builtins.int
+    clientHost: _builtins.str
+    clientPort: _builtins.int
+    payload: _builtins.str
     def __init__(
         self,
         *,
-        clientHost: builtins.str = ...,
-        clientPort: builtins.int = ...,
-        payload: builtins.str = ...,
+        clientHost: _builtins.str = ...,
+        clientPort: _builtins.int = ...,
+        payload: _builtins.str = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["clientHost", b"clientHost", "clientPort", b"clientPort", "payload", b"payload"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["clientHost", b"clientHost", "clientPort", b"clientPort", "payload", b"payload"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___UpdateNotification: typing_extensions.TypeAlias = UpdateNotification
+Global___UpdateNotification: _TypeAlias = UpdateNotification  # noqa: Y015
 
-@typing.final
-class UpdateNotificationResponse(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class UpdateNotificationResponse(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
     def __init__(
         self,
     ) -> None: ...
 
-Global___UpdateNotificationResponse: typing_extensions.TypeAlias = UpdateNotificationResponse
+Global___UpdateNotificationResponse: _TypeAlias = UpdateNotificationResponse  # noqa: Y015
