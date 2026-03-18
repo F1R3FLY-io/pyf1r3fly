@@ -1,7 +1,7 @@
 import logging
 import re
 from types import TracebackType
-from typing import Iterable, List, Optional, Tuple, Type, TypeVar, Union
+from typing import Iterable, Iterator, List, Optional, Tuple, Type, TypeVar, Union
 
 import grpc
 
@@ -255,7 +255,7 @@ class F1r3flyClient:
         Raises:
             F1r3flyClientException: On server-side errors.
         """
-        def _chunk_iterator():
+        def _chunk_iterator() -> Iterator[FileUploadChunk]:
             yield FileUploadChunk(metadata=metadata)
             offset = 0
             while offset < len(data):
