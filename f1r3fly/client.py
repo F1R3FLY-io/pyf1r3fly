@@ -1,7 +1,9 @@
 import logging
 import re
 from types import TracebackType
-from typing import Iterable, Iterator, List, Optional, Tuple, Type, TypeVar, Union
+from typing import (
+    Iterable, Iterator, List, Optional, Tuple, Type, TypeVar, Union,
+)
 
 import grpc
 
@@ -29,7 +31,9 @@ from .pb.ProposeServiceV1_pb2 import ProposeResponse
 from .pb.ProposeServiceV1_pb2_grpc import ProposeServiceStub
 from .pb.RhoTypes_pb2 import Expr, GDeployId, GUnforgeable, Par
 from .report import DeployWithTransaction, Report, Transaction
-from .util import blake2b_256_hex, create_deploy_data, create_file_upload_metadata
+from .util import (
+    blake2b_256_hex, create_deploy_data, create_file_upload_metadata,
+)
 
 GRPC_Response_T = Union[ProposeResponse,
                         DeployResponse,
