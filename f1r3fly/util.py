@@ -31,6 +31,32 @@ def blake2b_256_hex(data: bytes) -> str:
     return hashlib.blake2b(data, digest_size=32).hexdigest()
 
 
+def blake2b_256_hex_file(
+        path: str,
+        chunk_size: int = 1024 * 1024,
+) -> str:
+    """Compute Blake2b-256 hash of a file without loading it entirely.
+
+    Reads the file in ``chunk_size`` increments and feeds each chunk
+    into a streaming Blake2b hasher.
+
+    Args:
+        path: Filesystem path to the file.
+        chunk_size: Read buffer size (default 1 MB).
+
+    Returns:
+        Hex-encoded Blake2b-256 digest.
+    """
+    h = hashlib.blake2b(digest_size=32)
+    with open(path, 'rb') as f:
+        while True:
+            buf = f.read(chunk_size)
+            if not buf:
+                break
+            h.update(buf)
+    return h.hexdigest()
+
+
 def create_deploy_data(
         key: PrivateKey,
         term: str,
