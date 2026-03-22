@@ -14,10 +14,10 @@ from f1r3fly.pb.DeployServiceCommon_pb2 import (
     IsFinalizedQuery, LastFinalizedBlockQuery, LightBlockInfo,
 )
 from f1r3fly.pb.DeployServiceV1_pb2 import (
-    BlockInfoResponse, BlockResponse, DeployResponse,
-    FileDownloadChunk, FileDownloadMetadata, FileDownloadRequest,
-    FileUploadMetadata, FileUploadResponse, FileUploadResult,
-    FindDeployResponse, IsFinalizedResponse, LastFinalizedBlockResponse,
+    BlockInfoResponse, BlockResponse, DeployResponse, FileDownloadChunk,
+    FileDownloadMetadata, FileDownloadRequest, FileUploadMetadata,
+    FileUploadResponse, FileUploadResult, FindDeployResponse,
+    IsFinalizedResponse, LastFinalizedBlockResponse,
 )
 from f1r3fly.pb.DeployServiceV1_pb2_grpc import (
     DeployServiceServicer, add_DeployServiceServicer_to_server,
