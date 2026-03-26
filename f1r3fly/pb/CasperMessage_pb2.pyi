@@ -5,160 +5,160 @@ isort:skip_file
 The main API is `DeployService`.
 """
 
-import RhoTypes_pb2
-import builtins
-import collections.abc
-import google.protobuf.descriptor
-import google.protobuf.internal.containers
-import google.protobuf.message
+from collections import abc as _abc
+from google.protobuf import descriptor as _descriptor
+from google.protobuf import message as _message
+from google.protobuf.internal import containers as _containers
+import RhoTypes_pb2 as _RhoTypes_pb2
+import builtins as _builtins
 import sys
-import typing
+import typing as _typing
 
 if sys.version_info >= (3, 10):
-    import typing as typing_extensions
+    from typing import TypeAlias as _TypeAlias
 else:
-    import typing_extensions
+    from typing_extensions import TypeAlias as _TypeAlias
 
-DESCRIPTOR: google.protobuf.descriptor.FileDescriptor
+DESCRIPTOR: _descriptor.FileDescriptor
 
-@typing.final
-class HasBlockRequestProto(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class HasBlockRequestProto(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    HASH_FIELD_NUMBER: builtins.int
-    hash: builtins.bytes
+    HASH_FIELD_NUMBER: _builtins.int
+    hash: _builtins.bytes
     def __init__(
         self,
         *,
-        hash: builtins.bytes = ...,
+        hash: _builtins.bytes = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["hash", b"hash"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["hash", b"hash"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___HasBlockRequestProto: typing_extensions.TypeAlias = HasBlockRequestProto
+Global___HasBlockRequestProto: _TypeAlias = HasBlockRequestProto  # noqa: Y015
 
-@typing.final
-class HasBlockProto(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class HasBlockProto(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    HASH_FIELD_NUMBER: builtins.int
-    hash: builtins.bytes
+    HASH_FIELD_NUMBER: _builtins.int
+    hash: _builtins.bytes
     def __init__(
         self,
         *,
-        hash: builtins.bytes = ...,
+        hash: _builtins.bytes = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["hash", b"hash"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["hash", b"hash"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___HasBlockProto: typing_extensions.TypeAlias = HasBlockProto
+Global___HasBlockProto: _TypeAlias = HasBlockProto  # noqa: Y015
 
-@typing.final
-class BlockRequestProto(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class BlockRequestProto(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    HASH_FIELD_NUMBER: builtins.int
-    hash: builtins.bytes
+    HASH_FIELD_NUMBER: _builtins.int
+    hash: _builtins.bytes
     def __init__(
         self,
         *,
-        hash: builtins.bytes = ...,
+        hash: _builtins.bytes = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["hash", b"hash"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["hash", b"hash"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___BlockRequestProto: typing_extensions.TypeAlias = BlockRequestProto
+Global___BlockRequestProto: _TypeAlias = BlockRequestProto  # noqa: Y015
 
-@typing.final
-class ForkChoiceTipRequestProto(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class ForkChoiceTipRequestProto(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
     def __init__(
         self,
     ) -> None: ...
 
-Global___ForkChoiceTipRequestProto: typing_extensions.TypeAlias = ForkChoiceTipRequestProto
+Global___ForkChoiceTipRequestProto: _TypeAlias = ForkChoiceTipRequestProto  # noqa: Y015
 
-@typing.final
-class ApprovedBlockCandidateProto(google.protobuf.message.Message):
+@_typing.final
+class ApprovedBlockCandidateProto(_message.Message):
     """---------- Signing Protocol ---------"""
 
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+    DESCRIPTOR: _descriptor.Descriptor
 
-    BLOCK_FIELD_NUMBER: builtins.int
-    REQUIREDSIGS_FIELD_NUMBER: builtins.int
-    requiredSigs: builtins.int
-    @property
+    BLOCK_FIELD_NUMBER: _builtins.int
+    REQUIREDSIGS_FIELD_NUMBER: _builtins.int
+    requiredSigs: _builtins.int
+    @_builtins.property
     def block(self) -> Global___BlockMessageProto: ...
     def __init__(
         self,
         *,
         block: Global___BlockMessageProto | None = ...,
-        requiredSigs: builtins.int = ...,
+        requiredSigs: _builtins.int = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["block", b"block"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["block", b"block", "requiredSigs", b"requiredSigs"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["block", b"block"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["block", b"block", "requiredSigs", b"requiredSigs"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___ApprovedBlockCandidateProto: typing_extensions.TypeAlias = ApprovedBlockCandidateProto
+Global___ApprovedBlockCandidateProto: _TypeAlias = ApprovedBlockCandidateProto  # noqa: Y015
 
-@typing.final
-class UnapprovedBlockProto(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class UnapprovedBlockProto(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    CANDIDATE_FIELD_NUMBER: builtins.int
-    TIMESTAMP_FIELD_NUMBER: builtins.int
-    DURATION_FIELD_NUMBER: builtins.int
-    timestamp: builtins.int
-    duration: builtins.int
-    @property
+    CANDIDATE_FIELD_NUMBER: _builtins.int
+    TIMESTAMP_FIELD_NUMBER: _builtins.int
+    DURATION_FIELD_NUMBER: _builtins.int
+    timestamp: _builtins.int
+    duration: _builtins.int
+    @_builtins.property
     def candidate(self) -> Global___ApprovedBlockCandidateProto: ...
     def __init__(
         self,
         *,
         candidate: Global___ApprovedBlockCandidateProto | None = ...,
-        timestamp: builtins.int = ...,
-        duration: builtins.int = ...,
+        timestamp: _builtins.int = ...,
+        duration: _builtins.int = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["candidate", b"candidate"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["candidate", b"candidate", "duration", b"duration", "timestamp", b"timestamp"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["candidate", b"candidate"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["candidate", b"candidate", "duration", b"duration", "timestamp", b"timestamp"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___UnapprovedBlockProto: typing_extensions.TypeAlias = UnapprovedBlockProto
+Global___UnapprovedBlockProto: _TypeAlias = UnapprovedBlockProto  # noqa: Y015
 
-@typing.final
-class Signature(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class Signature(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    PUBLICKEY_FIELD_NUMBER: builtins.int
-    ALGORITHM_FIELD_NUMBER: builtins.int
-    SIG_FIELD_NUMBER: builtins.int
-    publicKey: builtins.bytes
-    algorithm: builtins.str
-    sig: builtins.bytes
+    PUBLICKEY_FIELD_NUMBER: _builtins.int
+    ALGORITHM_FIELD_NUMBER: _builtins.int
+    SIG_FIELD_NUMBER: _builtins.int
+    publicKey: _builtins.bytes
+    algorithm: _builtins.str
+    sig: _builtins.bytes
     def __init__(
         self,
         *,
-        publicKey: builtins.bytes = ...,
-        algorithm: builtins.str = ...,
-        sig: builtins.bytes = ...,
+        publicKey: _builtins.bytes = ...,
+        algorithm: _builtins.str = ...,
+        sig: _builtins.bytes = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["algorithm", b"algorithm", "publicKey", b"publicKey", "sig", b"sig"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["algorithm", b"algorithm", "publicKey", b"publicKey", "sig", b"sig"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___Signature: typing_extensions.TypeAlias = Signature
+Global___Signature: _TypeAlias = Signature  # noqa: Y015
 
-@typing.final
-class BlockApprovalProto(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class BlockApprovalProto(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    CANDIDATE_FIELD_NUMBER: builtins.int
-    SIG_FIELD_NUMBER: builtins.int
-    @property
+    CANDIDATE_FIELD_NUMBER: _builtins.int
+    SIG_FIELD_NUMBER: _builtins.int
+    @_builtins.property
     def candidate(self) -> Global___ApprovedBlockCandidateProto: ...
-    @property
+    @_builtins.property
     def sig(self) -> Global___Signature: ...
     def __init__(
         self,
@@ -166,363 +166,363 @@ class BlockApprovalProto(google.protobuf.message.Message):
         candidate: Global___ApprovedBlockCandidateProto | None = ...,
         sig: Global___Signature | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["candidate", b"candidate", "sig", b"sig"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["candidate", b"candidate", "sig", b"sig"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["candidate", b"candidate", "sig", b"sig"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["candidate", b"candidate", "sig", b"sig"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___BlockApprovalProto: typing_extensions.TypeAlias = BlockApprovalProto
+Global___BlockApprovalProto: _TypeAlias = BlockApprovalProto  # noqa: Y015
 
-@typing.final
-class ApprovedBlockProto(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class ApprovedBlockProto(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    CANDIDATE_FIELD_NUMBER: builtins.int
-    SIGS_FIELD_NUMBER: builtins.int
-    @property
+    CANDIDATE_FIELD_NUMBER: _builtins.int
+    SIGS_FIELD_NUMBER: _builtins.int
+    @_builtins.property
     def candidate(self) -> Global___ApprovedBlockCandidateProto: ...
-    @property
-    def sigs(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[Global___Signature]: ...
+    @_builtins.property
+    def sigs(self) -> _containers.RepeatedCompositeFieldContainer[Global___Signature]: ...
     def __init__(
         self,
         *,
         candidate: Global___ApprovedBlockCandidateProto | None = ...,
-        sigs: collections.abc.Iterable[Global___Signature] | None = ...,
+        sigs: _abc.Iterable[Global___Signature] | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["candidate", b"candidate"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["candidate", b"candidate", "sigs", b"sigs"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["candidate", b"candidate"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["candidate", b"candidate", "sigs", b"sigs"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___ApprovedBlockProto: typing_extensions.TypeAlias = ApprovedBlockProto
+Global___ApprovedBlockProto: _TypeAlias = ApprovedBlockProto  # noqa: Y015
 
-@typing.final
-class ApprovedBlockRequestProto(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class ApprovedBlockRequestProto(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    IDENTIFIER_FIELD_NUMBER: builtins.int
-    TRIMSTATE_FIELD_NUMBER: builtins.int
-    identifier: builtins.str
-    trimState: builtins.bool
+    IDENTIFIER_FIELD_NUMBER: _builtins.int
+    TRIMSTATE_FIELD_NUMBER: _builtins.int
+    identifier: _builtins.str
+    trimState: _builtins.bool
     def __init__(
         self,
         *,
-        identifier: builtins.str = ...,
-        trimState: builtins.bool = ...,
+        identifier: _builtins.str = ...,
+        trimState: _builtins.bool = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["identifier", b"identifier", "trimState", b"trimState"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["identifier", b"identifier", "trimState", b"trimState"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___ApprovedBlockRequestProto: typing_extensions.TypeAlias = ApprovedBlockRequestProto
+Global___ApprovedBlockRequestProto: _TypeAlias = ApprovedBlockRequestProto  # noqa: Y015
 
-@typing.final
-class NoApprovedBlockAvailableProto(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class NoApprovedBlockAvailableProto(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    IDENTIFIER_FIELD_NUMBER: builtins.int
-    NODEIDENTIFER_FIELD_NUMBER: builtins.int
-    identifier: builtins.str
-    nodeIdentifer: builtins.str
+    IDENTIFIER_FIELD_NUMBER: _builtins.int
+    NODEIDENTIFER_FIELD_NUMBER: _builtins.int
+    identifier: _builtins.str
+    nodeIdentifer: _builtins.str
     def __init__(
         self,
         *,
-        identifier: builtins.str = ...,
-        nodeIdentifer: builtins.str = ...,
+        identifier: _builtins.str = ...,
+        nodeIdentifer: _builtins.str = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["identifier", b"identifier", "nodeIdentifer", b"nodeIdentifer"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["identifier", b"identifier", "nodeIdentifer", b"nodeIdentifer"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___NoApprovedBlockAvailableProto: typing_extensions.TypeAlias = NoApprovedBlockAvailableProto
+Global___NoApprovedBlockAvailableProto: _TypeAlias = NoApprovedBlockAvailableProto  # noqa: Y015
 
-@typing.final
-class BlockMessageProto(google.protobuf.message.Message):
+@_typing.final
+class BlockMessageProto(_message.Message):
     """------- End Signing Protocol --------
 
     --------- Core Protocol  --------
     """
 
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+    DESCRIPTOR: _descriptor.Descriptor
 
-    BLOCKHASH_FIELD_NUMBER: builtins.int
-    HEADER_FIELD_NUMBER: builtins.int
-    BODY_FIELD_NUMBER: builtins.int
-    JUSTIFICATIONS_FIELD_NUMBER: builtins.int
-    SENDER_FIELD_NUMBER: builtins.int
-    SEQNUM_FIELD_NUMBER: builtins.int
-    SIG_FIELD_NUMBER: builtins.int
-    SIGALGORITHM_FIELD_NUMBER: builtins.int
-    SHARDID_FIELD_NUMBER: builtins.int
-    EXTRABYTES_FIELD_NUMBER: builtins.int
-    blockHash: builtins.bytes
+    BLOCKHASH_FIELD_NUMBER: _builtins.int
+    HEADER_FIELD_NUMBER: _builtins.int
+    BODY_FIELD_NUMBER: _builtins.int
+    JUSTIFICATIONS_FIELD_NUMBER: _builtins.int
+    SENDER_FIELD_NUMBER: _builtins.int
+    SEQNUM_FIELD_NUMBER: _builtins.int
+    SIG_FIELD_NUMBER: _builtins.int
+    SIGALGORITHM_FIELD_NUMBER: _builtins.int
+    SHARDID_FIELD_NUMBER: _builtins.int
+    EXTRABYTES_FIELD_NUMBER: _builtins.int
+    blockHash: _builtins.bytes
     """obtained by hashing the information in the header"""
-    sender: builtins.bytes
+    sender: _builtins.bytes
     """public key of the validator that created the block"""
-    seqNum: builtins.int
+    seqNum: _builtins.int
     """number of blocks created by the validator"""
-    sig: builtins.bytes
+    sig: _builtins.bytes
     """signature generated by signing `hash(hash(justification) concat blockHash)`."""
-    sigAlgorithm: builtins.str
+    sigAlgorithm: _builtins.str
     """name of the algorithm used to sign"""
-    shardId: builtins.str
+    shardId: _builtins.str
     """identifier of the shard where the block was created"""
-    extraBytes: builtins.bytes
-    @property
+    extraBytes: _builtins.bytes
+    @_builtins.property
     def header(self) -> Global___HeaderProto: ...
-    @property
+    @_builtins.property
     def body(self) -> Global___BodyProto: ...
-    @property
-    def justifications(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[Global___JustificationProto]:
+    @_builtins.property
+    def justifications(self) -> _containers.RepeatedCompositeFieldContainer[Global___JustificationProto]:
         """map of all validators to latest blocks based on current view"""
 
     def __init__(
         self,
         *,
-        blockHash: builtins.bytes = ...,
+        blockHash: _builtins.bytes = ...,
         header: Global___HeaderProto | None = ...,
         body: Global___BodyProto | None = ...,
-        justifications: collections.abc.Iterable[Global___JustificationProto] | None = ...,
-        sender: builtins.bytes = ...,
-        seqNum: builtins.int = ...,
-        sig: builtins.bytes = ...,
-        sigAlgorithm: builtins.str = ...,
-        shardId: builtins.str = ...,
-        extraBytes: builtins.bytes = ...,
+        justifications: _abc.Iterable[Global___JustificationProto] | None = ...,
+        sender: _builtins.bytes = ...,
+        seqNum: _builtins.int = ...,
+        sig: _builtins.bytes = ...,
+        sigAlgorithm: _builtins.str = ...,
+        shardId: _builtins.str = ...,
+        extraBytes: _builtins.bytes = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["body", b"body", "header", b"header"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["blockHash", b"blockHash", "body", b"body", "extraBytes", b"extraBytes", "header", b"header", "justifications", b"justifications", "sender", b"sender", "seqNum", b"seqNum", "shardId", b"shardId", "sig", b"sig", "sigAlgorithm", b"sigAlgorithm"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["body", b"body", "header", b"header"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["blockHash", b"blockHash", "body", b"body", "extraBytes", b"extraBytes", "header", b"header", "justifications", b"justifications", "sender", b"sender", "seqNum", b"seqNum", "shardId", b"shardId", "sig", b"sig", "sigAlgorithm", b"sigAlgorithm"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___BlockMessageProto: typing_extensions.TypeAlias = BlockMessageProto
+Global___BlockMessageProto: _TypeAlias = BlockMessageProto  # noqa: Y015
 
-@typing.final
-class BlockHashMessageProto(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class BlockHashMessageProto(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    HASH_FIELD_NUMBER: builtins.int
-    BLOCKCREATOR_FIELD_NUMBER: builtins.int
-    hash: builtins.bytes
-    blockCreator: builtins.bytes
+    HASH_FIELD_NUMBER: _builtins.int
+    BLOCKCREATOR_FIELD_NUMBER: _builtins.int
+    hash: _builtins.bytes
+    blockCreator: _builtins.bytes
     def __init__(
         self,
         *,
-        hash: builtins.bytes = ...,
-        blockCreator: builtins.bytes = ...,
+        hash: _builtins.bytes = ...,
+        blockCreator: _builtins.bytes = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["blockCreator", b"blockCreator", "hash", b"hash"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["blockCreator", b"blockCreator", "hash", b"hash"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___BlockHashMessageProto: typing_extensions.TypeAlias = BlockHashMessageProto
+Global___BlockHashMessageProto: _TypeAlias = BlockHashMessageProto  # noqa: Y015
 
-@typing.final
-class BlockMetadataInternal(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class BlockMetadataInternal(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    BLOCKHASH_FIELD_NUMBER: builtins.int
-    PARENTS_FIELD_NUMBER: builtins.int
-    SENDER_FIELD_NUMBER: builtins.int
-    JUSTIFICATIONS_FIELD_NUMBER: builtins.int
-    BONDS_FIELD_NUMBER: builtins.int
-    BLOCKNUM_FIELD_NUMBER: builtins.int
-    SEQNUM_FIELD_NUMBER: builtins.int
-    INVALID_FIELD_NUMBER: builtins.int
-    DIRECTLYFINALIZED_FIELD_NUMBER: builtins.int
-    FINALIZED_FIELD_NUMBER: builtins.int
-    blockHash: builtins.bytes
-    sender: builtins.bytes
-    blockNum: builtins.int
-    seqNum: builtins.int
-    invalid: builtins.bool
+    BLOCKHASH_FIELD_NUMBER: _builtins.int
+    PARENTS_FIELD_NUMBER: _builtins.int
+    SENDER_FIELD_NUMBER: _builtins.int
+    JUSTIFICATIONS_FIELD_NUMBER: _builtins.int
+    BONDS_FIELD_NUMBER: _builtins.int
+    BLOCKNUM_FIELD_NUMBER: _builtins.int
+    SEQNUM_FIELD_NUMBER: _builtins.int
+    INVALID_FIELD_NUMBER: _builtins.int
+    DIRECTLYFINALIZED_FIELD_NUMBER: _builtins.int
+    FINALIZED_FIELD_NUMBER: _builtins.int
+    blockHash: _builtins.bytes
+    sender: _builtins.bytes
+    blockNum: _builtins.int
+    seqNum: _builtins.int
+    invalid: _builtins.bool
     """whether the block was marked as invalid"""
-    directlyFinalized: builtins.bool
+    directlyFinalized: _builtins.bool
     """whether the block has been last finalized block (LFB)"""
-    finalized: builtins.bool
+    finalized: _builtins.bool
     """whether the block is finalized"""
-    @property
-    def parents(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.bytes]: ...
-    @property
-    def justifications(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[Global___JustificationProto]: ...
-    @property
-    def bonds(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[Global___BondProto]: ...
+    @_builtins.property
+    def parents(self) -> _containers.RepeatedScalarFieldContainer[_builtins.bytes]: ...
+    @_builtins.property
+    def justifications(self) -> _containers.RepeatedCompositeFieldContainer[Global___JustificationProto]: ...
+    @_builtins.property
+    def bonds(self) -> _containers.RepeatedCompositeFieldContainer[Global___BondProto]: ...
     def __init__(
         self,
         *,
-        blockHash: builtins.bytes = ...,
-        parents: collections.abc.Iterable[builtins.bytes] | None = ...,
-        sender: builtins.bytes = ...,
-        justifications: collections.abc.Iterable[Global___JustificationProto] | None = ...,
-        bonds: collections.abc.Iterable[Global___BondProto] | None = ...,
-        blockNum: builtins.int = ...,
-        seqNum: builtins.int = ...,
-        invalid: builtins.bool = ...,
-        directlyFinalized: builtins.bool = ...,
-        finalized: builtins.bool = ...,
+        blockHash: _builtins.bytes = ...,
+        parents: _abc.Iterable[_builtins.bytes] | None = ...,
+        sender: _builtins.bytes = ...,
+        justifications: _abc.Iterable[Global___JustificationProto] | None = ...,
+        bonds: _abc.Iterable[Global___BondProto] | None = ...,
+        blockNum: _builtins.int = ...,
+        seqNum: _builtins.int = ...,
+        invalid: _builtins.bool = ...,
+        directlyFinalized: _builtins.bool = ...,
+        finalized: _builtins.bool = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["blockHash", b"blockHash", "blockNum", b"blockNum", "bonds", b"bonds", "directlyFinalized", b"directlyFinalized", "finalized", b"finalized", "invalid", b"invalid", "justifications", b"justifications", "parents", b"parents", "sender", b"sender", "seqNum", b"seqNum"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["blockHash", b"blockHash", "blockNum", b"blockNum", "bonds", b"bonds", "directlyFinalized", b"directlyFinalized", "finalized", b"finalized", "invalid", b"invalid", "justifications", b"justifications", "parents", b"parents", "sender", b"sender", "seqNum", b"seqNum"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___BlockMetadataInternal: typing_extensions.TypeAlias = BlockMetadataInternal
+Global___BlockMetadataInternal: _TypeAlias = BlockMetadataInternal  # noqa: Y015
 
-@typing.final
-class HeaderProto(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class HeaderProto(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    PARENTSHASHLIST_FIELD_NUMBER: builtins.int
-    TIMESTAMP_FIELD_NUMBER: builtins.int
-    VERSION_FIELD_NUMBER: builtins.int
-    EXTRABYTES_FIELD_NUMBER: builtins.int
-    timestamp: builtins.int
-    version: builtins.int
-    extraBytes: builtins.bytes
-    @property
-    def parentsHashList(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.bytes]:
+    PARENTSHASHLIST_FIELD_NUMBER: _builtins.int
+    TIMESTAMP_FIELD_NUMBER: _builtins.int
+    VERSION_FIELD_NUMBER: _builtins.int
+    EXTRABYTES_FIELD_NUMBER: _builtins.int
+    timestamp: _builtins.int
+    version: _builtins.int
+    extraBytes: _builtins.bytes
+    @_builtins.property
+    def parentsHashList(self) -> _containers.RepeatedScalarFieldContainer[_builtins.bytes]:
         """list of parent block hashes"""
 
     def __init__(
         self,
         *,
-        parentsHashList: collections.abc.Iterable[builtins.bytes] | None = ...,
-        timestamp: builtins.int = ...,
-        version: builtins.int = ...,
-        extraBytes: builtins.bytes = ...,
+        parentsHashList: _abc.Iterable[_builtins.bytes] | None = ...,
+        timestamp: _builtins.int = ...,
+        version: _builtins.int = ...,
+        extraBytes: _builtins.bytes = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["extraBytes", b"extraBytes", "parentsHashList", b"parentsHashList", "timestamp", b"timestamp", "version", b"version"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["extraBytes", b"extraBytes", "parentsHashList", b"parentsHashList", "timestamp", b"timestamp", "version", b"version"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___HeaderProto: typing_extensions.TypeAlias = HeaderProto
+Global___HeaderProto: _TypeAlias = HeaderProto  # noqa: Y015
 
-@typing.final
-class DeployDataProto(google.protobuf.message.Message):
+@_typing.final
+class DeployDataProto(_message.Message):
     """*
     Note: deploys are uniquely keyed by `user`, `timestamp`.
 
     **TODO**: details of signatures and payment. See RHOL-781
     """
 
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+    DESCRIPTOR: _descriptor.Descriptor
 
-    DEPLOYER_FIELD_NUMBER: builtins.int
-    TERM_FIELD_NUMBER: builtins.int
-    TIMESTAMP_FIELD_NUMBER: builtins.int
-    SIG_FIELD_NUMBER: builtins.int
-    SIGALGORITHM_FIELD_NUMBER: builtins.int
-    PHLOPRICE_FIELD_NUMBER: builtins.int
-    PHLOLIMIT_FIELD_NUMBER: builtins.int
-    VALIDAFTERBLOCKNUMBER_FIELD_NUMBER: builtins.int
-    SHARDID_FIELD_NUMBER: builtins.int
-    LANGUAGE_FIELD_NUMBER: builtins.int
-    deployer: builtins.bytes
+    DEPLOYER_FIELD_NUMBER: _builtins.int
+    TERM_FIELD_NUMBER: _builtins.int
+    TIMESTAMP_FIELD_NUMBER: _builtins.int
+    SIG_FIELD_NUMBER: _builtins.int
+    SIGALGORITHM_FIELD_NUMBER: _builtins.int
+    PHLOPRICE_FIELD_NUMBER: _builtins.int
+    PHLOLIMIT_FIELD_NUMBER: _builtins.int
+    VALIDAFTERBLOCKNUMBER_FIELD_NUMBER: _builtins.int
+    SHARDID_FIELD_NUMBER: _builtins.int
+    LANGUAGE_FIELD_NUMBER: _builtins.int
+    deployer: _builtins.bytes
     """public key"""
-    term: builtins.str
+    term: _builtins.str
     """rholang source code to deploy (will be parsed into `Par`)"""
-    timestamp: builtins.int
+    timestamp: _builtins.int
     """millisecond timestamp"""
-    sig: builtins.bytes
+    sig: _builtins.bytes
     """signature of (hash(term) + timestamp) using private key"""
-    sigAlgorithm: builtins.str
+    sigAlgorithm: _builtins.str
     """name of the algorithm used to sign"""
-    phloPrice: builtins.int
+    phloPrice: _builtins.int
     """phlo price"""
-    phloLimit: builtins.int
+    phloLimit: _builtins.int
     """phlo limit for the deployment"""
-    validAfterBlockNumber: builtins.int
-    shardId: builtins.str
+    validAfterBlockNumber: _builtins.int
+    shardId: _builtins.str
     """shard ID to prevent replay of deploys between shards"""
-    language: builtins.str
+    language: _builtins.str
     """language (rholang or metta) of the source code"""
     def __init__(
         self,
         *,
-        deployer: builtins.bytes = ...,
-        term: builtins.str = ...,
-        timestamp: builtins.int = ...,
-        sig: builtins.bytes = ...,
-        sigAlgorithm: builtins.str = ...,
-        phloPrice: builtins.int = ...,
-        phloLimit: builtins.int = ...,
-        validAfterBlockNumber: builtins.int = ...,
-        shardId: builtins.str = ...,
-        language: builtins.str = ...,
+        deployer: _builtins.bytes = ...,
+        term: _builtins.str = ...,
+        timestamp: _builtins.int = ...,
+        sig: _builtins.bytes = ...,
+        sigAlgorithm: _builtins.str = ...,
+        phloPrice: _builtins.int = ...,
+        phloLimit: _builtins.int = ...,
+        validAfterBlockNumber: _builtins.int = ...,
+        shardId: _builtins.str = ...,
+        language: _builtins.str = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["deployer", b"deployer", "language", b"language", "phloLimit", b"phloLimit", "phloPrice", b"phloPrice", "shardId", b"shardId", "sig", b"sig", "sigAlgorithm", b"sigAlgorithm", "term", b"term", "timestamp", b"timestamp", "validAfterBlockNumber", b"validAfterBlockNumber"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["deployer", b"deployer", "language", b"language", "phloLimit", b"phloLimit", "phloPrice", b"phloPrice", "shardId", b"shardId", "sig", b"sig", "sigAlgorithm", b"sigAlgorithm", "term", b"term", "timestamp", b"timestamp", "validAfterBlockNumber", b"validAfterBlockNumber"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___DeployDataProto: typing_extensions.TypeAlias = DeployDataProto
+Global___DeployDataProto: _TypeAlias = DeployDataProto  # noqa: Y015
 
-@typing.final
-class ProcessedDeployProto(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class ProcessedDeployProto(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    DEPLOY_FIELD_NUMBER: builtins.int
-    COST_FIELD_NUMBER: builtins.int
-    DEPLOYLOG_FIELD_NUMBER: builtins.int
-    ERRORED_FIELD_NUMBER: builtins.int
-    SYSTEMDEPLOYERROR_FIELD_NUMBER: builtins.int
-    errored: builtins.bool
+    DEPLOY_FIELD_NUMBER: _builtins.int
+    COST_FIELD_NUMBER: _builtins.int
+    DEPLOYLOG_FIELD_NUMBER: _builtins.int
+    ERRORED_FIELD_NUMBER: _builtins.int
+    SYSTEMDEPLOYERROR_FIELD_NUMBER: _builtins.int
+    errored: _builtins.bool
     """true if deploy encountered a user error"""
-    systemDeployError: builtins.str
-    @property
+    systemDeployError: _builtins.str
+    @_builtins.property
     def deploy(self) -> Global___DeployDataProto: ...
-    @property
-    def cost(self) -> RhoTypes_pb2.PCost: ...
-    @property
-    def deployLog(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[Global___EventProto]:
+    @_builtins.property
+    def cost(self) -> _RhoTypes_pb2.PCost: ...
+    @_builtins.property
+    def deployLog(self) -> _containers.RepeatedCompositeFieldContainer[Global___EventProto]:
         """the new terms and comm. rule reductions from this deploy"""
 
     def __init__(
         self,
         *,
         deploy: Global___DeployDataProto | None = ...,
-        cost: RhoTypes_pb2.PCost | None = ...,
-        deployLog: collections.abc.Iterable[Global___EventProto] | None = ...,
-        errored: builtins.bool = ...,
-        systemDeployError: builtins.str = ...,
+        cost: _RhoTypes_pb2.PCost | None = ...,
+        deployLog: _abc.Iterable[Global___EventProto] | None = ...,
+        errored: _builtins.bool = ...,
+        systemDeployError: _builtins.str = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["cost", b"cost", "deploy", b"deploy"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["cost", b"cost", "deploy", b"deploy", "deployLog", b"deployLog", "errored", b"errored", "systemDeployError", b"systemDeployError"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["cost", b"cost", "deploy", b"deploy"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["cost", b"cost", "deploy", b"deploy", "deployLog", b"deployLog", "errored", b"errored", "systemDeployError", b"systemDeployError"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___ProcessedDeployProto: typing_extensions.TypeAlias = ProcessedDeployProto
+Global___ProcessedDeployProto: _TypeAlias = ProcessedDeployProto  # noqa: Y015
 
-@typing.final
-class SlashSystemDeployDataProto(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class SlashSystemDeployDataProto(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    INVALIDBLOCKHASH_FIELD_NUMBER: builtins.int
-    ISSUERPUBLICKEY_FIELD_NUMBER: builtins.int
-    invalidBlockHash: builtins.bytes
-    issuerPublicKey: builtins.bytes
+    INVALIDBLOCKHASH_FIELD_NUMBER: _builtins.int
+    ISSUERPUBLICKEY_FIELD_NUMBER: _builtins.int
+    invalidBlockHash: _builtins.bytes
+    issuerPublicKey: _builtins.bytes
     def __init__(
         self,
         *,
-        invalidBlockHash: builtins.bytes = ...,
-        issuerPublicKey: builtins.bytes = ...,
+        invalidBlockHash: _builtins.bytes = ...,
+        issuerPublicKey: _builtins.bytes = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["invalidBlockHash", b"invalidBlockHash", "issuerPublicKey", b"issuerPublicKey"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["invalidBlockHash", b"invalidBlockHash", "issuerPublicKey", b"issuerPublicKey"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___SlashSystemDeployDataProto: typing_extensions.TypeAlias = SlashSystemDeployDataProto
+Global___SlashSystemDeployDataProto: _TypeAlias = SlashSystemDeployDataProto  # noqa: Y015
 
-@typing.final
-class CloseBlockSystemDeployDataProto(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class CloseBlockSystemDeployDataProto(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
     def __init__(
         self,
     ) -> None: ...
 
-Global___CloseBlockSystemDeployDataProto: typing_extensions.TypeAlias = CloseBlockSystemDeployDataProto
+Global___CloseBlockSystemDeployDataProto: _TypeAlias = CloseBlockSystemDeployDataProto  # noqa: Y015
 
-@typing.final
-class SystemDeployDataProto(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class SystemDeployDataProto(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    SLASHSYSTEMDEPLOY_FIELD_NUMBER: builtins.int
-    CLOSEBLOCKSYSTEMDEPLOY_FIELD_NUMBER: builtins.int
-    @property
+    SLASHSYSTEMDEPLOY_FIELD_NUMBER: _builtins.int
+    CLOSEBLOCKSYSTEMDEPLOY_FIELD_NUMBER: _builtins.int
+    @_builtins.property
     def slashSystemDeploy(self) -> Global___SlashSystemDeployDataProto: ...
-    @property
+    @_builtins.property
     def closeBlockSystemDeploy(self) -> Global___CloseBlockSystemDeployDataProto: ...
     def __init__(
         self,
@@ -530,126 +530,126 @@ class SystemDeployDataProto(google.protobuf.message.Message):
         slashSystemDeploy: Global___SlashSystemDeployDataProto | None = ...,
         closeBlockSystemDeploy: Global___CloseBlockSystemDeployDataProto | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["closeBlockSystemDeploy", b"closeBlockSystemDeploy", "slashSystemDeploy", b"slashSystemDeploy", "systemDeploy", b"systemDeploy"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["closeBlockSystemDeploy", b"closeBlockSystemDeploy", "slashSystemDeploy", b"slashSystemDeploy", "systemDeploy", b"systemDeploy"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["closeBlockSystemDeploy", b"closeBlockSystemDeploy", "slashSystemDeploy", b"slashSystemDeploy", "systemDeploy", b"systemDeploy"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["closeBlockSystemDeploy", b"closeBlockSystemDeploy", "slashSystemDeploy", b"slashSystemDeploy", "systemDeploy", b"systemDeploy"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
-    _WhichOneofReturnType_systemDeploy: typing_extensions.TypeAlias = typing.Literal["slashSystemDeploy", "closeBlockSystemDeploy"]
-    _WhichOneofArgType_systemDeploy: typing_extensions.TypeAlias = typing.Literal["systemDeploy", b"systemDeploy"]
+    _WhichOneofReturnType_systemDeploy: _TypeAlias = _typing.Literal["slashSystemDeploy", "closeBlockSystemDeploy"]  # noqa: Y015
+    _WhichOneofArgType_systemDeploy: _TypeAlias = _typing.Literal["systemDeploy", b"systemDeploy"]  # noqa: Y015
     def WhichOneof(self, oneof_group: _WhichOneofArgType_systemDeploy) -> _WhichOneofReturnType_systemDeploy | None: ...
 
-Global___SystemDeployDataProto: typing_extensions.TypeAlias = SystemDeployDataProto
+Global___SystemDeployDataProto: _TypeAlias = SystemDeployDataProto  # noqa: Y015
 
-@typing.final
-class ProcessedSystemDeployProto(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class ProcessedSystemDeployProto(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    SYSTEMDEPLOY_FIELD_NUMBER: builtins.int
-    DEPLOYLOG_FIELD_NUMBER: builtins.int
-    ERRORMSG_FIELD_NUMBER: builtins.int
-    errorMsg: builtins.str
-    @property
+    SYSTEMDEPLOY_FIELD_NUMBER: _builtins.int
+    DEPLOYLOG_FIELD_NUMBER: _builtins.int
+    ERRORMSG_FIELD_NUMBER: _builtins.int
+    errorMsg: _builtins.str
+    @_builtins.property
     def systemDeploy(self) -> Global___SystemDeployDataProto: ...
-    @property
-    def deployLog(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[Global___EventProto]: ...
+    @_builtins.property
+    def deployLog(self) -> _containers.RepeatedCompositeFieldContainer[Global___EventProto]: ...
     def __init__(
         self,
         *,
         systemDeploy: Global___SystemDeployDataProto | None = ...,
-        deployLog: collections.abc.Iterable[Global___EventProto] | None = ...,
-        errorMsg: builtins.str = ...,
+        deployLog: _abc.Iterable[Global___EventProto] | None = ...,
+        errorMsg: _builtins.str = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["systemDeploy", b"systemDeploy"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["deployLog", b"deployLog", "errorMsg", b"errorMsg", "systemDeploy", b"systemDeploy"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["systemDeploy", b"systemDeploy"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["deployLog", b"deployLog", "errorMsg", b"errorMsg", "systemDeploy", b"systemDeploy"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___ProcessedSystemDeployProto: typing_extensions.TypeAlias = ProcessedSystemDeployProto
+Global___ProcessedSystemDeployProto: _TypeAlias = ProcessedSystemDeployProto  # noqa: Y015
 
-@typing.final
-class BodyProto(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class BodyProto(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    STATE_FIELD_NUMBER: builtins.int
-    DEPLOYS_FIELD_NUMBER: builtins.int
-    SYSTEMDEPLOYS_FIELD_NUMBER: builtins.int
-    EXTRABYTES_FIELD_NUMBER: builtins.int
-    REJECTEDDEPLOYS_FIELD_NUMBER: builtins.int
-    extraBytes: builtins.bytes
-    @property
+    STATE_FIELD_NUMBER: _builtins.int
+    DEPLOYS_FIELD_NUMBER: _builtins.int
+    SYSTEMDEPLOYS_FIELD_NUMBER: _builtins.int
+    EXTRABYTES_FIELD_NUMBER: _builtins.int
+    REJECTEDDEPLOYS_FIELD_NUMBER: _builtins.int
+    extraBytes: _builtins.bytes
+    @_builtins.property
     def state(self) -> Global___RChainStateProto: ...
-    @property
-    def deploys(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[Global___ProcessedDeployProto]: ...
-    @property
-    def systemDeploys(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[Global___ProcessedSystemDeployProto]: ...
-    @property
-    def rejectedDeploys(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[Global___RejectedDeployProto]: ...
+    @_builtins.property
+    def deploys(self) -> _containers.RepeatedCompositeFieldContainer[Global___ProcessedDeployProto]: ...
+    @_builtins.property
+    def systemDeploys(self) -> _containers.RepeatedCompositeFieldContainer[Global___ProcessedSystemDeployProto]: ...
+    @_builtins.property
+    def rejectedDeploys(self) -> _containers.RepeatedCompositeFieldContainer[Global___RejectedDeployProto]: ...
     def __init__(
         self,
         *,
         state: Global___RChainStateProto | None = ...,
-        deploys: collections.abc.Iterable[Global___ProcessedDeployProto] | None = ...,
-        systemDeploys: collections.abc.Iterable[Global___ProcessedSystemDeployProto] | None = ...,
-        extraBytes: builtins.bytes = ...,
-        rejectedDeploys: collections.abc.Iterable[Global___RejectedDeployProto] | None = ...,
+        deploys: _abc.Iterable[Global___ProcessedDeployProto] | None = ...,
+        systemDeploys: _abc.Iterable[Global___ProcessedSystemDeployProto] | None = ...,
+        extraBytes: _builtins.bytes = ...,
+        rejectedDeploys: _abc.Iterable[Global___RejectedDeployProto] | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["state", b"state"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["deploys", b"deploys", "extraBytes", b"extraBytes", "rejectedDeploys", b"rejectedDeploys", "state", b"state", "systemDeploys", b"systemDeploys"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["state", b"state"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["deploys", b"deploys", "extraBytes", b"extraBytes", "rejectedDeploys", b"rejectedDeploys", "state", b"state", "systemDeploys", b"systemDeploys"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___BodyProto: typing_extensions.TypeAlias = BodyProto
+Global___BodyProto: _TypeAlias = BodyProto  # noqa: Y015
 
-@typing.final
-class RejectedDeployProto(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class RejectedDeployProto(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    SIG_FIELD_NUMBER: builtins.int
-    sig: builtins.bytes
+    SIG_FIELD_NUMBER: _builtins.int
+    sig: _builtins.bytes
     def __init__(
         self,
         *,
-        sig: builtins.bytes = ...,
+        sig: _builtins.bytes = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["sig", b"sig"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["sig", b"sig"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___RejectedDeployProto: typing_extensions.TypeAlias = RejectedDeployProto
+Global___RejectedDeployProto: _TypeAlias = RejectedDeployProto  # noqa: Y015
 
-@typing.final
-class JustificationProto(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class JustificationProto(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    VALIDATOR_FIELD_NUMBER: builtins.int
-    LATESTBLOCKHASH_FIELD_NUMBER: builtins.int
-    validator: builtins.bytes
-    latestBlockHash: builtins.bytes
+    VALIDATOR_FIELD_NUMBER: _builtins.int
+    LATESTBLOCKHASH_FIELD_NUMBER: _builtins.int
+    validator: _builtins.bytes
+    latestBlockHash: _builtins.bytes
     def __init__(
         self,
         *,
-        validator: builtins.bytes = ...,
-        latestBlockHash: builtins.bytes = ...,
+        validator: _builtins.bytes = ...,
+        latestBlockHash: _builtins.bytes = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["latestBlockHash", b"latestBlockHash", "validator", b"validator"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["latestBlockHash", b"latestBlockHash", "validator", b"validator"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___JustificationProto: typing_extensions.TypeAlias = JustificationProto
+Global___JustificationProto: _TypeAlias = JustificationProto  # noqa: Y015
 
-@typing.final
-class RChainStateProto(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class RChainStateProto(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    PRESTATEHASH_FIELD_NUMBER: builtins.int
-    POSTSTATEHASH_FIELD_NUMBER: builtins.int
-    BONDS_FIELD_NUMBER: builtins.int
-    BLOCKNUMBER_FIELD_NUMBER: builtins.int
-    preStateHash: builtins.bytes
+    PRESTATEHASH_FIELD_NUMBER: _builtins.int
+    POSTSTATEHASH_FIELD_NUMBER: _builtins.int
+    BONDS_FIELD_NUMBER: _builtins.int
+    BLOCKNUMBER_FIELD_NUMBER: _builtins.int
+    preStateHash: _builtins.bytes
     """hash of the tuplespace contents before new deploys"""
-    postStateHash: builtins.bytes
+    postStateHash: _builtins.bytes
     """hash of the tuplespace contents after new deploys"""
-    blockNumber: builtins.int
-    @property
-    def bonds(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[Global___BondProto]:
+    blockNumber: _builtins.int
+    @_builtins.property
+    def bonds(self) -> _containers.RepeatedCompositeFieldContainer[Global___BondProto]:
         """Internals of what will be the "blessed" PoS contract
         (which will be part of the tuplespace in the real implementation).
         """
@@ -657,28 +657,28 @@ class RChainStateProto(google.protobuf.message.Message):
     def __init__(
         self,
         *,
-        preStateHash: builtins.bytes = ...,
-        postStateHash: builtins.bytes = ...,
-        bonds: collections.abc.Iterable[Global___BondProto] | None = ...,
-        blockNumber: builtins.int = ...,
+        preStateHash: _builtins.bytes = ...,
+        postStateHash: _builtins.bytes = ...,
+        bonds: _abc.Iterable[Global___BondProto] | None = ...,
+        blockNumber: _builtins.int = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["blockNumber", b"blockNumber", "bonds", b"bonds", "postStateHash", b"postStateHash", "preStateHash", b"preStateHash"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["blockNumber", b"blockNumber", "bonds", b"bonds", "postStateHash", b"postStateHash", "preStateHash", b"preStateHash"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___RChainStateProto: typing_extensions.TypeAlias = RChainStateProto
+Global___RChainStateProto: _TypeAlias = RChainStateProto  # noqa: Y015
 
-@typing.final
-class EventProto(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class EventProto(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    PRODUCE_FIELD_NUMBER: builtins.int
-    CONSUME_FIELD_NUMBER: builtins.int
-    COMM_FIELD_NUMBER: builtins.int
-    @property
+    PRODUCE_FIELD_NUMBER: _builtins.int
+    CONSUME_FIELD_NUMBER: _builtins.int
+    COMM_FIELD_NUMBER: _builtins.int
+    @_builtins.property
     def produce(self) -> Global___ProduceEventProto: ...
-    @property
+    @_builtins.property
     def consume(self) -> Global___ConsumeEventProto: ...
-    @property
+    @_builtins.property
     def comm(self) -> Global___CommEventProto: ...
     def __init__(
         self,
@@ -687,224 +687,224 @@ class EventProto(google.protobuf.message.Message):
         consume: Global___ConsumeEventProto | None = ...,
         comm: Global___CommEventProto | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["comm", b"comm", "consume", b"consume", "event_instance", b"event_instance", "produce", b"produce"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["comm", b"comm", "consume", b"consume", "event_instance", b"event_instance", "produce", b"produce"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["comm", b"comm", "consume", b"consume", "event_instance", b"event_instance", "produce", b"produce"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["comm", b"comm", "consume", b"consume", "event_instance", b"event_instance", "produce", b"produce"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
-    _WhichOneofReturnType_event_instance: typing_extensions.TypeAlias = typing.Literal["produce", "consume", "comm"]
-    _WhichOneofArgType_event_instance: typing_extensions.TypeAlias = typing.Literal["event_instance", b"event_instance"]
+    _WhichOneofReturnType_event_instance: _TypeAlias = _typing.Literal["produce", "consume", "comm"]  # noqa: Y015
+    _WhichOneofArgType_event_instance: _TypeAlias = _typing.Literal["event_instance", b"event_instance"]  # noqa: Y015
     def WhichOneof(self, oneof_group: _WhichOneofArgType_event_instance) -> _WhichOneofReturnType_event_instance | None: ...
 
-Global___EventProto: typing_extensions.TypeAlias = EventProto
+Global___EventProto: _TypeAlias = EventProto  # noqa: Y015
 
-@typing.final
-class ProduceEventProto(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class ProduceEventProto(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    CHANNELSHASH_FIELD_NUMBER: builtins.int
-    HASH_FIELD_NUMBER: builtins.int
-    PERSISTENT_FIELD_NUMBER: builtins.int
-    TIMESREPEATED_FIELD_NUMBER: builtins.int
-    ISDETERMINISTIC_FIELD_NUMBER: builtins.int
-    OUTPUTVALUE_FIELD_NUMBER: builtins.int
-    FAILED_FIELD_NUMBER: builtins.int
-    channelsHash: builtins.bytes
-    hash: builtins.bytes
-    persistent: builtins.bool
-    timesRepeated: builtins.int
-    isDeterministic: builtins.bool
-    failed: builtins.bool
-    @property
-    def outputValue(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.bytes]: ...
+    CHANNELSHASH_FIELD_NUMBER: _builtins.int
+    HASH_FIELD_NUMBER: _builtins.int
+    PERSISTENT_FIELD_NUMBER: _builtins.int
+    TIMESREPEATED_FIELD_NUMBER: _builtins.int
+    ISDETERMINISTIC_FIELD_NUMBER: _builtins.int
+    OUTPUTVALUE_FIELD_NUMBER: _builtins.int
+    FAILED_FIELD_NUMBER: _builtins.int
+    channelsHash: _builtins.bytes
+    hash: _builtins.bytes
+    persistent: _builtins.bool
+    timesRepeated: _builtins.int
+    isDeterministic: _builtins.bool
+    failed: _builtins.bool
+    @_builtins.property
+    def outputValue(self) -> _containers.RepeatedScalarFieldContainer[_builtins.bytes]: ...
     def __init__(
         self,
         *,
-        channelsHash: builtins.bytes = ...,
-        hash: builtins.bytes = ...,
-        persistent: builtins.bool = ...,
-        timesRepeated: builtins.int = ...,
-        isDeterministic: builtins.bool = ...,
-        outputValue: collections.abc.Iterable[builtins.bytes] | None = ...,
-        failed: builtins.bool = ...,
+        channelsHash: _builtins.bytes = ...,
+        hash: _builtins.bytes = ...,
+        persistent: _builtins.bool = ...,
+        timesRepeated: _builtins.int = ...,
+        isDeterministic: _builtins.bool = ...,
+        outputValue: _abc.Iterable[_builtins.bytes] | None = ...,
+        failed: _builtins.bool = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["channelsHash", b"channelsHash", "failed", b"failed", "hash", b"hash", "isDeterministic", b"isDeterministic", "outputValue", b"outputValue", "persistent", b"persistent", "timesRepeated", b"timesRepeated"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["channelsHash", b"channelsHash", "failed", b"failed", "hash", b"hash", "isDeterministic", b"isDeterministic", "outputValue", b"outputValue", "persistent", b"persistent", "timesRepeated", b"timesRepeated"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___ProduceEventProto: typing_extensions.TypeAlias = ProduceEventProto
+Global___ProduceEventProto: _TypeAlias = ProduceEventProto  # noqa: Y015
 
-@typing.final
-class ConsumeEventProto(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class ConsumeEventProto(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    CHANNELSHASHES_FIELD_NUMBER: builtins.int
-    HASH_FIELD_NUMBER: builtins.int
-    PERSISTENT_FIELD_NUMBER: builtins.int
-    hash: builtins.bytes
-    persistent: builtins.bool
-    @property
-    def channelsHashes(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.bytes]: ...
+    CHANNELSHASHES_FIELD_NUMBER: _builtins.int
+    HASH_FIELD_NUMBER: _builtins.int
+    PERSISTENT_FIELD_NUMBER: _builtins.int
+    hash: _builtins.bytes
+    persistent: _builtins.bool
+    @_builtins.property
+    def channelsHashes(self) -> _containers.RepeatedScalarFieldContainer[_builtins.bytes]: ...
     def __init__(
         self,
         *,
-        channelsHashes: collections.abc.Iterable[builtins.bytes] | None = ...,
-        hash: builtins.bytes = ...,
-        persistent: builtins.bool = ...,
+        channelsHashes: _abc.Iterable[_builtins.bytes] | None = ...,
+        hash: _builtins.bytes = ...,
+        persistent: _builtins.bool = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["channelsHashes", b"channelsHashes", "hash", b"hash", "persistent", b"persistent"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["channelsHashes", b"channelsHashes", "hash", b"hash", "persistent", b"persistent"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___ConsumeEventProto: typing_extensions.TypeAlias = ConsumeEventProto
+Global___ConsumeEventProto: _TypeAlias = ConsumeEventProto  # noqa: Y015
 
-@typing.final
-class CommEventProto(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class CommEventProto(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    CONSUME_FIELD_NUMBER: builtins.int
-    PRODUCES_FIELD_NUMBER: builtins.int
-    PEEKS_FIELD_NUMBER: builtins.int
-    @property
+    CONSUME_FIELD_NUMBER: _builtins.int
+    PRODUCES_FIELD_NUMBER: _builtins.int
+    PEEKS_FIELD_NUMBER: _builtins.int
+    @_builtins.property
     def consume(self) -> Global___ConsumeEventProto: ...
-    @property
-    def produces(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[Global___ProduceEventProto]: ...
-    @property
-    def peeks(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[Global___PeekProto]: ...
+    @_builtins.property
+    def produces(self) -> _containers.RepeatedCompositeFieldContainer[Global___ProduceEventProto]: ...
+    @_builtins.property
+    def peeks(self) -> _containers.RepeatedCompositeFieldContainer[Global___PeekProto]: ...
     def __init__(
         self,
         *,
         consume: Global___ConsumeEventProto | None = ...,
-        produces: collections.abc.Iterable[Global___ProduceEventProto] | None = ...,
-        peeks: collections.abc.Iterable[Global___PeekProto] | None = ...,
+        produces: _abc.Iterable[Global___ProduceEventProto] | None = ...,
+        peeks: _abc.Iterable[Global___PeekProto] | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["consume", b"consume"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["consume", b"consume", "peeks", b"peeks", "produces", b"produces"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["consume", b"consume"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["consume", b"consume", "peeks", b"peeks", "produces", b"produces"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___CommEventProto: typing_extensions.TypeAlias = CommEventProto
+Global___CommEventProto: _TypeAlias = CommEventProto  # noqa: Y015
 
-@typing.final
-class PeekProto(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class PeekProto(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    CHANNELINDEX_FIELD_NUMBER: builtins.int
-    channelIndex: builtins.int
+    CHANNELINDEX_FIELD_NUMBER: _builtins.int
+    channelIndex: _builtins.int
     def __init__(
         self,
         *,
-        channelIndex: builtins.int = ...,
+        channelIndex: _builtins.int = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["channelIndex", b"channelIndex"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["channelIndex", b"channelIndex"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___PeekProto: typing_extensions.TypeAlias = PeekProto
+Global___PeekProto: _TypeAlias = PeekProto  # noqa: Y015
 
-@typing.final
-class BondProto(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class BondProto(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    VALIDATOR_FIELD_NUMBER: builtins.int
-    STAKE_FIELD_NUMBER: builtins.int
-    validator: builtins.bytes
-    stake: builtins.int
+    VALIDATOR_FIELD_NUMBER: _builtins.int
+    STAKE_FIELD_NUMBER: _builtins.int
+    validator: _builtins.bytes
+    stake: _builtins.int
     def __init__(
         self,
         *,
-        validator: builtins.bytes = ...,
-        stake: builtins.int = ...,
+        validator: _builtins.bytes = ...,
+        stake: _builtins.int = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["stake", b"stake", "validator", b"validator"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["stake", b"stake", "validator", b"validator"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___BondProto: typing_extensions.TypeAlias = BondProto
+Global___BondProto: _TypeAlias = BondProto  # noqa: Y015
 
-@typing.final
-class StoreNodeKeyProto(google.protobuf.message.Message):
+@_typing.final
+class StoreNodeKeyProto(_message.Message):
     """--------- Last finalized state  --------"""
 
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+    DESCRIPTOR: _descriptor.Descriptor
 
-    HASH_FIELD_NUMBER: builtins.int
-    INDEX_FIELD_NUMBER: builtins.int
-    hash: builtins.bytes
-    index: builtins.int
+    HASH_FIELD_NUMBER: _builtins.int
+    INDEX_FIELD_NUMBER: _builtins.int
+    hash: _builtins.bytes
+    index: _builtins.int
     def __init__(
         self,
         *,
-        hash: builtins.bytes = ...,
-        index: builtins.int = ...,
+        hash: _builtins.bytes = ...,
+        index: _builtins.int = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["hash", b"hash", "index", b"index"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["hash", b"hash", "index", b"index"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___StoreNodeKeyProto: typing_extensions.TypeAlias = StoreNodeKeyProto
+Global___StoreNodeKeyProto: _TypeAlias = StoreNodeKeyProto  # noqa: Y015
 
-@typing.final
-class StoreItemsMessageRequestProto(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class StoreItemsMessageRequestProto(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    STARTPATH_FIELD_NUMBER: builtins.int
-    SKIP_FIELD_NUMBER: builtins.int
-    TAKE_FIELD_NUMBER: builtins.int
-    skip: builtins.int
-    take: builtins.int
-    @property
-    def startPath(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[Global___StoreNodeKeyProto]: ...
+    STARTPATH_FIELD_NUMBER: _builtins.int
+    SKIP_FIELD_NUMBER: _builtins.int
+    TAKE_FIELD_NUMBER: _builtins.int
+    skip: _builtins.int
+    take: _builtins.int
+    @_builtins.property
+    def startPath(self) -> _containers.RepeatedCompositeFieldContainer[Global___StoreNodeKeyProto]: ...
     def __init__(
         self,
         *,
-        startPath: collections.abc.Iterable[Global___StoreNodeKeyProto] | None = ...,
-        skip: builtins.int = ...,
-        take: builtins.int = ...,
+        startPath: _abc.Iterable[Global___StoreNodeKeyProto] | None = ...,
+        skip: _builtins.int = ...,
+        take: _builtins.int = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["skip", b"skip", "startPath", b"startPath", "take", b"take"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["skip", b"skip", "startPath", b"startPath", "take", b"take"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___StoreItemsMessageRequestProto: typing_extensions.TypeAlias = StoreItemsMessageRequestProto
+Global___StoreItemsMessageRequestProto: _TypeAlias = StoreItemsMessageRequestProto  # noqa: Y015
 
-@typing.final
-class StoreItemProto(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class StoreItemProto(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    KEY_FIELD_NUMBER: builtins.int
-    VALUE_FIELD_NUMBER: builtins.int
-    key: builtins.bytes
-    value: builtins.bytes
+    KEY_FIELD_NUMBER: _builtins.int
+    VALUE_FIELD_NUMBER: _builtins.int
+    key: _builtins.bytes
+    value: _builtins.bytes
     def __init__(
         self,
         *,
-        key: builtins.bytes = ...,
-        value: builtins.bytes = ...,
+        key: _builtins.bytes = ...,
+        value: _builtins.bytes = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["key", b"key", "value", b"value"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["key", b"key", "value", b"value"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___StoreItemProto: typing_extensions.TypeAlias = StoreItemProto
+Global___StoreItemProto: _TypeAlias = StoreItemProto  # noqa: Y015
 
-@typing.final
-class StoreItemsMessageProto(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class StoreItemsMessageProto(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    STARTPATH_FIELD_NUMBER: builtins.int
-    LASTPATH_FIELD_NUMBER: builtins.int
-    HISTORYITEMS_FIELD_NUMBER: builtins.int
-    DATAITEMS_FIELD_NUMBER: builtins.int
-    @property
-    def startPath(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[Global___StoreNodeKeyProto]: ...
-    @property
-    def lastPath(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[Global___StoreNodeKeyProto]: ...
-    @property
-    def historyItems(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[Global___StoreItemProto]: ...
-    @property
-    def dataItems(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[Global___StoreItemProto]: ...
+    STARTPATH_FIELD_NUMBER: _builtins.int
+    LASTPATH_FIELD_NUMBER: _builtins.int
+    HISTORYITEMS_FIELD_NUMBER: _builtins.int
+    DATAITEMS_FIELD_NUMBER: _builtins.int
+    @_builtins.property
+    def startPath(self) -> _containers.RepeatedCompositeFieldContainer[Global___StoreNodeKeyProto]: ...
+    @_builtins.property
+    def lastPath(self) -> _containers.RepeatedCompositeFieldContainer[Global___StoreNodeKeyProto]: ...
+    @_builtins.property
+    def historyItems(self) -> _containers.RepeatedCompositeFieldContainer[Global___StoreItemProto]: ...
+    @_builtins.property
+    def dataItems(self) -> _containers.RepeatedCompositeFieldContainer[Global___StoreItemProto]: ...
     def __init__(
         self,
         *,
-        startPath: collections.abc.Iterable[Global___StoreNodeKeyProto] | None = ...,
-        lastPath: collections.abc.Iterable[Global___StoreNodeKeyProto] | None = ...,
-        historyItems: collections.abc.Iterable[Global___StoreItemProto] | None = ...,
-        dataItems: collections.abc.Iterable[Global___StoreItemProto] | None = ...,
+        startPath: _abc.Iterable[Global___StoreNodeKeyProto] | None = ...,
+        lastPath: _abc.Iterable[Global___StoreNodeKeyProto] | None = ...,
+        historyItems: _abc.Iterable[Global___StoreItemProto] | None = ...,
+        dataItems: _abc.Iterable[Global___StoreItemProto] | None = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["dataItems", b"dataItems", "historyItems", b"historyItems", "lastPath", b"lastPath", "startPath", b"startPath"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["dataItems", b"dataItems", "historyItems", b"historyItems", "lastPath", b"lastPath", "startPath", b"startPath"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___StoreItemsMessageProto: typing_extensions.TypeAlias = StoreItemsMessageProto
+Global___StoreItemsMessageProto: _TypeAlias = StoreItemsMessageProto  # noqa: Y015

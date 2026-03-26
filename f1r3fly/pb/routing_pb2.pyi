@@ -3,168 +3,168 @@
 isort:skip_file
 """
 
-import builtins
-import google.protobuf.descriptor
-import google.protobuf.message
+from google.protobuf import descriptor as _descriptor
+from google.protobuf import message as _message
+import builtins as _builtins
 import sys
-import typing
+import typing as _typing
 
 if sys.version_info >= (3, 10):
-    import typing as typing_extensions
+    from typing import TypeAlias as _TypeAlias
 else:
-    import typing_extensions
+    from typing_extensions import TypeAlias as _TypeAlias
 
-DESCRIPTOR: google.protobuf.descriptor.FileDescriptor
+DESCRIPTOR: _descriptor.FileDescriptor
 
-@typing.final
-class Node(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class Node(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    ID_FIELD_NUMBER: builtins.int
-    HOST_FIELD_NUMBER: builtins.int
-    TCP_PORT_FIELD_NUMBER: builtins.int
-    UDP_PORT_FIELD_NUMBER: builtins.int
-    id: builtins.bytes
-    host: builtins.bytes
-    tcp_port: builtins.int
-    udp_port: builtins.int
+    ID_FIELD_NUMBER: _builtins.int
+    HOST_FIELD_NUMBER: _builtins.int
+    TCP_PORT_FIELD_NUMBER: _builtins.int
+    UDP_PORT_FIELD_NUMBER: _builtins.int
+    id: _builtins.bytes
+    host: _builtins.bytes
+    tcp_port: _builtins.int
+    udp_port: _builtins.int
     def __init__(
         self,
         *,
-        id: builtins.bytes = ...,
-        host: builtins.bytes = ...,
-        tcp_port: builtins.int = ...,
-        udp_port: builtins.int = ...,
+        id: _builtins.bytes = ...,
+        host: _builtins.bytes = ...,
+        tcp_port: _builtins.int = ...,
+        udp_port: _builtins.int = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["host", b"host", "id", b"id", "tcp_port", b"tcp_port", "udp_port", b"udp_port"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["host", b"host", "id", b"id", "tcp_port", b"tcp_port", "udp_port", b"udp_port"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___Node: typing_extensions.TypeAlias = Node
+Global___Node: _TypeAlias = Node  # noqa: Y015
 
-@typing.final
-class Header(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class Header(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    SENDER_FIELD_NUMBER: builtins.int
-    NETWORKID_FIELD_NUMBER: builtins.int
-    networkId: builtins.str
-    @property
+    SENDER_FIELD_NUMBER: _builtins.int
+    NETWORKID_FIELD_NUMBER: _builtins.int
+    networkId: _builtins.str
+    @_builtins.property
     def sender(self) -> Global___Node: ...
     def __init__(
         self,
         *,
         sender: Global___Node | None = ...,
-        networkId: builtins.str = ...,
+        networkId: _builtins.str = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["sender", b"sender"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["networkId", b"networkId", "sender", b"sender"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["sender", b"sender"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["networkId", b"networkId", "sender", b"sender"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___Header: typing_extensions.TypeAlias = Header
+Global___Header: _TypeAlias = Header  # noqa: Y015
 
-@typing.final
-class Heartbeat(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-    def __init__(
-        self,
-    ) -> None: ...
-
-Global___Heartbeat: typing_extensions.TypeAlias = Heartbeat
-
-@typing.final
-class HeartbeatResponse(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class Heartbeat(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
     def __init__(
         self,
     ) -> None: ...
 
-Global___HeartbeatResponse: typing_extensions.TypeAlias = HeartbeatResponse
+Global___Heartbeat: _TypeAlias = Heartbeat  # noqa: Y015
 
-@typing.final
-class ProtocolHandshake(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class HeartbeatResponse(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    NONCE_FIELD_NUMBER: builtins.int
-    nonce: builtins.bytes
+    def __init__(
+        self,
+    ) -> None: ...
+
+Global___HeartbeatResponse: _TypeAlias = HeartbeatResponse  # noqa: Y015
+
+@_typing.final
+class ProtocolHandshake(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
+
+    NONCE_FIELD_NUMBER: _builtins.int
+    nonce: _builtins.bytes
     def __init__(
         self,
         *,
-        nonce: builtins.bytes = ...,
+        nonce: _builtins.bytes = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["nonce", b"nonce"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["nonce", b"nonce"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___ProtocolHandshake: typing_extensions.TypeAlias = ProtocolHandshake
+Global___ProtocolHandshake: _TypeAlias = ProtocolHandshake  # noqa: Y015
 
-@typing.final
-class ProtocolHandshakeResponse(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class ProtocolHandshakeResponse(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    NONCE_FIELD_NUMBER: builtins.int
-    nonce: builtins.bytes
+    NONCE_FIELD_NUMBER: _builtins.int
+    nonce: _builtins.bytes
     def __init__(
         self,
         *,
-        nonce: builtins.bytes = ...,
+        nonce: _builtins.bytes = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["nonce", b"nonce"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["nonce", b"nonce"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___ProtocolHandshakeResponse: typing_extensions.TypeAlias = ProtocolHandshakeResponse
+Global___ProtocolHandshakeResponse: _TypeAlias = ProtocolHandshakeResponse  # noqa: Y015
 
-@typing.final
-class Packet(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class Packet(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    TYPEID_FIELD_NUMBER: builtins.int
-    CONTENT_FIELD_NUMBER: builtins.int
-    typeId: builtins.str
-    content: builtins.bytes
+    TYPEID_FIELD_NUMBER: _builtins.int
+    CONTENT_FIELD_NUMBER: _builtins.int
+    typeId: _builtins.str
+    content: _builtins.bytes
     def __init__(
         self,
         *,
-        typeId: builtins.str = ...,
-        content: builtins.bytes = ...,
+        typeId: _builtins.str = ...,
+        content: _builtins.bytes = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["content", b"content", "typeId", b"typeId"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["content", b"content", "typeId", b"typeId"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___Packet: typing_extensions.TypeAlias = Packet
+Global___Packet: _TypeAlias = Packet  # noqa: Y015
 
-@typing.final
-class Disconnect(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class Disconnect(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
     def __init__(
         self,
     ) -> None: ...
 
-Global___Disconnect: typing_extensions.TypeAlias = Disconnect
+Global___Disconnect: _TypeAlias = Disconnect  # noqa: Y015
 
-@typing.final
-class Protocol(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class Protocol(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    HEADER_FIELD_NUMBER: builtins.int
-    HEARTBEAT_FIELD_NUMBER: builtins.int
-    PROTOCOL_HANDSHAKE_FIELD_NUMBER: builtins.int
-    PROTOCOL_HANDSHAKE_RESPONSE_FIELD_NUMBER: builtins.int
-    PACKET_FIELD_NUMBER: builtins.int
-    DISCONNECT_FIELD_NUMBER: builtins.int
-    @property
+    HEADER_FIELD_NUMBER: _builtins.int
+    HEARTBEAT_FIELD_NUMBER: _builtins.int
+    PROTOCOL_HANDSHAKE_FIELD_NUMBER: _builtins.int
+    PROTOCOL_HANDSHAKE_RESPONSE_FIELD_NUMBER: _builtins.int
+    PACKET_FIELD_NUMBER: _builtins.int
+    DISCONNECT_FIELD_NUMBER: _builtins.int
+    @_builtins.property
     def header(self) -> Global___Header: ...
-    @property
+    @_builtins.property
     def heartbeat(self) -> Global___Heartbeat: ...
-    @property
+    @_builtins.property
     def protocol_handshake(self) -> Global___ProtocolHandshake: ...
-    @property
+    @_builtins.property
     def protocol_handshake_response(self) -> Global___ProtocolHandshakeResponse: ...
-    @property
+    @_builtins.property
     def packet(self) -> Global___Packet: ...
-    @property
+    @_builtins.property
     def disconnect(self) -> Global___Disconnect: ...
     def __init__(
         self,
@@ -176,79 +176,79 @@ class Protocol(google.protobuf.message.Message):
         packet: Global___Packet | None = ...,
         disconnect: Global___Disconnect | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["disconnect", b"disconnect", "header", b"header", "heartbeat", b"heartbeat", "message", b"message", "packet", b"packet", "protocol_handshake", b"protocol_handshake", "protocol_handshake_response", b"protocol_handshake_response"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["disconnect", b"disconnect", "header", b"header", "heartbeat", b"heartbeat", "message", b"message", "packet", b"packet", "protocol_handshake", b"protocol_handshake", "protocol_handshake_response", b"protocol_handshake_response"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["disconnect", b"disconnect", "header", b"header", "heartbeat", b"heartbeat", "message", b"message", "packet", b"packet", "protocol_handshake", b"protocol_handshake", "protocol_handshake_response", b"protocol_handshake_response"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["disconnect", b"disconnect", "header", b"header", "heartbeat", b"heartbeat", "message", b"message", "packet", b"packet", "protocol_handshake", b"protocol_handshake", "protocol_handshake_response", b"protocol_handshake_response"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
-    _WhichOneofReturnType_message: typing_extensions.TypeAlias = typing.Literal["heartbeat", "protocol_handshake", "protocol_handshake_response", "packet", "disconnect"]
-    _WhichOneofArgType_message: typing_extensions.TypeAlias = typing.Literal["message", b"message"]
+    _WhichOneofReturnType_message: _TypeAlias = _typing.Literal["heartbeat", "protocol_handshake", "protocol_handshake_response", "packet", "disconnect"]  # noqa: Y015
+    _WhichOneofArgType_message: _TypeAlias = _typing.Literal["message", b"message"]  # noqa: Y015
     def WhichOneof(self, oneof_group: _WhichOneofArgType_message) -> _WhichOneofReturnType_message | None: ...
 
-Global___Protocol: typing_extensions.TypeAlias = Protocol
+Global___Protocol: _TypeAlias = Protocol  # noqa: Y015
 
-@typing.final
-class TLRequest(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class TLRequest(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    PROTOCOL_FIELD_NUMBER: builtins.int
-    @property
+    PROTOCOL_FIELD_NUMBER: _builtins.int
+    @_builtins.property
     def protocol(self) -> Global___Protocol: ...
     def __init__(
         self,
         *,
         protocol: Global___Protocol | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["protocol", b"protocol"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["protocol", b"protocol"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["protocol", b"protocol"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["protocol", b"protocol"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___TLRequest: typing_extensions.TypeAlias = TLRequest
+Global___TLRequest: _TypeAlias = TLRequest  # noqa: Y015
 
-@typing.final
-class InternalServerError(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class InternalServerError(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    ERROR_FIELD_NUMBER: builtins.int
-    error: builtins.bytes
+    ERROR_FIELD_NUMBER: _builtins.int
+    error: _builtins.bytes
     def __init__(
         self,
         *,
-        error: builtins.bytes = ...,
+        error: _builtins.bytes = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["error", b"error"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["error", b"error"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___InternalServerError: typing_extensions.TypeAlias = InternalServerError
+Global___InternalServerError: _TypeAlias = InternalServerError  # noqa: Y015
 
-@typing.final
-class Ack(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class Ack(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    HEADER_FIELD_NUMBER: builtins.int
-    @property
+    HEADER_FIELD_NUMBER: _builtins.int
+    @_builtins.property
     def header(self) -> Global___Header: ...
     def __init__(
         self,
         *,
         header: Global___Header | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["header", b"header"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["header", b"header"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["header", b"header"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["header", b"header"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___Ack: typing_extensions.TypeAlias = Ack
+Global___Ack: _TypeAlias = Ack  # noqa: Y015
 
-@typing.final
-class TLResponse(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class TLResponse(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    ACK_FIELD_NUMBER: builtins.int
-    INTERNALSERVERERROR_FIELD_NUMBER: builtins.int
-    @property
+    ACK_FIELD_NUMBER: _builtins.int
+    INTERNALSERVERERROR_FIELD_NUMBER: _builtins.int
+    @_builtins.property
     def ack(self) -> Global___Ack: ...
-    @property
+    @_builtins.property
     def internalServerError(self) -> Global___InternalServerError: ...
     def __init__(
         self,
@@ -256,72 +256,72 @@ class TLResponse(google.protobuf.message.Message):
         ack: Global___Ack | None = ...,
         internalServerError: Global___InternalServerError | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["ack", b"ack", "internalServerError", b"internalServerError", "payload", b"payload"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["ack", b"ack", "internalServerError", b"internalServerError", "payload", b"payload"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["ack", b"ack", "internalServerError", b"internalServerError", "payload", b"payload"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["ack", b"ack", "internalServerError", b"internalServerError", "payload", b"payload"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
-    _WhichOneofReturnType_payload: typing_extensions.TypeAlias = typing.Literal["ack", "internalServerError"]
-    _WhichOneofArgType_payload: typing_extensions.TypeAlias = typing.Literal["payload", b"payload"]
+    _WhichOneofReturnType_payload: _TypeAlias = _typing.Literal["ack", "internalServerError"]  # noqa: Y015
+    _WhichOneofArgType_payload: _TypeAlias = _typing.Literal["payload", b"payload"]  # noqa: Y015
     def WhichOneof(self, oneof_group: _WhichOneofArgType_payload) -> _WhichOneofReturnType_payload | None: ...
 
-Global___TLResponse: typing_extensions.TypeAlias = TLResponse
+Global___TLResponse: _TypeAlias = TLResponse  # noqa: Y015
 
-@typing.final
-class ChunkHeader(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class ChunkHeader(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    SENDER_FIELD_NUMBER: builtins.int
-    TYPEID_FIELD_NUMBER: builtins.int
-    COMPRESSED_FIELD_NUMBER: builtins.int
-    CONTENTLENGTH_FIELD_NUMBER: builtins.int
-    NETWORKID_FIELD_NUMBER: builtins.int
-    typeId: builtins.str
-    compressed: builtins.bool
-    contentLength: builtins.int
-    networkId: builtins.str
-    @property
+    SENDER_FIELD_NUMBER: _builtins.int
+    TYPEID_FIELD_NUMBER: _builtins.int
+    COMPRESSED_FIELD_NUMBER: _builtins.int
+    CONTENTLENGTH_FIELD_NUMBER: _builtins.int
+    NETWORKID_FIELD_NUMBER: _builtins.int
+    typeId: _builtins.str
+    compressed: _builtins.bool
+    contentLength: _builtins.int
+    networkId: _builtins.str
+    @_builtins.property
     def sender(self) -> Global___Node: ...
     def __init__(
         self,
         *,
         sender: Global___Node | None = ...,
-        typeId: builtins.str = ...,
-        compressed: builtins.bool = ...,
-        contentLength: builtins.int = ...,
-        networkId: builtins.str = ...,
+        typeId: _builtins.str = ...,
+        compressed: _builtins.bool = ...,
+        contentLength: _builtins.int = ...,
+        networkId: _builtins.str = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["sender", b"sender"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["compressed", b"compressed", "contentLength", b"contentLength", "networkId", b"networkId", "sender", b"sender", "typeId", b"typeId"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["sender", b"sender"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["compressed", b"compressed", "contentLength", b"contentLength", "networkId", b"networkId", "sender", b"sender", "typeId", b"typeId"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___ChunkHeader: typing_extensions.TypeAlias = ChunkHeader
+Global___ChunkHeader: _TypeAlias = ChunkHeader  # noqa: Y015
 
-@typing.final
-class ChunkData(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class ChunkData(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    CONTENTDATA_FIELD_NUMBER: builtins.int
-    contentData: builtins.bytes
+    CONTENTDATA_FIELD_NUMBER: _builtins.int
+    contentData: _builtins.bytes
     def __init__(
         self,
         *,
-        contentData: builtins.bytes = ...,
+        contentData: _builtins.bytes = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["contentData", b"contentData"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["contentData", b"contentData"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___ChunkData: typing_extensions.TypeAlias = ChunkData
+Global___ChunkData: _TypeAlias = ChunkData  # noqa: Y015
 
-@typing.final
-class Chunk(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class Chunk(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    HEADER_FIELD_NUMBER: builtins.int
-    DATA_FIELD_NUMBER: builtins.int
-    @property
+    HEADER_FIELD_NUMBER: _builtins.int
+    DATA_FIELD_NUMBER: _builtins.int
+    @_builtins.property
     def header(self) -> Global___ChunkHeader: ...
-    @property
+    @_builtins.property
     def data(self) -> Global___ChunkData: ...
     def __init__(
         self,
@@ -329,12 +329,12 @@ class Chunk(google.protobuf.message.Message):
         header: Global___ChunkHeader | None = ...,
         data: Global___ChunkData | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["content", b"content", "data", b"data", "header", b"header"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["content", b"content", "data", b"data", "header", b"header"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["content", b"content", "data", b"data", "header", b"header"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["content", b"content", "data", b"data", "header", b"header"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
-    _WhichOneofReturnType_content: typing_extensions.TypeAlias = typing.Literal["header", "data"]
-    _WhichOneofArgType_content: typing_extensions.TypeAlias = typing.Literal["content", b"content"]
+    _WhichOneofReturnType_content: _TypeAlias = _typing.Literal["header", "data"]  # noqa: Y015
+    _WhichOneofArgType_content: _TypeAlias = _typing.Literal["content", b"content"]  # noqa: Y015
     def WhichOneof(self, oneof_group: _WhichOneofArgType_content) -> _WhichOneofReturnType_content | None: ...
 
-Global___Chunk: typing_extensions.TypeAlias = Chunk
+Global___Chunk: _TypeAlias = Chunk  # noqa: Y015

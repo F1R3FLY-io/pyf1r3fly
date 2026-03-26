@@ -3,30 +3,30 @@
 isort:skip_file
 """
 
-import builtins
-import collections.abc
-import google.protobuf.descriptor
-import google.protobuf.descriptor_pb2
-import google.protobuf.internal.containers
-import google.protobuf.internal.enum_type_wrapper
-import google.protobuf.internal.extension_dict
-import google.protobuf.message
+from collections import abc as _abc
+from google.protobuf import descriptor as _descriptor
+from google.protobuf import descriptor_pb2 as _descriptor_pb2
+from google.protobuf import message as _message
+from google.protobuf.internal import containers as _containers
+from google.protobuf.internal import enum_type_wrapper as _enum_type_wrapper
+from google.protobuf.internal import extension_dict as _extension_dict
+import builtins as _builtins
 import sys
-import typing
+import typing as _typing
 
 if sys.version_info >= (3, 10):
-    import typing as typing_extensions
+    from typing import TypeAlias as _TypeAlias
 else:
-    import typing_extensions
+    from typing_extensions import TypeAlias as _TypeAlias
 
-DESCRIPTOR: google.protobuf.descriptor.FileDescriptor
+DESCRIPTOR: _descriptor.FileDescriptor
 
 class _MatchType:
-    ValueType = typing.NewType("ValueType", builtins.int)
-    V: typing_extensions.TypeAlias = ValueType
+    ValueType = _typing.NewType("ValueType", _builtins.int)
+    V: _TypeAlias = ValueType  # noqa: Y015
 
-class _MatchTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[_MatchType.ValueType], builtins.type):
-    DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+class _MatchTypeEnumTypeWrapper(_enum_type_wrapper._EnumTypeWrapper[_MatchType.ValueType], _builtins.type):
+    DESCRIPTOR: _descriptor.EnumDescriptor
     CONTAINS: _MatchType.ValueType  # 0
     EXACT: _MatchType.ValueType  # 1
     PRESENCE: _MatchType.ValueType  # 2
@@ -36,18 +36,18 @@ class MatchType(_MatchType, metaclass=_MatchTypeEnumTypeWrapper): ...
 CONTAINS: MatchType.ValueType  # 0
 EXACT: MatchType.ValueType  # 1
 PRESENCE: MatchType.ValueType  # 2
-Global___MatchType: typing_extensions.TypeAlias = MatchType
+Global___MatchType: _TypeAlias = MatchType  # noqa: Y015
 
-@typing.final
-class ScalaPbOptions(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class ScalaPbOptions(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
     class _OptionsScope:
-        ValueType = typing.NewType("ValueType", builtins.int)
-        V: typing_extensions.TypeAlias = ValueType
+        ValueType = _typing.NewType("ValueType", _builtins.int)
+        V: _TypeAlias = ValueType  # noqa: Y015
 
-    class _OptionsScopeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[ScalaPbOptions._OptionsScope.ValueType], builtins.type):
-        DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+    class _OptionsScopeEnumTypeWrapper(_enum_type_wrapper._EnumTypeWrapper[ScalaPbOptions._OptionsScope.ValueType], _builtins.type):
+        DESCRIPTOR: _descriptor.EnumDescriptor
         FILE: ScalaPbOptions._OptionsScope.ValueType  # 0
         """Apply the options for this file only (default)"""
         PACKAGE: ScalaPbOptions._OptionsScope.ValueType  # 1
@@ -62,11 +62,11 @@ class ScalaPbOptions(google.protobuf.message.Message):
     """Apply the options for the entire package and its subpackages."""
 
     class _EnumValueNaming:
-        ValueType = typing.NewType("ValueType", builtins.int)
-        V: typing_extensions.TypeAlias = ValueType
+        ValueType = _typing.NewType("ValueType", _builtins.int)
+        V: _TypeAlias = ValueType  # noqa: Y015
 
-    class _EnumValueNamingEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[ScalaPbOptions._EnumValueNaming.ValueType], builtins.type):
-        DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
+    class _EnumValueNamingEnumTypeWrapper(_enum_type_wrapper._EnumTypeWrapper[ScalaPbOptions._EnumValueNaming.ValueType], _builtins.type):
+        DESCRIPTOR: _descriptor.EnumDescriptor
         AS_IN_PROTO: ScalaPbOptions._EnumValueNaming.ValueType  # 0
         """Enum value names in Scala use the same name as in the proto"""
         CAMEL_CASE: ScalaPbOptions._EnumValueNaming.ValueType  # 1
@@ -80,22 +80,22 @@ class ScalaPbOptions(google.protobuf.message.Message):
     CAMEL_CASE: ScalaPbOptions.EnumValueNaming.ValueType  # 1
     """Convert enum values to CamelCase in Scala."""
 
-    @typing.final
-    class AuxMessageOptions(google.protobuf.message.Message):
+    @_typing.final
+    class AuxMessageOptions(_message.Message):
         """AuxMessageOptions enables you to set message-level options through package-scoped options.
         This is useful when you can't add a dependency on scalapb.proto from the proto file that
         defines the message.
         """
 
-        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+        DESCRIPTOR: _descriptor.Descriptor
 
-        TARGET_FIELD_NUMBER: builtins.int
-        OPTIONS_FIELD_NUMBER: builtins.int
-        target: builtins.str
+        TARGET_FIELD_NUMBER: _builtins.int
+        OPTIONS_FIELD_NUMBER: _builtins.int
+        target: _builtins.str
         """The fully-qualified name of the message in the proto name space. Set to `*` to apply to all
         messages in scope.
         """
-        @property
+        @_builtins.property
         def options(self) -> Global___MessageOptions:
             """Options to apply to the message. If there are any options defined on the target message
             they take precedence over the options.
@@ -104,30 +104,30 @@ class ScalaPbOptions(google.protobuf.message.Message):
         def __init__(
             self,
             *,
-            target: builtins.str | None = ...,
+            target: _builtins.str | None = ...,
             options: Global___MessageOptions | None = ...,
         ) -> None: ...
-        _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["options", b"options", "target", b"target"]
-        def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-        _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["options", b"options", "target", b"target"]
+        _HasFieldArgType: _TypeAlias = _typing.Literal["options", b"options", "target", b"target"]  # noqa: Y015
+        def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+        _ClearFieldArgType: _TypeAlias = _typing.Literal["options", b"options", "target", b"target"]  # noqa: Y015
         def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-    @typing.final
-    class AuxFieldOptions(google.protobuf.message.Message):
+    @_typing.final
+    class AuxFieldOptions(_message.Message):
         """AuxFieldOptions enables you to set field-level options through package-scoped options.
         This is useful when you can't add a dependency on scalapb.proto from the proto file that
         defines the field.
         """
 
-        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+        DESCRIPTOR: _descriptor.Descriptor
 
-        TARGET_FIELD_NUMBER: builtins.int
-        OPTIONS_FIELD_NUMBER: builtins.int
-        target: builtins.str
+        TARGET_FIELD_NUMBER: _builtins.int
+        OPTIONS_FIELD_NUMBER: _builtins.int
+        target: _builtins.str
         """The fully-qualified name of the field in the proto name space. Set to `*` to apply to all
         fields in scope.
         """
-        @property
+        @_builtins.property
         def options(self) -> Global___FieldOptions:
             """Options to apply to the field. If there are any options defined on the target message
             they take precedence over the options.
@@ -136,30 +136,30 @@ class ScalaPbOptions(google.protobuf.message.Message):
         def __init__(
             self,
             *,
-            target: builtins.str | None = ...,
+            target: _builtins.str | None = ...,
             options: Global___FieldOptions | None = ...,
         ) -> None: ...
-        _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["options", b"options", "target", b"target"]
-        def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-        _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["options", b"options", "target", b"target"]
+        _HasFieldArgType: _TypeAlias = _typing.Literal["options", b"options", "target", b"target"]  # noqa: Y015
+        def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+        _ClearFieldArgType: _TypeAlias = _typing.Literal["options", b"options", "target", b"target"]  # noqa: Y015
         def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-    @typing.final
-    class AuxEnumOptions(google.protobuf.message.Message):
+    @_typing.final
+    class AuxEnumOptions(_message.Message):
         """AuxEnumOptions enables you to set enum-level options through package-scoped options.
         This is useful when you can't add a dependency on scalapb.proto from the proto file that
         defines the enum.
         """
 
-        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+        DESCRIPTOR: _descriptor.Descriptor
 
-        TARGET_FIELD_NUMBER: builtins.int
-        OPTIONS_FIELD_NUMBER: builtins.int
-        target: builtins.str
+        TARGET_FIELD_NUMBER: _builtins.int
+        OPTIONS_FIELD_NUMBER: _builtins.int
+        target: _builtins.str
         """The fully-qualified name of the enum in the proto name space. Set to `*` to apply to
         all enums in scope.
         """
-        @property
+        @_builtins.property
         def options(self) -> Global___EnumOptions:
             """Options to apply to the enum. If there are any options defined on the target enum
             they take precedence over the options.
@@ -168,30 +168,30 @@ class ScalaPbOptions(google.protobuf.message.Message):
         def __init__(
             self,
             *,
-            target: builtins.str | None = ...,
+            target: _builtins.str | None = ...,
             options: Global___EnumOptions | None = ...,
         ) -> None: ...
-        _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["options", b"options", "target", b"target"]
-        def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-        _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["options", b"options", "target", b"target"]
+        _HasFieldArgType: _TypeAlias = _typing.Literal["options", b"options", "target", b"target"]  # noqa: Y015
+        def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+        _ClearFieldArgType: _TypeAlias = _typing.Literal["options", b"options", "target", b"target"]  # noqa: Y015
         def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-    @typing.final
-    class AuxEnumValueOptions(google.protobuf.message.Message):
+    @_typing.final
+    class AuxEnumValueOptions(_message.Message):
         """AuxEnumValueOptions enables you to set enum value level options through package-scoped
         options.  This is useful when you can't add a dependency on scalapb.proto from the proto
         file that defines the enum.
         """
 
-        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+        DESCRIPTOR: _descriptor.Descriptor
 
-        TARGET_FIELD_NUMBER: builtins.int
-        OPTIONS_FIELD_NUMBER: builtins.int
-        target: builtins.str
+        TARGET_FIELD_NUMBER: _builtins.int
+        OPTIONS_FIELD_NUMBER: _builtins.int
+        target: _builtins.str
         """The fully-qualified name of the enum value in the proto name space. Set to `*` to apply
         to all enum values in scope.
         """
-        @property
+        @_builtins.property
         def options(self) -> Global___EnumValueOptions:
             """Options to apply to the enum value. If there are any options defined on
             the target enum value they take precedence over the options.
@@ -200,591 +200,591 @@ class ScalaPbOptions(google.protobuf.message.Message):
         def __init__(
             self,
             *,
-            target: builtins.str | None = ...,
+            target: _builtins.str | None = ...,
             options: Global___EnumValueOptions | None = ...,
         ) -> None: ...
-        _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["options", b"options", "target", b"target"]
-        def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-        _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["options", b"options", "target", b"target"]
+        _HasFieldArgType: _TypeAlias = _typing.Literal["options", b"options", "target", b"target"]  # noqa: Y015
+        def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+        _ClearFieldArgType: _TypeAlias = _typing.Literal["options", b"options", "target", b"target"]  # noqa: Y015
         def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-    PACKAGE_NAME_FIELD_NUMBER: builtins.int
-    FLAT_PACKAGE_FIELD_NUMBER: builtins.int
-    IMPORT_FIELD_NUMBER: builtins.int
-    PREAMBLE_FIELD_NUMBER: builtins.int
-    SINGLE_FILE_FIELD_NUMBER: builtins.int
-    NO_PRIMITIVE_WRAPPERS_FIELD_NUMBER: builtins.int
-    PRIMITIVE_WRAPPERS_FIELD_NUMBER: builtins.int
-    COLLECTION_TYPE_FIELD_NUMBER: builtins.int
-    PRESERVE_UNKNOWN_FIELDS_FIELD_NUMBER: builtins.int
-    OBJECT_NAME_FIELD_NUMBER: builtins.int
-    SCOPE_FIELD_NUMBER: builtins.int
-    LENSES_FIELD_NUMBER: builtins.int
-    RETAIN_SOURCE_CODE_INFO_FIELD_NUMBER: builtins.int
-    MAP_TYPE_FIELD_NUMBER: builtins.int
-    NO_DEFAULT_VALUES_IN_CONSTRUCTOR_FIELD_NUMBER: builtins.int
-    ENUM_VALUE_NAMING_FIELD_NUMBER: builtins.int
-    ENUM_STRIP_PREFIX_FIELD_NUMBER: builtins.int
-    BYTES_TYPE_FIELD_NUMBER: builtins.int
-    JAVA_CONVERSIONS_FIELD_NUMBER: builtins.int
-    AUX_MESSAGE_OPTIONS_FIELD_NUMBER: builtins.int
-    AUX_FIELD_OPTIONS_FIELD_NUMBER: builtins.int
-    AUX_ENUM_OPTIONS_FIELD_NUMBER: builtins.int
-    AUX_ENUM_VALUE_OPTIONS_FIELD_NUMBER: builtins.int
-    PREPROCESSORS_FIELD_NUMBER: builtins.int
-    FIELD_TRANSFORMATIONS_FIELD_NUMBER: builtins.int
-    IGNORE_ALL_TRANSFORMATIONS_FIELD_NUMBER: builtins.int
-    GETTERS_FIELD_NUMBER: builtins.int
-    SCALA3_SOURCES_FIELD_NUMBER: builtins.int
-    PUBLIC_CONSTRUCTOR_PARAMETERS_FIELD_NUMBER: builtins.int
-    TEST_ONLY_NO_JAVA_CONVERSIONS_FIELD_NUMBER: builtins.int
-    package_name: builtins.str
+    PACKAGE_NAME_FIELD_NUMBER: _builtins.int
+    FLAT_PACKAGE_FIELD_NUMBER: _builtins.int
+    IMPORT_FIELD_NUMBER: _builtins.int
+    PREAMBLE_FIELD_NUMBER: _builtins.int
+    SINGLE_FILE_FIELD_NUMBER: _builtins.int
+    NO_PRIMITIVE_WRAPPERS_FIELD_NUMBER: _builtins.int
+    PRIMITIVE_WRAPPERS_FIELD_NUMBER: _builtins.int
+    COLLECTION_TYPE_FIELD_NUMBER: _builtins.int
+    PRESERVE_UNKNOWN_FIELDS_FIELD_NUMBER: _builtins.int
+    OBJECT_NAME_FIELD_NUMBER: _builtins.int
+    SCOPE_FIELD_NUMBER: _builtins.int
+    LENSES_FIELD_NUMBER: _builtins.int
+    RETAIN_SOURCE_CODE_INFO_FIELD_NUMBER: _builtins.int
+    MAP_TYPE_FIELD_NUMBER: _builtins.int
+    NO_DEFAULT_VALUES_IN_CONSTRUCTOR_FIELD_NUMBER: _builtins.int
+    ENUM_VALUE_NAMING_FIELD_NUMBER: _builtins.int
+    ENUM_STRIP_PREFIX_FIELD_NUMBER: _builtins.int
+    BYTES_TYPE_FIELD_NUMBER: _builtins.int
+    JAVA_CONVERSIONS_FIELD_NUMBER: _builtins.int
+    AUX_MESSAGE_OPTIONS_FIELD_NUMBER: _builtins.int
+    AUX_FIELD_OPTIONS_FIELD_NUMBER: _builtins.int
+    AUX_ENUM_OPTIONS_FIELD_NUMBER: _builtins.int
+    AUX_ENUM_VALUE_OPTIONS_FIELD_NUMBER: _builtins.int
+    PREPROCESSORS_FIELD_NUMBER: _builtins.int
+    FIELD_TRANSFORMATIONS_FIELD_NUMBER: _builtins.int
+    IGNORE_ALL_TRANSFORMATIONS_FIELD_NUMBER: _builtins.int
+    GETTERS_FIELD_NUMBER: _builtins.int
+    SCALA3_SOURCES_FIELD_NUMBER: _builtins.int
+    PUBLIC_CONSTRUCTOR_PARAMETERS_FIELD_NUMBER: _builtins.int
+    TEST_ONLY_NO_JAVA_CONVERSIONS_FIELD_NUMBER: _builtins.int
+    package_name: _builtins.str
     """If set then it overrides the java_package and package."""
-    flat_package: builtins.bool
+    flat_package: _builtins.bool
     """If true, the compiler does not append the proto base file name
     into the generated package name. If false (the default), the
     generated scala package name is the package_name.basename where
     basename is the proto file name without the .proto extension.
     """
-    single_file: builtins.bool
+    single_file: _builtins.bool
     """If true, all messages and enums (but not services) will be written
     to a single Scala file.
     """
-    no_primitive_wrappers: builtins.bool
+    no_primitive_wrappers: _builtins.bool
     """By default, wrappers defined at
     https://github.com/protocolbuffers/protobuf/blob/master/src/google/protobuf/wrappers.proto,
     are mapped to an Option[T] where T is a primitive type. When this field
     is set to true, we do not perform this transformation.
     """
-    primitive_wrappers: builtins.bool
+    primitive_wrappers: _builtins.bool
     """DEPRECATED. In ScalaPB <= 0.5.47, it was necessary to explicitly enable
     primitive_wrappers. This field remains here for backwards compatibility,
     but it has no effect on generated code. It is an error to set both
     `primitive_wrappers` and `no_primitive_wrappers`.
     """
-    collection_type: builtins.str
+    collection_type: _builtins.str
     """Scala type to be used for repeated fields. If unspecified,
     `scala.collection.Seq` will be used.
     """
-    preserve_unknown_fields: builtins.bool
+    preserve_unknown_fields: _builtins.bool
     """If set to true, all generated messages in this file will preserve unknown
     fields.
     """
-    object_name: builtins.str
+    object_name: _builtins.str
     """If defined, sets the name of the file-level object that would be generated. This
     object extends `GeneratedFileObject` and contains descriptors, and list of message
     and enum companions.
     """
     scope: Global___ScalaPbOptions.OptionsScope.ValueType
     """Experimental: scope to apply the given options."""
-    lenses: builtins.bool
+    lenses: _builtins.bool
     """If true, lenses will be generated."""
-    retain_source_code_info: builtins.bool
+    retain_source_code_info: _builtins.bool
     """If true, then source-code info information will be included in the
     generated code - normally the source code info is cleared out to reduce
     code size.  The source code info is useful for extracting source code
     location from the descriptors as well as comments.
     """
-    map_type: builtins.str
+    map_type: _builtins.str
     """Scala type to be used for maps. If unspecified,
     `scala.collection.immutable.Map` will be used.
     """
-    no_default_values_in_constructor: builtins.bool
+    no_default_values_in_constructor: _builtins.bool
     """If true, no default values will be generated in message constructors.
     This setting can be overridden at the message-level and for individual
     fields.
     """
     enum_value_naming: Global___ScalaPbOptions.EnumValueNaming.ValueType
-    enum_strip_prefix: builtins.bool
+    enum_strip_prefix: _builtins.bool
     """Indicate if prefix (enum name + optional underscore) should be removed in scala code
     Strip is applied before enum value naming changes.
     """
-    bytes_type: builtins.str
+    bytes_type: _builtins.str
     """Scala type to use for bytes fields."""
-    java_conversions: builtins.bool
+    java_conversions: _builtins.bool
     """Enable java conversions for this file."""
-    ignore_all_transformations: builtins.bool
+    ignore_all_transformations: _builtins.bool
     """Ignores all transformations for this file. This is meant to allow specific files to
     opt out from transformations inherited through package-scoped options.
     """
-    getters: builtins.bool
+    getters: _builtins.bool
     """If true, getters will be generated."""
-    scala3_sources: builtins.bool
+    scala3_sources: _builtins.bool
     """Generate sources that are compatible with Scala 3"""
-    public_constructor_parameters: builtins.bool
+    public_constructor_parameters: _builtins.bool
     """Makes constructor parameters public, including defaults and TypeMappers."""
-    test_only_no_java_conversions: builtins.bool
+    test_only_no_java_conversions: _builtins.bool
     """For use in tests only. Inhibit Java conversions even when when generator parameters
     request for it.
     """
-    @property
-    def preamble(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.str]:
+    @_builtins.property
+    def preamble(self) -> _containers.RepeatedScalarFieldContainer[_builtins.str]:
         """Text to add to the generated scala file.  This can be used only
         when single_file is true.
         """
 
-    @property
-    def aux_message_options(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[Global___ScalaPbOptions.AuxMessageOptions]:
+    @_builtins.property
+    def aux_message_options(self) -> _containers.RepeatedCompositeFieldContainer[Global___ScalaPbOptions.AuxMessageOptions]:
         """List of message options to apply to some messages."""
 
-    @property
-    def aux_field_options(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[Global___ScalaPbOptions.AuxFieldOptions]:
+    @_builtins.property
+    def aux_field_options(self) -> _containers.RepeatedCompositeFieldContainer[Global___ScalaPbOptions.AuxFieldOptions]:
         """List of message options to apply to some fields."""
 
-    @property
-    def aux_enum_options(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[Global___ScalaPbOptions.AuxEnumOptions]:
+    @_builtins.property
+    def aux_enum_options(self) -> _containers.RepeatedCompositeFieldContainer[Global___ScalaPbOptions.AuxEnumOptions]:
         """List of message options to apply to some enums."""
 
-    @property
-    def aux_enum_value_options(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[Global___ScalaPbOptions.AuxEnumValueOptions]:
+    @_builtins.property
+    def aux_enum_value_options(self) -> _containers.RepeatedCompositeFieldContainer[Global___ScalaPbOptions.AuxEnumValueOptions]:
         """List of enum value options to apply to some enum values."""
 
-    @property
-    def preprocessors(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.str]:
+    @_builtins.property
+    def preprocessors(self) -> _containers.RepeatedScalarFieldContainer[_builtins.str]:
         """List of preprocessors to apply."""
 
-    @property
-    def field_transformations(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[Global___FieldTransformation]: ...
+    @_builtins.property
+    def field_transformations(self) -> _containers.RepeatedCompositeFieldContainer[Global___FieldTransformation]: ...
     def __init__(
         self,
         *,
-        package_name: builtins.str | None = ...,
-        flat_package: builtins.bool | None = ...,
-        preamble: collections.abc.Iterable[builtins.str] | None = ...,
-        single_file: builtins.bool | None = ...,
-        no_primitive_wrappers: builtins.bool | None = ...,
-        primitive_wrappers: builtins.bool | None = ...,
-        collection_type: builtins.str | None = ...,
-        preserve_unknown_fields: builtins.bool | None = ...,
-        object_name: builtins.str | None = ...,
+        package_name: _builtins.str | None = ...,
+        flat_package: _builtins.bool | None = ...,
+        preamble: _abc.Iterable[_builtins.str] | None = ...,
+        single_file: _builtins.bool | None = ...,
+        no_primitive_wrappers: _builtins.bool | None = ...,
+        primitive_wrappers: _builtins.bool | None = ...,
+        collection_type: _builtins.str | None = ...,
+        preserve_unknown_fields: _builtins.bool | None = ...,
+        object_name: _builtins.str | None = ...,
         scope: Global___ScalaPbOptions.OptionsScope.ValueType | None = ...,
-        lenses: builtins.bool | None = ...,
-        retain_source_code_info: builtins.bool | None = ...,
-        map_type: builtins.str | None = ...,
-        no_default_values_in_constructor: builtins.bool | None = ...,
+        lenses: _builtins.bool | None = ...,
+        retain_source_code_info: _builtins.bool | None = ...,
+        map_type: _builtins.str | None = ...,
+        no_default_values_in_constructor: _builtins.bool | None = ...,
         enum_value_naming: Global___ScalaPbOptions.EnumValueNaming.ValueType | None = ...,
-        enum_strip_prefix: builtins.bool | None = ...,
-        bytes_type: builtins.str | None = ...,
-        java_conversions: builtins.bool | None = ...,
-        aux_message_options: collections.abc.Iterable[Global___ScalaPbOptions.AuxMessageOptions] | None = ...,
-        aux_field_options: collections.abc.Iterable[Global___ScalaPbOptions.AuxFieldOptions] | None = ...,
-        aux_enum_options: collections.abc.Iterable[Global___ScalaPbOptions.AuxEnumOptions] | None = ...,
-        aux_enum_value_options: collections.abc.Iterable[Global___ScalaPbOptions.AuxEnumValueOptions] | None = ...,
-        preprocessors: collections.abc.Iterable[builtins.str] | None = ...,
-        field_transformations: collections.abc.Iterable[Global___FieldTransformation] | None = ...,
-        ignore_all_transformations: builtins.bool | None = ...,
-        getters: builtins.bool | None = ...,
-        scala3_sources: builtins.bool | None = ...,
-        public_constructor_parameters: builtins.bool | None = ...,
-        test_only_no_java_conversions: builtins.bool | None = ...,
+        enum_strip_prefix: _builtins.bool | None = ...,
+        bytes_type: _builtins.str | None = ...,
+        java_conversions: _builtins.bool | None = ...,
+        aux_message_options: _abc.Iterable[Global___ScalaPbOptions.AuxMessageOptions] | None = ...,
+        aux_field_options: _abc.Iterable[Global___ScalaPbOptions.AuxFieldOptions] | None = ...,
+        aux_enum_options: _abc.Iterable[Global___ScalaPbOptions.AuxEnumOptions] | None = ...,
+        aux_enum_value_options: _abc.Iterable[Global___ScalaPbOptions.AuxEnumValueOptions] | None = ...,
+        preprocessors: _abc.Iterable[_builtins.str] | None = ...,
+        field_transformations: _abc.Iterable[Global___FieldTransformation] | None = ...,
+        ignore_all_transformations: _builtins.bool | None = ...,
+        getters: _builtins.bool | None = ...,
+        scala3_sources: _builtins.bool | None = ...,
+        public_constructor_parameters: _builtins.bool | None = ...,
+        test_only_no_java_conversions: _builtins.bool | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["bytes_type", b"bytes_type", "collection_type", b"collection_type", "enum_strip_prefix", b"enum_strip_prefix", "enum_value_naming", b"enum_value_naming", "flat_package", b"flat_package", "getters", b"getters", "ignore_all_transformations", b"ignore_all_transformations", "java_conversions", b"java_conversions", "lenses", b"lenses", "map_type", b"map_type", "no_default_values_in_constructor", b"no_default_values_in_constructor", "no_primitive_wrappers", b"no_primitive_wrappers", "object_name", b"object_name", "package_name", b"package_name", "preserve_unknown_fields", b"preserve_unknown_fields", "primitive_wrappers", b"primitive_wrappers", "public_constructor_parameters", b"public_constructor_parameters", "retain_source_code_info", b"retain_source_code_info", "scala3_sources", b"scala3_sources", "scope", b"scope", "single_file", b"single_file", "test_only_no_java_conversions", b"test_only_no_java_conversions"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["aux_enum_options", b"aux_enum_options", "aux_enum_value_options", b"aux_enum_value_options", "aux_field_options", b"aux_field_options", "aux_message_options", b"aux_message_options", "bytes_type", b"bytes_type", "collection_type", b"collection_type", "enum_strip_prefix", b"enum_strip_prefix", "enum_value_naming", b"enum_value_naming", "field_transformations", b"field_transformations", "flat_package", b"flat_package", "getters", b"getters", "ignore_all_transformations", b"ignore_all_transformations", "import", b"import", "java_conversions", b"java_conversions", "lenses", b"lenses", "map_type", b"map_type", "no_default_values_in_constructor", b"no_default_values_in_constructor", "no_primitive_wrappers", b"no_primitive_wrappers", "object_name", b"object_name", "package_name", b"package_name", "preamble", b"preamble", "preprocessors", b"preprocessors", "preserve_unknown_fields", b"preserve_unknown_fields", "primitive_wrappers", b"primitive_wrappers", "public_constructor_parameters", b"public_constructor_parameters", "retain_source_code_info", b"retain_source_code_info", "scala3_sources", b"scala3_sources", "scope", b"scope", "single_file", b"single_file", "test_only_no_java_conversions", b"test_only_no_java_conversions"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["bytes_type", b"bytes_type", "collection_type", b"collection_type", "enum_strip_prefix", b"enum_strip_prefix", "enum_value_naming", b"enum_value_naming", "flat_package", b"flat_package", "getters", b"getters", "ignore_all_transformations", b"ignore_all_transformations", "java_conversions", b"java_conversions", "lenses", b"lenses", "map_type", b"map_type", "no_default_values_in_constructor", b"no_default_values_in_constructor", "no_primitive_wrappers", b"no_primitive_wrappers", "object_name", b"object_name", "package_name", b"package_name", "preserve_unknown_fields", b"preserve_unknown_fields", "primitive_wrappers", b"primitive_wrappers", "public_constructor_parameters", b"public_constructor_parameters", "retain_source_code_info", b"retain_source_code_info", "scala3_sources", b"scala3_sources", "scope", b"scope", "single_file", b"single_file", "test_only_no_java_conversions", b"test_only_no_java_conversions"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["aux_enum_options", b"aux_enum_options", "aux_enum_value_options", b"aux_enum_value_options", "aux_field_options", b"aux_field_options", "aux_message_options", b"aux_message_options", "bytes_type", b"bytes_type", "collection_type", b"collection_type", "enum_strip_prefix", b"enum_strip_prefix", "enum_value_naming", b"enum_value_naming", "field_transformations", b"field_transformations", "flat_package", b"flat_package", "getters", b"getters", "ignore_all_transformations", b"ignore_all_transformations", "import", b"import", "java_conversions", b"java_conversions", "lenses", b"lenses", "map_type", b"map_type", "no_default_values_in_constructor", b"no_default_values_in_constructor", "no_primitive_wrappers", b"no_primitive_wrappers", "object_name", b"object_name", "package_name", b"package_name", "preamble", b"preamble", "preprocessors", b"preprocessors", "preserve_unknown_fields", b"preserve_unknown_fields", "primitive_wrappers", b"primitive_wrappers", "public_constructor_parameters", b"public_constructor_parameters", "retain_source_code_info", b"retain_source_code_info", "scala3_sources", b"scala3_sources", "scope", b"scope", "single_file", b"single_file", "test_only_no_java_conversions", b"test_only_no_java_conversions"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___ScalaPbOptions: typing_extensions.TypeAlias = ScalaPbOptions
+Global___ScalaPbOptions: _TypeAlias = ScalaPbOptions  # noqa: Y015
 
-@typing.final
-class MessageOptions(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class MessageOptions(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    EXTENDS_FIELD_NUMBER: builtins.int
-    COMPANION_EXTENDS_FIELD_NUMBER: builtins.int
-    ANNOTATIONS_FIELD_NUMBER: builtins.int
-    TYPE_FIELD_NUMBER: builtins.int
-    COMPANION_ANNOTATIONS_FIELD_NUMBER: builtins.int
-    SEALED_ONEOF_EXTENDS_FIELD_NUMBER: builtins.int
-    NO_BOX_FIELD_NUMBER: builtins.int
-    UNKNOWN_FIELDS_ANNOTATIONS_FIELD_NUMBER: builtins.int
-    NO_DEFAULT_VALUES_IN_CONSTRUCTOR_FIELD_NUMBER: builtins.int
-    SEALED_ONEOF_COMPANION_EXTENDS_FIELD_NUMBER: builtins.int
-    DERIVES_FIELD_NUMBER: builtins.int
-    SEALED_ONEOF_DERIVES_FIELD_NUMBER: builtins.int
-    SEALED_ONEOF_EMPTY_EXTENDS_FIELD_NUMBER: builtins.int
-    type: builtins.str
+    EXTENDS_FIELD_NUMBER: _builtins.int
+    COMPANION_EXTENDS_FIELD_NUMBER: _builtins.int
+    ANNOTATIONS_FIELD_NUMBER: _builtins.int
+    TYPE_FIELD_NUMBER: _builtins.int
+    COMPANION_ANNOTATIONS_FIELD_NUMBER: _builtins.int
+    SEALED_ONEOF_EXTENDS_FIELD_NUMBER: _builtins.int
+    NO_BOX_FIELD_NUMBER: _builtins.int
+    UNKNOWN_FIELDS_ANNOTATIONS_FIELD_NUMBER: _builtins.int
+    NO_DEFAULT_VALUES_IN_CONSTRUCTOR_FIELD_NUMBER: _builtins.int
+    SEALED_ONEOF_COMPANION_EXTENDS_FIELD_NUMBER: _builtins.int
+    DERIVES_FIELD_NUMBER: _builtins.int
+    SEALED_ONEOF_DERIVES_FIELD_NUMBER: _builtins.int
+    SEALED_ONEOF_EMPTY_EXTENDS_FIELD_NUMBER: _builtins.int
+    type: _builtins.str
     """All instances of this message will be converted to this type. An implicit TypeMapper
     must be present.
     """
-    no_box: builtins.bool
+    no_box: _builtins.bool
     """If true, when this message is used as an optional field, do not wrap it in an `Option`.
     This is equivalent of setting `(field).no_box` to true on each field with the message type.
     """
-    no_default_values_in_constructor: builtins.bool
+    no_default_values_in_constructor: _builtins.bool
     """If true, no default values will be generated in message constructors.
     If set (to true or false), the message-level setting overrides the
     file-level value, and can be overridden by the field-level setting.
     """
-    @property
-    def extends(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.str]:
+    @_builtins.property
+    def extends(self) -> _containers.RepeatedScalarFieldContainer[_builtins.str]:
         """Additional classes and traits to mix in to the case class."""
 
-    @property
-    def companion_extends(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.str]:
+    @_builtins.property
+    def companion_extends(self) -> _containers.RepeatedScalarFieldContainer[_builtins.str]:
         """Additional classes and traits to mix in to the companion object."""
 
-    @property
-    def annotations(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.str]:
+    @_builtins.property
+    def annotations(self) -> _containers.RepeatedScalarFieldContainer[_builtins.str]:
         """Custom annotations to add to the generated case class."""
 
-    @property
-    def companion_annotations(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.str]:
+    @_builtins.property
+    def companion_annotations(self) -> _containers.RepeatedScalarFieldContainer[_builtins.str]:
         """Custom annotations to add to the companion object of the generated class."""
 
-    @property
-    def sealed_oneof_extends(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.str]:
+    @_builtins.property
+    def sealed_oneof_extends(self) -> _containers.RepeatedScalarFieldContainer[_builtins.str]:
         """Additional classes and traits to mix in to generated sealed_oneof base trait."""
 
-    @property
-    def unknown_fields_annotations(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.str]:
+    @_builtins.property
+    def unknown_fields_annotations(self) -> _containers.RepeatedScalarFieldContainer[_builtins.str]:
         """Custom annotations to add to the generated `unknownFields` case class field."""
 
-    @property
-    def sealed_oneof_companion_extends(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.str]:
+    @_builtins.property
+    def sealed_oneof_companion_extends(self) -> _containers.RepeatedScalarFieldContainer[_builtins.str]:
         """Additional classes and traits to mix in to generated sealed oneof base trait's companion object."""
 
-    @property
-    def derives(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.str]:
+    @_builtins.property
+    def derives(self) -> _containers.RepeatedScalarFieldContainer[_builtins.str]:
         """Adds a derives clause to the message case class"""
 
-    @property
-    def sealed_oneof_derives(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.str]:
+    @_builtins.property
+    def sealed_oneof_derives(self) -> _containers.RepeatedScalarFieldContainer[_builtins.str]:
         """Additional classes and traits to add to the derives clause of a sealed oneof."""
 
-    @property
-    def sealed_oneof_empty_extends(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.str]:
+    @_builtins.property
+    def sealed_oneof_empty_extends(self) -> _containers.RepeatedScalarFieldContainer[_builtins.str]:
         """Additional traits to mixin for the empty case object of sealed oneofs."""
 
     def __init__(
         self,
         *,
-        extends: collections.abc.Iterable[builtins.str] | None = ...,
-        companion_extends: collections.abc.Iterable[builtins.str] | None = ...,
-        annotations: collections.abc.Iterable[builtins.str] | None = ...,
-        type: builtins.str | None = ...,
-        companion_annotations: collections.abc.Iterable[builtins.str] | None = ...,
-        sealed_oneof_extends: collections.abc.Iterable[builtins.str] | None = ...,
-        no_box: builtins.bool | None = ...,
-        unknown_fields_annotations: collections.abc.Iterable[builtins.str] | None = ...,
-        no_default_values_in_constructor: builtins.bool | None = ...,
-        sealed_oneof_companion_extends: collections.abc.Iterable[builtins.str] | None = ...,
-        derives: collections.abc.Iterable[builtins.str] | None = ...,
-        sealed_oneof_derives: collections.abc.Iterable[builtins.str] | None = ...,
-        sealed_oneof_empty_extends: collections.abc.Iterable[builtins.str] | None = ...,
+        extends: _abc.Iterable[_builtins.str] | None = ...,
+        companion_extends: _abc.Iterable[_builtins.str] | None = ...,
+        annotations: _abc.Iterable[_builtins.str] | None = ...,
+        type: _builtins.str | None = ...,
+        companion_annotations: _abc.Iterable[_builtins.str] | None = ...,
+        sealed_oneof_extends: _abc.Iterable[_builtins.str] | None = ...,
+        no_box: _builtins.bool | None = ...,
+        unknown_fields_annotations: _abc.Iterable[_builtins.str] | None = ...,
+        no_default_values_in_constructor: _builtins.bool | None = ...,
+        sealed_oneof_companion_extends: _abc.Iterable[_builtins.str] | None = ...,
+        derives: _abc.Iterable[_builtins.str] | None = ...,
+        sealed_oneof_derives: _abc.Iterable[_builtins.str] | None = ...,
+        sealed_oneof_empty_extends: _abc.Iterable[_builtins.str] | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["no_box", b"no_box", "no_default_values_in_constructor", b"no_default_values_in_constructor", "type", b"type"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["annotations", b"annotations", "companion_annotations", b"companion_annotations", "companion_extends", b"companion_extends", "derives", b"derives", "extends", b"extends", "no_box", b"no_box", "no_default_values_in_constructor", b"no_default_values_in_constructor", "sealed_oneof_companion_extends", b"sealed_oneof_companion_extends", "sealed_oneof_derives", b"sealed_oneof_derives", "sealed_oneof_empty_extends", b"sealed_oneof_empty_extends", "sealed_oneof_extends", b"sealed_oneof_extends", "type", b"type", "unknown_fields_annotations", b"unknown_fields_annotations"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["no_box", b"no_box", "no_default_values_in_constructor", b"no_default_values_in_constructor", "type", b"type"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["annotations", b"annotations", "companion_annotations", b"companion_annotations", "companion_extends", b"companion_extends", "derives", b"derives", "extends", b"extends", "no_box", b"no_box", "no_default_values_in_constructor", b"no_default_values_in_constructor", "sealed_oneof_companion_extends", b"sealed_oneof_companion_extends", "sealed_oneof_derives", b"sealed_oneof_derives", "sealed_oneof_empty_extends", b"sealed_oneof_empty_extends", "sealed_oneof_extends", b"sealed_oneof_extends", "type", b"type", "unknown_fields_annotations", b"unknown_fields_annotations"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___MessageOptions: typing_extensions.TypeAlias = MessageOptions
+Global___MessageOptions: _TypeAlias = MessageOptions  # noqa: Y015
 
-@typing.final
-class Collection(google.protobuf.message.Message):
+@_typing.final
+class Collection(_message.Message):
     """Represents a custom Collection type in Scala. This allows ScalaPB to integrate with
     collection types that are different enough from the ones in the standard library.
     """
 
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+    DESCRIPTOR: _descriptor.Descriptor
 
-    TYPE_FIELD_NUMBER: builtins.int
-    NON_EMPTY_FIELD_NUMBER: builtins.int
-    ADAPTER_FIELD_NUMBER: builtins.int
-    type: builtins.str
+    TYPE_FIELD_NUMBER: _builtins.int
+    NON_EMPTY_FIELD_NUMBER: _builtins.int
+    ADAPTER_FIELD_NUMBER: _builtins.int
+    type: _builtins.str
     """Type of the collection"""
-    non_empty: builtins.bool
+    non_empty: _builtins.bool
     """Set to true if this collection type is not allowed to be empty, for example
     cats.data.NonEmptyList.  When true, ScalaPB will not generate `clearX` for the repeated
     field and not provide a default argument in the constructor.
     """
-    adapter: builtins.str
+    adapter: _builtins.str
     """An Adapter is a Scala object available at runtime that provides certain static methods
     that can operate on this collection type.
     """
     def __init__(
         self,
         *,
-        type: builtins.str | None = ...,
-        non_empty: builtins.bool | None = ...,
-        adapter: builtins.str | None = ...,
+        type: _builtins.str | None = ...,
+        non_empty: _builtins.bool | None = ...,
+        adapter: _builtins.str | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["adapter", b"adapter", "non_empty", b"non_empty", "type", b"type"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["adapter", b"adapter", "non_empty", b"non_empty", "type", b"type"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["adapter", b"adapter", "non_empty", b"non_empty", "type", b"type"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["adapter", b"adapter", "non_empty", b"non_empty", "type", b"type"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___Collection: typing_extensions.TypeAlias = Collection
+Global___Collection: _TypeAlias = Collection  # noqa: Y015
 
-@typing.final
-class FieldOptions(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class FieldOptions(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    TYPE_FIELD_NUMBER: builtins.int
-    SCALA_NAME_FIELD_NUMBER: builtins.int
-    COLLECTION_TYPE_FIELD_NUMBER: builtins.int
-    COLLECTION_FIELD_NUMBER: builtins.int
-    KEY_TYPE_FIELD_NUMBER: builtins.int
-    VALUE_TYPE_FIELD_NUMBER: builtins.int
-    ANNOTATIONS_FIELD_NUMBER: builtins.int
-    MAP_TYPE_FIELD_NUMBER: builtins.int
-    NO_DEFAULT_VALUE_IN_CONSTRUCTOR_FIELD_NUMBER: builtins.int
-    NO_BOX_FIELD_NUMBER: builtins.int
-    REQUIRED_FIELD_NUMBER: builtins.int
-    type: builtins.str
-    scala_name: builtins.str
-    collection_type: builtins.str
+    TYPE_FIELD_NUMBER: _builtins.int
+    SCALA_NAME_FIELD_NUMBER: _builtins.int
+    COLLECTION_TYPE_FIELD_NUMBER: _builtins.int
+    COLLECTION_FIELD_NUMBER: _builtins.int
+    KEY_TYPE_FIELD_NUMBER: _builtins.int
+    VALUE_TYPE_FIELD_NUMBER: _builtins.int
+    ANNOTATIONS_FIELD_NUMBER: _builtins.int
+    MAP_TYPE_FIELD_NUMBER: _builtins.int
+    NO_DEFAULT_VALUE_IN_CONSTRUCTOR_FIELD_NUMBER: _builtins.int
+    NO_BOX_FIELD_NUMBER: _builtins.int
+    REQUIRED_FIELD_NUMBER: _builtins.int
+    type: _builtins.str
+    scala_name: _builtins.str
+    collection_type: _builtins.str
     """Can be specified only if this field is repeated. If unspecified,
     it falls back to the file option named `collection_type`, which defaults
     to `scala.collection.Seq`.
     """
-    key_type: builtins.str
+    key_type: _builtins.str
     """If the field is a map, you can specify custom Scala types for the key
     or value.
     """
-    value_type: builtins.str
-    map_type: builtins.str
+    value_type: _builtins.str
+    map_type: _builtins.str
     """Can be specified only if this field is a map. If unspecified,
     it falls back to the file option named `map_type` which defaults to
     `scala.collection.immutable.Map`
     """
-    no_default_value_in_constructor: builtins.bool
+    no_default_value_in_constructor: _builtins.bool
     """If true, no default value will be generated for this field in the message
     constructor. If this field is set, it has the highest precedence and overrides the
     values at the message-level and file-level.
     """
-    no_box: builtins.bool
+    no_box: _builtins.bool
     """Do not box this value in Option[T]. If set, this overrides MessageOptions.no_box"""
-    required: builtins.bool
+    required: _builtins.bool
     """Like no_box it does not box a value in Option[T], but also fails parsing when a value
     is not provided. This enables to emulate required fields in proto3.
     """
-    @property
+    @_builtins.property
     def collection(self) -> Global___Collection: ...
-    @property
-    def annotations(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.str]:
+    @_builtins.property
+    def annotations(self) -> _containers.RepeatedScalarFieldContainer[_builtins.str]:
         """Custom annotations to add to the field."""
 
     def __init__(
         self,
         *,
-        type: builtins.str | None = ...,
-        scala_name: builtins.str | None = ...,
-        collection_type: builtins.str | None = ...,
+        type: _builtins.str | None = ...,
+        scala_name: _builtins.str | None = ...,
+        collection_type: _builtins.str | None = ...,
         collection: Global___Collection | None = ...,
-        key_type: builtins.str | None = ...,
-        value_type: builtins.str | None = ...,
-        annotations: collections.abc.Iterable[builtins.str] | None = ...,
-        map_type: builtins.str | None = ...,
-        no_default_value_in_constructor: builtins.bool | None = ...,
-        no_box: builtins.bool | None = ...,
-        required: builtins.bool | None = ...,
+        key_type: _builtins.str | None = ...,
+        value_type: _builtins.str | None = ...,
+        annotations: _abc.Iterable[_builtins.str] | None = ...,
+        map_type: _builtins.str | None = ...,
+        no_default_value_in_constructor: _builtins.bool | None = ...,
+        no_box: _builtins.bool | None = ...,
+        required: _builtins.bool | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["collection", b"collection", "collection_type", b"collection_type", "key_type", b"key_type", "map_type", b"map_type", "no_box", b"no_box", "no_default_value_in_constructor", b"no_default_value_in_constructor", "required", b"required", "scala_name", b"scala_name", "type", b"type", "value_type", b"value_type"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["annotations", b"annotations", "collection", b"collection", "collection_type", b"collection_type", "key_type", b"key_type", "map_type", b"map_type", "no_box", b"no_box", "no_default_value_in_constructor", b"no_default_value_in_constructor", "required", b"required", "scala_name", b"scala_name", "type", b"type", "value_type", b"value_type"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["collection", b"collection", "collection_type", b"collection_type", "key_type", b"key_type", "map_type", b"map_type", "no_box", b"no_box", "no_default_value_in_constructor", b"no_default_value_in_constructor", "required", b"required", "scala_name", b"scala_name", "type", b"type", "value_type", b"value_type"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["annotations", b"annotations", "collection", b"collection", "collection_type", b"collection_type", "key_type", b"key_type", "map_type", b"map_type", "no_box", b"no_box", "no_default_value_in_constructor", b"no_default_value_in_constructor", "required", b"required", "scala_name", b"scala_name", "type", b"type", "value_type", b"value_type"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___FieldOptions: typing_extensions.TypeAlias = FieldOptions
+Global___FieldOptions: _TypeAlias = FieldOptions  # noqa: Y015
 
-@typing.final
-class EnumOptions(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class EnumOptions(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    EXTENDS_FIELD_NUMBER: builtins.int
-    COMPANION_EXTENDS_FIELD_NUMBER: builtins.int
-    TYPE_FIELD_NUMBER: builtins.int
-    BASE_ANNOTATIONS_FIELD_NUMBER: builtins.int
-    RECOGNIZED_ANNOTATIONS_FIELD_NUMBER: builtins.int
-    UNRECOGNIZED_ANNOTATIONS_FIELD_NUMBER: builtins.int
-    type: builtins.str
+    EXTENDS_FIELD_NUMBER: _builtins.int
+    COMPANION_EXTENDS_FIELD_NUMBER: _builtins.int
+    TYPE_FIELD_NUMBER: _builtins.int
+    BASE_ANNOTATIONS_FIELD_NUMBER: _builtins.int
+    RECOGNIZED_ANNOTATIONS_FIELD_NUMBER: _builtins.int
+    UNRECOGNIZED_ANNOTATIONS_FIELD_NUMBER: _builtins.int
+    type: _builtins.str
     """All instances of this enum will be converted to this type. An implicit TypeMapper
     must be present.
     """
-    @property
-    def extends(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.str]:
+    @_builtins.property
+    def extends(self) -> _containers.RepeatedScalarFieldContainer[_builtins.str]:
         """Additional classes and traits to mix in to the base trait"""
 
-    @property
-    def companion_extends(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.str]:
+    @_builtins.property
+    def companion_extends(self) -> _containers.RepeatedScalarFieldContainer[_builtins.str]:
         """Additional classes and traits to mix in to the companion object."""
 
-    @property
-    def base_annotations(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.str]:
+    @_builtins.property
+    def base_annotations(self) -> _containers.RepeatedScalarFieldContainer[_builtins.str]:
         """Custom annotations to add to the generated enum's base class."""
 
-    @property
-    def recognized_annotations(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.str]:
+    @_builtins.property
+    def recognized_annotations(self) -> _containers.RepeatedScalarFieldContainer[_builtins.str]:
         """Custom annotations to add to the generated trait."""
 
-    @property
-    def unrecognized_annotations(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.str]:
+    @_builtins.property
+    def unrecognized_annotations(self) -> _containers.RepeatedScalarFieldContainer[_builtins.str]:
         """Custom annotations to add to the generated Unrecognized case class."""
 
     def __init__(
         self,
         *,
-        extends: collections.abc.Iterable[builtins.str] | None = ...,
-        companion_extends: collections.abc.Iterable[builtins.str] | None = ...,
-        type: builtins.str | None = ...,
-        base_annotations: collections.abc.Iterable[builtins.str] | None = ...,
-        recognized_annotations: collections.abc.Iterable[builtins.str] | None = ...,
-        unrecognized_annotations: collections.abc.Iterable[builtins.str] | None = ...,
+        extends: _abc.Iterable[_builtins.str] | None = ...,
+        companion_extends: _abc.Iterable[_builtins.str] | None = ...,
+        type: _builtins.str | None = ...,
+        base_annotations: _abc.Iterable[_builtins.str] | None = ...,
+        recognized_annotations: _abc.Iterable[_builtins.str] | None = ...,
+        unrecognized_annotations: _abc.Iterable[_builtins.str] | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["type", b"type"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["base_annotations", b"base_annotations", "companion_extends", b"companion_extends", "extends", b"extends", "recognized_annotations", b"recognized_annotations", "type", b"type", "unrecognized_annotations", b"unrecognized_annotations"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["type", b"type"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["base_annotations", b"base_annotations", "companion_extends", b"companion_extends", "extends", b"extends", "recognized_annotations", b"recognized_annotations", "type", b"type", "unrecognized_annotations", b"unrecognized_annotations"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___EnumOptions: typing_extensions.TypeAlias = EnumOptions
+Global___EnumOptions: _TypeAlias = EnumOptions  # noqa: Y015
 
-@typing.final
-class EnumValueOptions(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class EnumValueOptions(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    EXTENDS_FIELD_NUMBER: builtins.int
-    SCALA_NAME_FIELD_NUMBER: builtins.int
-    ANNOTATIONS_FIELD_NUMBER: builtins.int
-    scala_name: builtins.str
+    EXTENDS_FIELD_NUMBER: _builtins.int
+    SCALA_NAME_FIELD_NUMBER: _builtins.int
+    ANNOTATIONS_FIELD_NUMBER: _builtins.int
+    scala_name: _builtins.str
     """Name in Scala to use for this enum value."""
-    @property
-    def extends(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.str]:
+    @_builtins.property
+    def extends(self) -> _containers.RepeatedScalarFieldContainer[_builtins.str]:
         """Additional classes and traits to mix in to an individual enum value."""
 
-    @property
-    def annotations(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.str]:
+    @_builtins.property
+    def annotations(self) -> _containers.RepeatedScalarFieldContainer[_builtins.str]:
         """Custom annotations to add to the generated case object for this enum value."""
 
     def __init__(
         self,
         *,
-        extends: collections.abc.Iterable[builtins.str] | None = ...,
-        scala_name: builtins.str | None = ...,
-        annotations: collections.abc.Iterable[builtins.str] | None = ...,
+        extends: _abc.Iterable[_builtins.str] | None = ...,
+        scala_name: _builtins.str | None = ...,
+        annotations: _abc.Iterable[_builtins.str] | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["scala_name", b"scala_name"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["annotations", b"annotations", "extends", b"extends", "scala_name", b"scala_name"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["scala_name", b"scala_name"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["annotations", b"annotations", "extends", b"extends", "scala_name", b"scala_name"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___EnumValueOptions: typing_extensions.TypeAlias = EnumValueOptions
+Global___EnumValueOptions: _TypeAlias = EnumValueOptions  # noqa: Y015
 
-@typing.final
-class OneofOptions(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class OneofOptions(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    EXTENDS_FIELD_NUMBER: builtins.int
-    SCALA_NAME_FIELD_NUMBER: builtins.int
-    scala_name: builtins.str
+    EXTENDS_FIELD_NUMBER: _builtins.int
+    SCALA_NAME_FIELD_NUMBER: _builtins.int
+    scala_name: _builtins.str
     """Name in Scala to use for this oneof field."""
-    @property
-    def extends(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.str]:
+    @_builtins.property
+    def extends(self) -> _containers.RepeatedScalarFieldContainer[_builtins.str]:
         """Additional traits to mix in to a oneof."""
 
     def __init__(
         self,
         *,
-        extends: collections.abc.Iterable[builtins.str] | None = ...,
-        scala_name: builtins.str | None = ...,
+        extends: _abc.Iterable[_builtins.str] | None = ...,
+        scala_name: _builtins.str | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["scala_name", b"scala_name"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["extends", b"extends", "scala_name", b"scala_name"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["scala_name", b"scala_name"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["extends", b"extends", "scala_name", b"scala_name"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___OneofOptions: typing_extensions.TypeAlias = OneofOptions
+Global___OneofOptions: _TypeAlias = OneofOptions  # noqa: Y015
 
-@typing.final
-class FieldTransformation(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class FieldTransformation(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    WHEN_FIELD_NUMBER: builtins.int
-    MATCH_TYPE_FIELD_NUMBER: builtins.int
-    SET_FIELD_NUMBER: builtins.int
+    WHEN_FIELD_NUMBER: _builtins.int
+    MATCH_TYPE_FIELD_NUMBER: _builtins.int
+    SET_FIELD_NUMBER: _builtins.int
     match_type: Global___MatchType.ValueType
-    @property
-    def when(self) -> google.protobuf.descriptor_pb2.FieldDescriptorProto: ...
-    @property
-    def set(self) -> google.protobuf.descriptor_pb2.FieldOptions: ...
+    @_builtins.property
+    def when(self) -> _descriptor_pb2.FieldDescriptorProto: ...
+    @_builtins.property
+    def set(self) -> _descriptor_pb2.FieldOptions: ...
     def __init__(
         self,
         *,
-        when: google.protobuf.descriptor_pb2.FieldDescriptorProto | None = ...,
+        when: _descriptor_pb2.FieldDescriptorProto | None = ...,
         match_type: Global___MatchType.ValueType | None = ...,
-        set: google.protobuf.descriptor_pb2.FieldOptions | None = ...,
+        set: _descriptor_pb2.FieldOptions | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["match_type", b"match_type", "set", b"set", "when", b"when"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["match_type", b"match_type", "set", b"set", "when", b"when"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["match_type", b"match_type", "set", b"set", "when", b"when"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["match_type", b"match_type", "set", b"set", "when", b"when"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___FieldTransformation: typing_extensions.TypeAlias = FieldTransformation
+Global___FieldTransformation: _TypeAlias = FieldTransformation  # noqa: Y015
 
-@typing.final
-class PreprocessorOutput(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class PreprocessorOutput(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    @typing.final
-    class OptionsByFileEntry(google.protobuf.message.Message):
-        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+    @_typing.final
+    class OptionsByFileEntry(_message.Message):
+        DESCRIPTOR: _descriptor.Descriptor
 
-        KEY_FIELD_NUMBER: builtins.int
-        VALUE_FIELD_NUMBER: builtins.int
-        key: builtins.str
-        @property
+        KEY_FIELD_NUMBER: _builtins.int
+        VALUE_FIELD_NUMBER: _builtins.int
+        key: _builtins.str
+        @_builtins.property
         def value(self) -> Global___ScalaPbOptions: ...
         def __init__(
             self,
             *,
-            key: builtins.str | None = ...,
+            key: _builtins.str | None = ...,
             value: Global___ScalaPbOptions | None = ...,
         ) -> None: ...
-        _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["key", b"key", "value", b"value"]
-        def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-        _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["key", b"key", "value", b"value"]
+        _HasFieldArgType: _TypeAlias = _typing.Literal["key", b"key", "value", b"value"]  # noqa: Y015
+        def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+        _ClearFieldArgType: _TypeAlias = _typing.Literal["key", b"key", "value", b"value"]  # noqa: Y015
         def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-    OPTIONS_BY_FILE_FIELD_NUMBER: builtins.int
-    @property
-    def options_by_file(self) -> google.protobuf.internal.containers.MessageMap[builtins.str, Global___ScalaPbOptions]: ...
+    OPTIONS_BY_FILE_FIELD_NUMBER: _builtins.int
+    @_builtins.property
+    def options_by_file(self) -> _containers.MessageMap[_builtins.str, Global___ScalaPbOptions]: ...
     def __init__(
         self,
         *,
-        options_by_file: collections.abc.Mapping[builtins.str, Global___ScalaPbOptions] | None = ...,
+        options_by_file: _abc.Mapping[_builtins.str, Global___ScalaPbOptions] | None = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["options_by_file", b"options_by_file"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["options_by_file", b"options_by_file"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___PreprocessorOutput: typing_extensions.TypeAlias = PreprocessorOutput
+Global___PreprocessorOutput: _TypeAlias = PreprocessorOutput  # noqa: Y015
 
-OPTIONS_FIELD_NUMBER: builtins.int
-MESSAGE_FIELD_NUMBER: builtins.int
-FIELD_FIELD_NUMBER: builtins.int
-ENUM_OPTIONS_FIELD_NUMBER: builtins.int
-ENUM_VALUE_FIELD_NUMBER: builtins.int
-ONEOF_FIELD_NUMBER: builtins.int
-options: google.protobuf.internal.extension_dict._ExtensionFieldDescriptor[google.protobuf.descriptor_pb2.FileOptions, Global___ScalaPbOptions]
+OPTIONS_FIELD_NUMBER: _builtins.int
+MESSAGE_FIELD_NUMBER: _builtins.int
+FIELD_FIELD_NUMBER: _builtins.int
+ENUM_OPTIONS_FIELD_NUMBER: _builtins.int
+ENUM_VALUE_FIELD_NUMBER: _builtins.int
+ONEOF_FIELD_NUMBER: _builtins.int
+options: _extension_dict._ExtensionFieldDescriptor[_descriptor_pb2.FileOptions, Global___ScalaPbOptions]
 """File-level optionals for ScalaPB.
 Extension number officially assigned by protobuf-global-extension-registry@google.com
 """
-message: google.protobuf.internal.extension_dict._ExtensionFieldDescriptor[google.protobuf.descriptor_pb2.MessageOptions, Global___MessageOptions]
+message: _extension_dict._ExtensionFieldDescriptor[_descriptor_pb2.MessageOptions, Global___MessageOptions]
 """Message-level optionals for ScalaPB.
 Extension number officially assigned by protobuf-global-extension-registry@google.com
 """
-field: google.protobuf.internal.extension_dict._ExtensionFieldDescriptor[google.protobuf.descriptor_pb2.FieldOptions, Global___FieldOptions]
+field: _extension_dict._ExtensionFieldDescriptor[_descriptor_pb2.FieldOptions, Global___FieldOptions]
 """Field-level optionals for ScalaPB.
 Extension number officially assigned by protobuf-global-extension-registry@google.com
 """
-enum_options: google.protobuf.internal.extension_dict._ExtensionFieldDescriptor[google.protobuf.descriptor_pb2.EnumOptions, Global___EnumOptions]
+enum_options: _extension_dict._ExtensionFieldDescriptor[_descriptor_pb2.EnumOptions, Global___EnumOptions]
 """Enum-level optionals for ScalaPB.
 Extension number officially assigned by protobuf-global-extension-registry@google.com
 
 The field is called enum_options and not enum since enum is not allowed in Java.
 """
-enum_value: google.protobuf.internal.extension_dict._ExtensionFieldDescriptor[google.protobuf.descriptor_pb2.EnumValueOptions, Global___EnumValueOptions]
+enum_value: _extension_dict._ExtensionFieldDescriptor[_descriptor_pb2.EnumValueOptions, Global___EnumValueOptions]
 """Enum-level optionals for ScalaPB.
 Extension number officially assigned by protobuf-global-extension-registry@google.com
 """
-oneof: google.protobuf.internal.extension_dict._ExtensionFieldDescriptor[google.protobuf.descriptor_pb2.OneofOptions, Global___OneofOptions]
+oneof: _extension_dict._ExtensionFieldDescriptor[_descriptor_pb2.OneofOptions, Global___OneofOptions]
 """Enum-level optionals for ScalaPB.
 Extension number officially assigned by protobuf-global-extension-registry@google.com
 """

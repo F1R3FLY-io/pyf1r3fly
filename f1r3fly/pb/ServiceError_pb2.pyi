@@ -3,34 +3,34 @@
 isort:skip_file
 """
 
-import builtins
-import collections.abc
-import google.protobuf.descriptor
-import google.protobuf.internal.containers
-import google.protobuf.message
+from collections import abc as _abc
+from google.protobuf import descriptor as _descriptor
+from google.protobuf import message as _message
+from google.protobuf.internal import containers as _containers
+import builtins as _builtins
 import sys
-import typing
+import typing as _typing
 
 if sys.version_info >= (3, 10):
-    import typing as typing_extensions
+    from typing import TypeAlias as _TypeAlias
 else:
-    import typing_extensions
+    from typing_extensions import TypeAlias as _TypeAlias
 
-DESCRIPTOR: google.protobuf.descriptor.FileDescriptor
+DESCRIPTOR: _descriptor.FileDescriptor
 
-@typing.final
-class ServiceError(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class ServiceError(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    MESSAGES_FIELD_NUMBER: builtins.int
-    @property
-    def messages(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.str]: ...
+    MESSAGES_FIELD_NUMBER: _builtins.int
+    @_builtins.property
+    def messages(self) -> _containers.RepeatedScalarFieldContainer[_builtins.str]: ...
     def __init__(
         self,
         *,
-        messages: collections.abc.Iterable[builtins.str] | None = ...,
+        messages: _abc.Iterable[_builtins.str] | None = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["messages", b"messages"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["messages", b"messages"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___ServiceError: typing_extensions.TypeAlias = ServiceError
+Global___ServiceError: _TypeAlias = ServiceError  # noqa: Y015

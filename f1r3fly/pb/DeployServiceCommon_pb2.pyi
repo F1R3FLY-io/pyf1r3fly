@@ -5,611 +5,611 @@ isort:skip_file
 The main API is `DeployService`.
 """
 
-import CasperMessage_pb2
-import RhoTypes_pb2
-import builtins
-import collections.abc
-import google.protobuf.descriptor
-import google.protobuf.internal.containers
-import google.protobuf.message
+from collections import abc as _abc
+from google.protobuf import descriptor as _descriptor
+from google.protobuf import message as _message
+from google.protobuf.internal import containers as _containers
+import CasperMessage_pb2 as _CasperMessage_pb2
+import RhoTypes_pb2 as _RhoTypes_pb2
+import builtins as _builtins
 import sys
-import typing
+import typing as _typing
 
 if sys.version_info >= (3, 10):
-    import typing as typing_extensions
+    from typing import TypeAlias as _TypeAlias
 else:
-    import typing_extensions
+    from typing_extensions import TypeAlias as _TypeAlias
 
-DESCRIPTOR: google.protobuf.descriptor.FileDescriptor
+DESCRIPTOR: _descriptor.FileDescriptor
 
-@typing.final
-class FindDeployQuery(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class FindDeployQuery(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    DEPLOYID_FIELD_NUMBER: builtins.int
-    deployId: builtins.bytes
+    DEPLOYID_FIELD_NUMBER: _builtins.int
+    deployId: _builtins.bytes
     def __init__(
         self,
         *,
-        deployId: builtins.bytes = ...,
+        deployId: _builtins.bytes = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["deployId", b"deployId"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["deployId", b"deployId"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___FindDeployQuery: typing_extensions.TypeAlias = FindDeployQuery
+Global___FindDeployQuery: _TypeAlias = FindDeployQuery  # noqa: Y015
 
-@typing.final
-class BlockQuery(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class BlockQuery(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    HASH_FIELD_NUMBER: builtins.int
-    hash: builtins.str
+    HASH_FIELD_NUMBER: _builtins.int
+    hash: _builtins.str
     def __init__(
         self,
         *,
-        hash: builtins.str = ...,
+        hash: _builtins.str = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["hash", b"hash"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["hash", b"hash"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___BlockQuery: typing_extensions.TypeAlias = BlockQuery
+Global___BlockQuery: _TypeAlias = BlockQuery  # noqa: Y015
 
-@typing.final
-class ReportQuery(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class ReportQuery(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    HASH_FIELD_NUMBER: builtins.int
-    FORCEREPLAY_FIELD_NUMBER: builtins.int
-    hash: builtins.str
-    forceReplay: builtins.bool
+    HASH_FIELD_NUMBER: _builtins.int
+    FORCEREPLAY_FIELD_NUMBER: _builtins.int
+    hash: _builtins.str
+    forceReplay: _builtins.bool
     def __init__(
         self,
         *,
-        hash: builtins.str = ...,
-        forceReplay: builtins.bool = ...,
+        hash: _builtins.str = ...,
+        forceReplay: _builtins.bool = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["forceReplay", b"forceReplay", "hash", b"hash"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["forceReplay", b"forceReplay", "hash", b"hash"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___ReportQuery: typing_extensions.TypeAlias = ReportQuery
+Global___ReportQuery: _TypeAlias = ReportQuery  # noqa: Y015
 
-@typing.final
-class BlocksQuery(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class BlocksQuery(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    DEPTH_FIELD_NUMBER: builtins.int
-    depth: builtins.int
+    DEPTH_FIELD_NUMBER: _builtins.int
+    depth: _builtins.int
     def __init__(
         self,
         *,
-        depth: builtins.int = ...,
+        depth: _builtins.int = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["depth", b"depth"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["depth", b"depth"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___BlocksQuery: typing_extensions.TypeAlias = BlocksQuery
+Global___BlocksQuery: _TypeAlias = BlocksQuery  # noqa: Y015
 
-@typing.final
-class BlocksQueryByHeight(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class BlocksQueryByHeight(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    STARTBLOCKNUMBER_FIELD_NUMBER: builtins.int
-    ENDBLOCKNUMBER_FIELD_NUMBER: builtins.int
-    startBlockNumber: builtins.int
-    endBlockNumber: builtins.int
+    STARTBLOCKNUMBER_FIELD_NUMBER: _builtins.int
+    ENDBLOCKNUMBER_FIELD_NUMBER: _builtins.int
+    startBlockNumber: _builtins.int
+    endBlockNumber: _builtins.int
     def __init__(
         self,
         *,
-        startBlockNumber: builtins.int = ...,
-        endBlockNumber: builtins.int = ...,
+        startBlockNumber: _builtins.int = ...,
+        endBlockNumber: _builtins.int = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["endBlockNumber", b"endBlockNumber", "startBlockNumber", b"startBlockNumber"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["endBlockNumber", b"endBlockNumber", "startBlockNumber", b"startBlockNumber"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___BlocksQueryByHeight: typing_extensions.TypeAlias = BlocksQueryByHeight
+Global___BlocksQueryByHeight: _TypeAlias = BlocksQueryByHeight  # noqa: Y015
 
-@typing.final
-class DataAtNameQuery(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class DataAtNameQuery(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    DEPTH_FIELD_NUMBER: builtins.int
-    NAME_FIELD_NUMBER: builtins.int
-    depth: builtins.int
-    @property
-    def name(self) -> RhoTypes_pb2.Par: ...
+    DEPTH_FIELD_NUMBER: _builtins.int
+    NAME_FIELD_NUMBER: _builtins.int
+    depth: _builtins.int
+    @_builtins.property
+    def name(self) -> _RhoTypes_pb2.Par: ...
     def __init__(
         self,
         *,
-        depth: builtins.int = ...,
-        name: RhoTypes_pb2.Par | None = ...,
+        depth: _builtins.int = ...,
+        name: _RhoTypes_pb2.Par | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["name", b"name"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["depth", b"depth", "name", b"name"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["name", b"name"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["depth", b"depth", "name", b"name"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___DataAtNameQuery: typing_extensions.TypeAlias = DataAtNameQuery
+Global___DataAtNameQuery: _TypeAlias = DataAtNameQuery  # noqa: Y015
 
-@typing.final
-class DataAtNameByBlockQuery(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class DataAtNameByBlockQuery(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    PAR_FIELD_NUMBER: builtins.int
-    BLOCKHASH_FIELD_NUMBER: builtins.int
-    USEPRESTATEHASH_FIELD_NUMBER: builtins.int
-    blockHash: builtins.str
-    usePreStateHash: builtins.bool
-    @property
-    def par(self) -> RhoTypes_pb2.Par: ...
+    PAR_FIELD_NUMBER: _builtins.int
+    BLOCKHASH_FIELD_NUMBER: _builtins.int
+    USEPRESTATEHASH_FIELD_NUMBER: _builtins.int
+    blockHash: _builtins.str
+    usePreStateHash: _builtins.bool
+    @_builtins.property
+    def par(self) -> _RhoTypes_pb2.Par: ...
     def __init__(
         self,
         *,
-        par: RhoTypes_pb2.Par | None = ...,
-        blockHash: builtins.str = ...,
-        usePreStateHash: builtins.bool = ...,
+        par: _RhoTypes_pb2.Par | None = ...,
+        blockHash: _builtins.str = ...,
+        usePreStateHash: _builtins.bool = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["par", b"par"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["blockHash", b"blockHash", "par", b"par", "usePreStateHash", b"usePreStateHash"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["par", b"par"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["blockHash", b"blockHash", "par", b"par", "usePreStateHash", b"usePreStateHash"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___DataAtNameByBlockQuery: typing_extensions.TypeAlias = DataAtNameByBlockQuery
+Global___DataAtNameByBlockQuery: _TypeAlias = DataAtNameByBlockQuery  # noqa: Y015
 
-@typing.final
-class ContinuationAtNameQuery(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class ContinuationAtNameQuery(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    DEPTH_FIELD_NUMBER: builtins.int
-    NAMES_FIELD_NUMBER: builtins.int
-    depth: builtins.int
-    @property
-    def names(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[RhoTypes_pb2.Par]: ...
+    DEPTH_FIELD_NUMBER: _builtins.int
+    NAMES_FIELD_NUMBER: _builtins.int
+    depth: _builtins.int
+    @_builtins.property
+    def names(self) -> _containers.RepeatedCompositeFieldContainer[_RhoTypes_pb2.Par]: ...
     def __init__(
         self,
         *,
-        depth: builtins.int = ...,
-        names: collections.abc.Iterable[RhoTypes_pb2.Par] | None = ...,
+        depth: _builtins.int = ...,
+        names: _abc.Iterable[_RhoTypes_pb2.Par] | None = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["depth", b"depth", "names", b"names"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["depth", b"depth", "names", b"names"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___ContinuationAtNameQuery: typing_extensions.TypeAlias = ContinuationAtNameQuery
+Global___ContinuationAtNameQuery: _TypeAlias = ContinuationAtNameQuery  # noqa: Y015
 
-@typing.final
-class VisualizeDagQuery(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class VisualizeDagQuery(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    DEPTH_FIELD_NUMBER: builtins.int
-    SHOWJUSTIFICATIONLINES_FIELD_NUMBER: builtins.int
-    STARTBLOCKNUMBER_FIELD_NUMBER: builtins.int
-    depth: builtins.int
-    showJustificationLines: builtins.bool
-    startBlockNumber: builtins.int
+    DEPTH_FIELD_NUMBER: _builtins.int
+    SHOWJUSTIFICATIONLINES_FIELD_NUMBER: _builtins.int
+    STARTBLOCKNUMBER_FIELD_NUMBER: _builtins.int
+    depth: _builtins.int
+    showJustificationLines: _builtins.bool
+    startBlockNumber: _builtins.int
     def __init__(
         self,
         *,
-        depth: builtins.int = ...,
-        showJustificationLines: builtins.bool = ...,
-        startBlockNumber: builtins.int = ...,
+        depth: _builtins.int = ...,
+        showJustificationLines: _builtins.bool = ...,
+        startBlockNumber: _builtins.int = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["depth", b"depth", "showJustificationLines", b"showJustificationLines", "startBlockNumber", b"startBlockNumber"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["depth", b"depth", "showJustificationLines", b"showJustificationLines", "startBlockNumber", b"startBlockNumber"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___VisualizeDagQuery: typing_extensions.TypeAlias = VisualizeDagQuery
+Global___VisualizeDagQuery: _TypeAlias = VisualizeDagQuery  # noqa: Y015
 
-@typing.final
-class MachineVerifyQuery(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class MachineVerifyQuery(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
     def __init__(
         self,
     ) -> None: ...
 
-Global___MachineVerifyQuery: typing_extensions.TypeAlias = MachineVerifyQuery
+Global___MachineVerifyQuery: _TypeAlias = MachineVerifyQuery  # noqa: Y015
 
-@typing.final
-class PrivateNamePreviewQuery(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class PrivateNamePreviewQuery(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    USER_FIELD_NUMBER: builtins.int
-    TIMESTAMP_FIELD_NUMBER: builtins.int
-    NAMEQTY_FIELD_NUMBER: builtins.int
-    user: builtins.bytes
+    USER_FIELD_NUMBER: _builtins.int
+    TIMESTAMP_FIELD_NUMBER: _builtins.int
+    NAMEQTY_FIELD_NUMBER: _builtins.int
+    user: _builtins.bytes
     """public key a la DeployData"""
-    timestamp: builtins.int
+    timestamp: _builtins.int
     """millisecond timestamp"""
-    nameQty: builtins.int
+    nameQty: _builtins.int
     """how many names to preview? (max: 1024)"""
     def __init__(
         self,
         *,
-        user: builtins.bytes = ...,
-        timestamp: builtins.int = ...,
-        nameQty: builtins.int = ...,
+        user: _builtins.bytes = ...,
+        timestamp: _builtins.int = ...,
+        nameQty: _builtins.int = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["nameQty", b"nameQty", "timestamp", b"timestamp", "user", b"user"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["nameQty", b"nameQty", "timestamp", b"timestamp", "user", b"user"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___PrivateNamePreviewQuery: typing_extensions.TypeAlias = PrivateNamePreviewQuery
+Global___PrivateNamePreviewQuery: _TypeAlias = PrivateNamePreviewQuery  # noqa: Y015
 
-@typing.final
-class LastFinalizedBlockQuery(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class LastFinalizedBlockQuery(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
     def __init__(
         self,
     ) -> None: ...
 
-Global___LastFinalizedBlockQuery: typing_extensions.TypeAlias = LastFinalizedBlockQuery
+Global___LastFinalizedBlockQuery: _TypeAlias = LastFinalizedBlockQuery  # noqa: Y015
 
-@typing.final
-class IsFinalizedQuery(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class IsFinalizedQuery(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    HASH_FIELD_NUMBER: builtins.int
-    hash: builtins.str
-    def __init__(
-        self,
-        *,
-        hash: builtins.str = ...,
-    ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["hash", b"hash"]
-    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
-
-Global___IsFinalizedQuery: typing_extensions.TypeAlias = IsFinalizedQuery
-
-@typing.final
-class BondStatusQuery(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-    PUBLICKEY_FIELD_NUMBER: builtins.int
-    publicKey: builtins.bytes
+    HASH_FIELD_NUMBER: _builtins.int
+    hash: _builtins.str
     def __init__(
         self,
         *,
-        publicKey: builtins.bytes = ...,
+        hash: _builtins.str = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["publicKey", b"publicKey"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["hash", b"hash"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___BondStatusQuery: typing_extensions.TypeAlias = BondStatusQuery
+Global___IsFinalizedQuery: _TypeAlias = IsFinalizedQuery  # noqa: Y015
 
-@typing.final
-class ExploratoryDeployQuery(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class BondStatusQuery(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    TERM_FIELD_NUMBER: builtins.int
-    BLOCKHASH_FIELD_NUMBER: builtins.int
-    USEPRESTATEHASH_FIELD_NUMBER: builtins.int
-    term: builtins.str
-    blockHash: builtins.str
-    usePreStateHash: builtins.bool
+    PUBLICKEY_FIELD_NUMBER: _builtins.int
+    publicKey: _builtins.bytes
     def __init__(
         self,
         *,
-        term: builtins.str = ...,
-        blockHash: builtins.str = ...,
-        usePreStateHash: builtins.bool = ...,
+        publicKey: _builtins.bytes = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["blockHash", b"blockHash", "term", b"term", "usePreStateHash", b"usePreStateHash"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["publicKey", b"publicKey"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___ExploratoryDeployQuery: typing_extensions.TypeAlias = ExploratoryDeployQuery
+Global___BondStatusQuery: _TypeAlias = BondStatusQuery  # noqa: Y015
 
-@typing.final
-class BondInfo(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class ExploratoryDeployQuery(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    VALIDATOR_FIELD_NUMBER: builtins.int
-    STAKE_FIELD_NUMBER: builtins.int
-    validator: builtins.str
-    stake: builtins.int
+    TERM_FIELD_NUMBER: _builtins.int
+    BLOCKHASH_FIELD_NUMBER: _builtins.int
+    USEPRESTATEHASH_FIELD_NUMBER: _builtins.int
+    term: _builtins.str
+    blockHash: _builtins.str
+    usePreStateHash: _builtins.bool
     def __init__(
         self,
         *,
-        validator: builtins.str = ...,
-        stake: builtins.int = ...,
+        term: _builtins.str = ...,
+        blockHash: _builtins.str = ...,
+        usePreStateHash: _builtins.bool = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["stake", b"stake", "validator", b"validator"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["blockHash", b"blockHash", "term", b"term", "usePreStateHash", b"usePreStateHash"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___BondInfo: typing_extensions.TypeAlias = BondInfo
+Global___ExploratoryDeployQuery: _TypeAlias = ExploratoryDeployQuery  # noqa: Y015
 
-@typing.final
-class JustificationInfo(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class BondInfo(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    VALIDATOR_FIELD_NUMBER: builtins.int
-    LATESTBLOCKHASH_FIELD_NUMBER: builtins.int
-    validator: builtins.str
-    latestBlockHash: builtins.str
+    VALIDATOR_FIELD_NUMBER: _builtins.int
+    STAKE_FIELD_NUMBER: _builtins.int
+    validator: _builtins.str
+    stake: _builtins.int
     def __init__(
         self,
         *,
-        validator: builtins.str = ...,
-        latestBlockHash: builtins.str = ...,
+        validator: _builtins.str = ...,
+        stake: _builtins.int = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["latestBlockHash", b"latestBlockHash", "validator", b"validator"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["stake", b"stake", "validator", b"validator"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___JustificationInfo: typing_extensions.TypeAlias = JustificationInfo
+Global___BondInfo: _TypeAlias = BondInfo  # noqa: Y015
 
-@typing.final
-class DeployInfo(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class JustificationInfo(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    DEPLOYER_FIELD_NUMBER: builtins.int
-    TERM_FIELD_NUMBER: builtins.int
-    TIMESTAMP_FIELD_NUMBER: builtins.int
-    SIG_FIELD_NUMBER: builtins.int
-    SIGALGORITHM_FIELD_NUMBER: builtins.int
-    PHLOPRICE_FIELD_NUMBER: builtins.int
-    PHLOLIMIT_FIELD_NUMBER: builtins.int
-    VALIDAFTERBLOCKNUMBER_FIELD_NUMBER: builtins.int
-    COST_FIELD_NUMBER: builtins.int
-    ERRORED_FIELD_NUMBER: builtins.int
-    SYSTEMDEPLOYERROR_FIELD_NUMBER: builtins.int
-    deployer: builtins.str
-    term: builtins.str
-    timestamp: builtins.int
-    sig: builtins.str
-    sigAlgorithm: builtins.str
-    phloPrice: builtins.int
-    phloLimit: builtins.int
-    validAfterBlockNumber: builtins.int
-    cost: builtins.int
-    errored: builtins.bool
-    systemDeployError: builtins.str
+    VALIDATOR_FIELD_NUMBER: _builtins.int
+    LATESTBLOCKHASH_FIELD_NUMBER: _builtins.int
+    validator: _builtins.str
+    latestBlockHash: _builtins.str
     def __init__(
         self,
         *,
-        deployer: builtins.str = ...,
-        term: builtins.str = ...,
-        timestamp: builtins.int = ...,
-        sig: builtins.str = ...,
-        sigAlgorithm: builtins.str = ...,
-        phloPrice: builtins.int = ...,
-        phloLimit: builtins.int = ...,
-        validAfterBlockNumber: builtins.int = ...,
-        cost: builtins.int = ...,
-        errored: builtins.bool = ...,
-        systemDeployError: builtins.str = ...,
+        validator: _builtins.str = ...,
+        latestBlockHash: _builtins.str = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["cost", b"cost", "deployer", b"deployer", "errored", b"errored", "phloLimit", b"phloLimit", "phloPrice", b"phloPrice", "sig", b"sig", "sigAlgorithm", b"sigAlgorithm", "systemDeployError", b"systemDeployError", "term", b"term", "timestamp", b"timestamp", "validAfterBlockNumber", b"validAfterBlockNumber"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["latestBlockHash", b"latestBlockHash", "validator", b"validator"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___DeployInfo: typing_extensions.TypeAlias = DeployInfo
+Global___JustificationInfo: _TypeAlias = JustificationInfo  # noqa: Y015
 
-@typing.final
-class LightBlockInfo(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class DeployInfo(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    BLOCKHASH_FIELD_NUMBER: builtins.int
-    SENDER_FIELD_NUMBER: builtins.int
-    SEQNUM_FIELD_NUMBER: builtins.int
-    SIG_FIELD_NUMBER: builtins.int
-    SIGALGORITHM_FIELD_NUMBER: builtins.int
-    SHARDID_FIELD_NUMBER: builtins.int
-    EXTRABYTES_FIELD_NUMBER: builtins.int
-    VERSION_FIELD_NUMBER: builtins.int
-    TIMESTAMP_FIELD_NUMBER: builtins.int
-    HEADEREXTRABYTES_FIELD_NUMBER: builtins.int
-    PARENTSHASHLIST_FIELD_NUMBER: builtins.int
-    BLOCKNUMBER_FIELD_NUMBER: builtins.int
-    PRESTATEHASH_FIELD_NUMBER: builtins.int
-    POSTSTATEHASH_FIELD_NUMBER: builtins.int
-    BODYEXTRABYTES_FIELD_NUMBER: builtins.int
-    BONDS_FIELD_NUMBER: builtins.int
-    BLOCKSIZE_FIELD_NUMBER: builtins.int
-    DEPLOYCOUNT_FIELD_NUMBER: builtins.int
-    FAULTTOLERANCE_FIELD_NUMBER: builtins.int
-    JUSTIFICATIONS_FIELD_NUMBER: builtins.int
-    REJECTEDDEPLOYS_FIELD_NUMBER: builtins.int
-    blockHash: builtins.str
+    DEPLOYER_FIELD_NUMBER: _builtins.int
+    TERM_FIELD_NUMBER: _builtins.int
+    TIMESTAMP_FIELD_NUMBER: _builtins.int
+    SIG_FIELD_NUMBER: _builtins.int
+    SIGALGORITHM_FIELD_NUMBER: _builtins.int
+    PHLOPRICE_FIELD_NUMBER: _builtins.int
+    PHLOLIMIT_FIELD_NUMBER: _builtins.int
+    VALIDAFTERBLOCKNUMBER_FIELD_NUMBER: _builtins.int
+    COST_FIELD_NUMBER: _builtins.int
+    ERRORED_FIELD_NUMBER: _builtins.int
+    SYSTEMDEPLOYERROR_FIELD_NUMBER: _builtins.int
+    deployer: _builtins.str
+    term: _builtins.str
+    timestamp: _builtins.int
+    sig: _builtins.str
+    sigAlgorithm: _builtins.str
+    phloPrice: _builtins.int
+    phloLimit: _builtins.int
+    validAfterBlockNumber: _builtins.int
+    cost: _builtins.int
+    errored: _builtins.bool
+    systemDeployError: _builtins.str
+    def __init__(
+        self,
+        *,
+        deployer: _builtins.str = ...,
+        term: _builtins.str = ...,
+        timestamp: _builtins.int = ...,
+        sig: _builtins.str = ...,
+        sigAlgorithm: _builtins.str = ...,
+        phloPrice: _builtins.int = ...,
+        phloLimit: _builtins.int = ...,
+        validAfterBlockNumber: _builtins.int = ...,
+        cost: _builtins.int = ...,
+        errored: _builtins.bool = ...,
+        systemDeployError: _builtins.str = ...,
+    ) -> None: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["cost", b"cost", "deployer", b"deployer", "errored", b"errored", "phloLimit", b"phloLimit", "phloPrice", b"phloPrice", "sig", b"sig", "sigAlgorithm", b"sigAlgorithm", "systemDeployError", b"systemDeployError", "term", b"term", "timestamp", b"timestamp", "validAfterBlockNumber", b"validAfterBlockNumber"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___DeployInfo: _TypeAlias = DeployInfo  # noqa: Y015
+
+@_typing.final
+class LightBlockInfo(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
+
+    BLOCKHASH_FIELD_NUMBER: _builtins.int
+    SENDER_FIELD_NUMBER: _builtins.int
+    SEQNUM_FIELD_NUMBER: _builtins.int
+    SIG_FIELD_NUMBER: _builtins.int
+    SIGALGORITHM_FIELD_NUMBER: _builtins.int
+    SHARDID_FIELD_NUMBER: _builtins.int
+    EXTRABYTES_FIELD_NUMBER: _builtins.int
+    VERSION_FIELD_NUMBER: _builtins.int
+    TIMESTAMP_FIELD_NUMBER: _builtins.int
+    HEADEREXTRABYTES_FIELD_NUMBER: _builtins.int
+    PARENTSHASHLIST_FIELD_NUMBER: _builtins.int
+    BLOCKNUMBER_FIELD_NUMBER: _builtins.int
+    PRESTATEHASH_FIELD_NUMBER: _builtins.int
+    POSTSTATEHASH_FIELD_NUMBER: _builtins.int
+    BODYEXTRABYTES_FIELD_NUMBER: _builtins.int
+    BONDS_FIELD_NUMBER: _builtins.int
+    BLOCKSIZE_FIELD_NUMBER: _builtins.int
+    DEPLOYCOUNT_FIELD_NUMBER: _builtins.int
+    FAULTTOLERANCE_FIELD_NUMBER: _builtins.int
+    JUSTIFICATIONS_FIELD_NUMBER: _builtins.int
+    REJECTEDDEPLOYS_FIELD_NUMBER: _builtins.int
+    blockHash: _builtins.str
     """BlockMessageProto message"""
-    sender: builtins.str
-    seqNum: builtins.int
-    sig: builtins.str
-    sigAlgorithm: builtins.str
-    shardId: builtins.str
-    extraBytes: builtins.bytes
-    version: builtins.int
+    sender: _builtins.str
+    seqNum: _builtins.int
+    sig: _builtins.str
+    sigAlgorithm: _builtins.str
+    shardId: _builtins.str
+    extraBytes: _builtins.bytes
+    version: _builtins.int
     """HeaderProto message"""
-    timestamp: builtins.int
-    headerExtraBytes: builtins.bytes
-    blockNumber: builtins.int
+    timestamp: _builtins.int
+    headerExtraBytes: _builtins.bytes
+    blockNumber: _builtins.int
     """BodyProto message"""
-    preStateHash: builtins.str
-    postStateHash: builtins.str
-    bodyExtraBytes: builtins.bytes
-    blockSize: builtins.str
+    preStateHash: _builtins.str
+    postStateHash: _builtins.str
+    bodyExtraBytes: _builtins.bytes
+    blockSize: _builtins.str
     """extra"""
-    deployCount: builtins.int
-    faultTolerance: builtins.float
-    @property
-    def parentsHashList(self) -> google.protobuf.internal.containers.RepeatedScalarFieldContainer[builtins.str]: ...
-    @property
-    def bonds(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[Global___BondInfo]: ...
-    @property
-    def justifications(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[Global___JustificationInfo]: ...
-    @property
-    def rejectedDeploys(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[Global___RejectedDeployInfo]: ...
+    deployCount: _builtins.int
+    faultTolerance: _builtins.float
+    @_builtins.property
+    def parentsHashList(self) -> _containers.RepeatedScalarFieldContainer[_builtins.str]: ...
+    @_builtins.property
+    def bonds(self) -> _containers.RepeatedCompositeFieldContainer[Global___BondInfo]: ...
+    @_builtins.property
+    def justifications(self) -> _containers.RepeatedCompositeFieldContainer[Global___JustificationInfo]: ...
+    @_builtins.property
+    def rejectedDeploys(self) -> _containers.RepeatedCompositeFieldContainer[Global___RejectedDeployInfo]: ...
     def __init__(
         self,
         *,
-        blockHash: builtins.str = ...,
-        sender: builtins.str = ...,
-        seqNum: builtins.int = ...,
-        sig: builtins.str = ...,
-        sigAlgorithm: builtins.str = ...,
-        shardId: builtins.str = ...,
-        extraBytes: builtins.bytes = ...,
-        version: builtins.int = ...,
-        timestamp: builtins.int = ...,
-        headerExtraBytes: builtins.bytes = ...,
-        parentsHashList: collections.abc.Iterable[builtins.str] | None = ...,
-        blockNumber: builtins.int = ...,
-        preStateHash: builtins.str = ...,
-        postStateHash: builtins.str = ...,
-        bodyExtraBytes: builtins.bytes = ...,
-        bonds: collections.abc.Iterable[Global___BondInfo] | None = ...,
-        blockSize: builtins.str = ...,
-        deployCount: builtins.int = ...,
-        faultTolerance: builtins.float = ...,
-        justifications: collections.abc.Iterable[Global___JustificationInfo] | None = ...,
-        rejectedDeploys: collections.abc.Iterable[Global___RejectedDeployInfo] | None = ...,
+        blockHash: _builtins.str = ...,
+        sender: _builtins.str = ...,
+        seqNum: _builtins.int = ...,
+        sig: _builtins.str = ...,
+        sigAlgorithm: _builtins.str = ...,
+        shardId: _builtins.str = ...,
+        extraBytes: _builtins.bytes = ...,
+        version: _builtins.int = ...,
+        timestamp: _builtins.int = ...,
+        headerExtraBytes: _builtins.bytes = ...,
+        parentsHashList: _abc.Iterable[_builtins.str] | None = ...,
+        blockNumber: _builtins.int = ...,
+        preStateHash: _builtins.str = ...,
+        postStateHash: _builtins.str = ...,
+        bodyExtraBytes: _builtins.bytes = ...,
+        bonds: _abc.Iterable[Global___BondInfo] | None = ...,
+        blockSize: _builtins.str = ...,
+        deployCount: _builtins.int = ...,
+        faultTolerance: _builtins.float = ...,
+        justifications: _abc.Iterable[Global___JustificationInfo] | None = ...,
+        rejectedDeploys: _abc.Iterable[Global___RejectedDeployInfo] | None = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["blockHash", b"blockHash", "blockNumber", b"blockNumber", "blockSize", b"blockSize", "bodyExtraBytes", b"bodyExtraBytes", "bonds", b"bonds", "deployCount", b"deployCount", "extraBytes", b"extraBytes", "faultTolerance", b"faultTolerance", "headerExtraBytes", b"headerExtraBytes", "justifications", b"justifications", "parentsHashList", b"parentsHashList", "postStateHash", b"postStateHash", "preStateHash", b"preStateHash", "rejectedDeploys", b"rejectedDeploys", "sender", b"sender", "seqNum", b"seqNum", "shardId", b"shardId", "sig", b"sig", "sigAlgorithm", b"sigAlgorithm", "timestamp", b"timestamp", "version", b"version"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["blockHash", b"blockHash", "blockNumber", b"blockNumber", "blockSize", b"blockSize", "bodyExtraBytes", b"bodyExtraBytes", "bonds", b"bonds", "deployCount", b"deployCount", "extraBytes", b"extraBytes", "faultTolerance", b"faultTolerance", "headerExtraBytes", b"headerExtraBytes", "justifications", b"justifications", "parentsHashList", b"parentsHashList", "postStateHash", b"postStateHash", "preStateHash", b"preStateHash", "rejectedDeploys", b"rejectedDeploys", "sender", b"sender", "seqNum", b"seqNum", "shardId", b"shardId", "sig", b"sig", "sigAlgorithm", b"sigAlgorithm", "timestamp", b"timestamp", "version", b"version"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___LightBlockInfo: typing_extensions.TypeAlias = LightBlockInfo
+Global___LightBlockInfo: _TypeAlias = LightBlockInfo  # noqa: Y015
 
-@typing.final
-class RejectedDeployInfo(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class RejectedDeployInfo(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    SIG_FIELD_NUMBER: builtins.int
-    sig: builtins.str
+    SIG_FIELD_NUMBER: _builtins.int
+    sig: _builtins.str
     def __init__(
         self,
         *,
-        sig: builtins.str = ...,
+        sig: _builtins.str = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["sig", b"sig"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["sig", b"sig"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___RejectedDeployInfo: typing_extensions.TypeAlias = RejectedDeployInfo
+Global___RejectedDeployInfo: _TypeAlias = RejectedDeployInfo  # noqa: Y015
 
-@typing.final
-class BlockInfo(google.protobuf.message.Message):
+@_typing.final
+class BlockInfo(_message.Message):
     """For node clients, see BlockMessage for actual Casper protocol Block representation"""
 
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+    DESCRIPTOR: _descriptor.Descriptor
 
-    BLOCKINFO_FIELD_NUMBER: builtins.int
-    DEPLOYS_FIELD_NUMBER: builtins.int
-    @property
+    BLOCKINFO_FIELD_NUMBER: _builtins.int
+    DEPLOYS_FIELD_NUMBER: _builtins.int
+    @_builtins.property
     def blockInfo(self) -> Global___LightBlockInfo: ...
-    @property
-    def deploys(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[Global___DeployInfo]: ...
+    @_builtins.property
+    def deploys(self) -> _containers.RepeatedCompositeFieldContainer[Global___DeployInfo]: ...
     def __init__(
         self,
         *,
         blockInfo: Global___LightBlockInfo | None = ...,
-        deploys: collections.abc.Iterable[Global___DeployInfo] | None = ...,
+        deploys: _abc.Iterable[Global___DeployInfo] | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["blockInfo", b"blockInfo"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["blockInfo", b"blockInfo", "deploys", b"deploys"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["blockInfo", b"blockInfo"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["blockInfo", b"blockInfo", "deploys", b"deploys"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___BlockInfo: typing_extensions.TypeAlias = BlockInfo
+Global___BlockInfo: _TypeAlias = BlockInfo  # noqa: Y015
 
-@typing.final
-class DataWithBlockInfo(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class DataWithBlockInfo(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    POSTBLOCKDATA_FIELD_NUMBER: builtins.int
-    BLOCK_FIELD_NUMBER: builtins.int
-    @property
-    def postBlockData(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[RhoTypes_pb2.Par]: ...
-    @property
+    POSTBLOCKDATA_FIELD_NUMBER: _builtins.int
+    BLOCK_FIELD_NUMBER: _builtins.int
+    @_builtins.property
+    def postBlockData(self) -> _containers.RepeatedCompositeFieldContainer[_RhoTypes_pb2.Par]: ...
+    @_builtins.property
     def block(self) -> Global___LightBlockInfo: ...
     def __init__(
         self,
         *,
-        postBlockData: collections.abc.Iterable[RhoTypes_pb2.Par] | None = ...,
+        postBlockData: _abc.Iterable[_RhoTypes_pb2.Par] | None = ...,
         block: Global___LightBlockInfo | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["block", b"block"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["block", b"block", "postBlockData", b"postBlockData"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["block", b"block"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["block", b"block", "postBlockData", b"postBlockData"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___DataWithBlockInfo: typing_extensions.TypeAlias = DataWithBlockInfo
+Global___DataWithBlockInfo: _TypeAlias = DataWithBlockInfo  # noqa: Y015
 
-@typing.final
-class ContinuationsWithBlockInfo(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class ContinuationsWithBlockInfo(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    POSTBLOCKCONTINUATIONS_FIELD_NUMBER: builtins.int
-    BLOCK_FIELD_NUMBER: builtins.int
-    @property
-    def postBlockContinuations(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[Global___WaitingContinuationInfo]: ...
-    @property
+    POSTBLOCKCONTINUATIONS_FIELD_NUMBER: _builtins.int
+    BLOCK_FIELD_NUMBER: _builtins.int
+    @_builtins.property
+    def postBlockContinuations(self) -> _containers.RepeatedCompositeFieldContainer[Global___WaitingContinuationInfo]: ...
+    @_builtins.property
     def block(self) -> Global___LightBlockInfo: ...
     def __init__(
         self,
         *,
-        postBlockContinuations: collections.abc.Iterable[Global___WaitingContinuationInfo] | None = ...,
+        postBlockContinuations: _abc.Iterable[Global___WaitingContinuationInfo] | None = ...,
         block: Global___LightBlockInfo | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["block", b"block"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["block", b"block", "postBlockContinuations", b"postBlockContinuations"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["block", b"block"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["block", b"block", "postBlockContinuations", b"postBlockContinuations"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___ContinuationsWithBlockInfo: typing_extensions.TypeAlias = ContinuationsWithBlockInfo
+Global___ContinuationsWithBlockInfo: _TypeAlias = ContinuationsWithBlockInfo  # noqa: Y015
 
-@typing.final
-class WaitingContinuationInfo(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class WaitingContinuationInfo(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    POSTBLOCKPATTERNS_FIELD_NUMBER: builtins.int
-    POSTBLOCKCONTINUATION_FIELD_NUMBER: builtins.int
-    @property
-    def postBlockPatterns(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[RhoTypes_pb2.BindPattern]: ...
-    @property
-    def postBlockContinuation(self) -> RhoTypes_pb2.Par: ...
+    POSTBLOCKPATTERNS_FIELD_NUMBER: _builtins.int
+    POSTBLOCKCONTINUATION_FIELD_NUMBER: _builtins.int
+    @_builtins.property
+    def postBlockPatterns(self) -> _containers.RepeatedCompositeFieldContainer[_RhoTypes_pb2.BindPattern]: ...
+    @_builtins.property
+    def postBlockContinuation(self) -> _RhoTypes_pb2.Par: ...
     def __init__(
         self,
         *,
-        postBlockPatterns: collections.abc.Iterable[RhoTypes_pb2.BindPattern] | None = ...,
-        postBlockContinuation: RhoTypes_pb2.Par | None = ...,
+        postBlockPatterns: _abc.Iterable[_RhoTypes_pb2.BindPattern] | None = ...,
+        postBlockContinuation: _RhoTypes_pb2.Par | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["postBlockContinuation", b"postBlockContinuation"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["postBlockContinuation", b"postBlockContinuation", "postBlockPatterns", b"postBlockPatterns"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["postBlockContinuation", b"postBlockContinuation"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["postBlockContinuation", b"postBlockContinuation", "postBlockPatterns", b"postBlockPatterns"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___WaitingContinuationInfo: typing_extensions.TypeAlias = WaitingContinuationInfo
+Global___WaitingContinuationInfo: _TypeAlias = WaitingContinuationInfo  # noqa: Y015
 
-@typing.final
-class ReportProduceProto(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class ReportProduceProto(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    CHANNEL_FIELD_NUMBER: builtins.int
-    DATA_FIELD_NUMBER: builtins.int
-    @property
-    def channel(self) -> RhoTypes_pb2.Par: ...
-    @property
-    def data(self) -> RhoTypes_pb2.ListParWithRandom: ...
+    CHANNEL_FIELD_NUMBER: _builtins.int
+    DATA_FIELD_NUMBER: _builtins.int
+    @_builtins.property
+    def channel(self) -> _RhoTypes_pb2.Par: ...
+    @_builtins.property
+    def data(self) -> _RhoTypes_pb2.ListParWithRandom: ...
     def __init__(
         self,
         *,
-        channel: RhoTypes_pb2.Par | None = ...,
-        data: RhoTypes_pb2.ListParWithRandom | None = ...,
+        channel: _RhoTypes_pb2.Par | None = ...,
+        data: _RhoTypes_pb2.ListParWithRandom | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["channel", b"channel", "data", b"data"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["channel", b"channel", "data", b"data"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["channel", b"channel", "data", b"data"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["channel", b"channel", "data", b"data"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___ReportProduceProto: typing_extensions.TypeAlias = ReportProduceProto
+Global___ReportProduceProto: _TypeAlias = ReportProduceProto  # noqa: Y015
 
-@typing.final
-class ReportConsumeProto(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class ReportConsumeProto(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    CHANNELS_FIELD_NUMBER: builtins.int
-    PATTERNS_FIELD_NUMBER: builtins.int
-    PEEKS_FIELD_NUMBER: builtins.int
-    @property
-    def channels(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[RhoTypes_pb2.Par]: ...
-    @property
-    def patterns(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[RhoTypes_pb2.BindPattern]: ...
-    @property
-    def peeks(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[CasperMessage_pb2.PeekProto]:
+    CHANNELS_FIELD_NUMBER: _builtins.int
+    PATTERNS_FIELD_NUMBER: _builtins.int
+    PEEKS_FIELD_NUMBER: _builtins.int
+    @_builtins.property
+    def channels(self) -> _containers.RepeatedCompositeFieldContainer[_RhoTypes_pb2.Par]: ...
+    @_builtins.property
+    def patterns(self) -> _containers.RepeatedCompositeFieldContainer[_RhoTypes_pb2.BindPattern]: ...
+    @_builtins.property
+    def peeks(self) -> _containers.RepeatedCompositeFieldContainer[_CasperMessage_pb2.PeekProto]:
         """disable because can not work and it is not important actually
          TaggedContinuation continuation=3;
         """
@@ -617,50 +617,50 @@ class ReportConsumeProto(google.protobuf.message.Message):
     def __init__(
         self,
         *,
-        channels: collections.abc.Iterable[RhoTypes_pb2.Par] | None = ...,
-        patterns: collections.abc.Iterable[RhoTypes_pb2.BindPattern] | None = ...,
-        peeks: collections.abc.Iterable[CasperMessage_pb2.PeekProto] | None = ...,
+        channels: _abc.Iterable[_RhoTypes_pb2.Par] | None = ...,
+        patterns: _abc.Iterable[_RhoTypes_pb2.BindPattern] | None = ...,
+        peeks: _abc.Iterable[_CasperMessage_pb2.PeekProto] | None = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["channels", b"channels", "patterns", b"patterns", "peeks", b"peeks"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["channels", b"channels", "patterns", b"patterns", "peeks", b"peeks"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___ReportConsumeProto: typing_extensions.TypeAlias = ReportConsumeProto
+Global___ReportConsumeProto: _TypeAlias = ReportConsumeProto  # noqa: Y015
 
-@typing.final
-class ReportCommProto(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class ReportCommProto(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    CONSUME_FIELD_NUMBER: builtins.int
-    PRODUCES_FIELD_NUMBER: builtins.int
-    @property
+    CONSUME_FIELD_NUMBER: _builtins.int
+    PRODUCES_FIELD_NUMBER: _builtins.int
+    @_builtins.property
     def consume(self) -> Global___ReportConsumeProto: ...
-    @property
-    def produces(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[Global___ReportProduceProto]: ...
+    @_builtins.property
+    def produces(self) -> _containers.RepeatedCompositeFieldContainer[Global___ReportProduceProto]: ...
     def __init__(
         self,
         *,
         consume: Global___ReportConsumeProto | None = ...,
-        produces: collections.abc.Iterable[Global___ReportProduceProto] | None = ...,
+        produces: _abc.Iterable[Global___ReportProduceProto] | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["consume", b"consume"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["consume", b"consume", "produces", b"produces"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["consume", b"consume"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["consume", b"consume", "produces", b"produces"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___ReportCommProto: typing_extensions.TypeAlias = ReportCommProto
+Global___ReportCommProto: _TypeAlias = ReportCommProto  # noqa: Y015
 
-@typing.final
-class ReportProto(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class ReportProto(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    PRODUCE_FIELD_NUMBER: builtins.int
-    CONSUME_FIELD_NUMBER: builtins.int
-    COMM_FIELD_NUMBER: builtins.int
-    @property
+    PRODUCE_FIELD_NUMBER: _builtins.int
+    CONSUME_FIELD_NUMBER: _builtins.int
+    COMM_FIELD_NUMBER: _builtins.int
+    @_builtins.property
     def produce(self) -> Global___ReportProduceProto: ...
-    @property
+    @_builtins.property
     def consume(self) -> Global___ReportConsumeProto: ...
-    @property
+    @_builtins.property
     def comm(self) -> Global___ReportCommProto: ...
     def __init__(
         self,
@@ -669,204 +669,204 @@ class ReportProto(google.protobuf.message.Message):
         consume: Global___ReportConsumeProto | None = ...,
         comm: Global___ReportCommProto | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["comm", b"comm", "consume", b"consume", "produce", b"produce", "report", b"report"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["comm", b"comm", "consume", b"consume", "produce", b"produce", "report", b"report"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["comm", b"comm", "consume", b"consume", "produce", b"produce", "report", b"report"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["comm", b"comm", "consume", b"consume", "produce", b"produce", "report", b"report"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
-    _WhichOneofReturnType_report: typing_extensions.TypeAlias = typing.Literal["produce", "consume", "comm"]
-    _WhichOneofArgType_report: typing_extensions.TypeAlias = typing.Literal["report", b"report"]
+    _WhichOneofReturnType_report: _TypeAlias = _typing.Literal["produce", "consume", "comm"]  # noqa: Y015
+    _WhichOneofArgType_report: _TypeAlias = _typing.Literal["report", b"report"]  # noqa: Y015
     def WhichOneof(self, oneof_group: _WhichOneofArgType_report) -> _WhichOneofReturnType_report | None: ...
 
-Global___ReportProto: typing_extensions.TypeAlias = ReportProto
+Global___ReportProto: _TypeAlias = ReportProto  # noqa: Y015
 
-@typing.final
-class SingleReport(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class SingleReport(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    EVENTS_FIELD_NUMBER: builtins.int
-    @property
-    def events(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[Global___ReportProto]: ...
+    EVENTS_FIELD_NUMBER: _builtins.int
+    @_builtins.property
+    def events(self) -> _containers.RepeatedCompositeFieldContainer[Global___ReportProto]: ...
     def __init__(
         self,
         *,
-        events: collections.abc.Iterable[Global___ReportProto] | None = ...,
+        events: _abc.Iterable[Global___ReportProto] | None = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["events", b"events"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["events", b"events"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___SingleReport: typing_extensions.TypeAlias = SingleReport
+Global___SingleReport: _TypeAlias = SingleReport  # noqa: Y015
 
-@typing.final
-class DeployInfoWithEventData(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class DeployInfoWithEventData(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    DEPLOYINFO_FIELD_NUMBER: builtins.int
-    REPORT_FIELD_NUMBER: builtins.int
-    @property
+    DEPLOYINFO_FIELD_NUMBER: _builtins.int
+    REPORT_FIELD_NUMBER: _builtins.int
+    @_builtins.property
     def deployInfo(self) -> Global___DeployInfo: ...
-    @property
-    def report(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[Global___SingleReport]: ...
+    @_builtins.property
+    def report(self) -> _containers.RepeatedCompositeFieldContainer[Global___SingleReport]: ...
     def __init__(
         self,
         *,
         deployInfo: Global___DeployInfo | None = ...,
-        report: collections.abc.Iterable[Global___SingleReport] | None = ...,
+        report: _abc.Iterable[Global___SingleReport] | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["deployInfo", b"deployInfo"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["deployInfo", b"deployInfo", "report", b"report"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["deployInfo", b"deployInfo"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["deployInfo", b"deployInfo", "report", b"report"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___DeployInfoWithEventData: typing_extensions.TypeAlias = DeployInfoWithEventData
+Global___DeployInfoWithEventData: _TypeAlias = DeployInfoWithEventData  # noqa: Y015
 
-@typing.final
-class SystemDeployInfoWithEventData(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class SystemDeployInfoWithEventData(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    SYSTEMDEPLOY_FIELD_NUMBER: builtins.int
-    REPORT_FIELD_NUMBER: builtins.int
-    @property
-    def systemDeploy(self) -> CasperMessage_pb2.SystemDeployDataProto: ...
-    @property
-    def report(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[Global___SingleReport]: ...
+    SYSTEMDEPLOY_FIELD_NUMBER: _builtins.int
+    REPORT_FIELD_NUMBER: _builtins.int
+    @_builtins.property
+    def systemDeploy(self) -> _CasperMessage_pb2.SystemDeployDataProto: ...
+    @_builtins.property
+    def report(self) -> _containers.RepeatedCompositeFieldContainer[Global___SingleReport]: ...
     def __init__(
         self,
         *,
-        systemDeploy: CasperMessage_pb2.SystemDeployDataProto | None = ...,
-        report: collections.abc.Iterable[Global___SingleReport] | None = ...,
+        systemDeploy: _CasperMessage_pb2.SystemDeployDataProto | None = ...,
+        report: _abc.Iterable[Global___SingleReport] | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["systemDeploy", b"systemDeploy"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["report", b"report", "systemDeploy", b"systemDeploy"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["systemDeploy", b"systemDeploy"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["report", b"report", "systemDeploy", b"systemDeploy"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___SystemDeployInfoWithEventData: typing_extensions.TypeAlias = SystemDeployInfoWithEventData
+Global___SystemDeployInfoWithEventData: _TypeAlias = SystemDeployInfoWithEventData  # noqa: Y015
 
-@typing.final
-class BlockEventInfo(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class BlockEventInfo(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    BLOCKINFO_FIELD_NUMBER: builtins.int
-    DEPLOYS_FIELD_NUMBER: builtins.int
-    SYSTEMDEPLOYS_FIELD_NUMBER: builtins.int
-    POSTSTATEHASH_FIELD_NUMBER: builtins.int
-    postStateHash: builtins.bytes
-    @property
+    BLOCKINFO_FIELD_NUMBER: _builtins.int
+    DEPLOYS_FIELD_NUMBER: _builtins.int
+    SYSTEMDEPLOYS_FIELD_NUMBER: _builtins.int
+    POSTSTATEHASH_FIELD_NUMBER: _builtins.int
+    postStateHash: _builtins.bytes
+    @_builtins.property
     def blockInfo(self) -> Global___LightBlockInfo: ...
-    @property
-    def deploys(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[Global___DeployInfoWithEventData]: ...
-    @property
-    def systemDeploys(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[Global___SystemDeployInfoWithEventData]: ...
+    @_builtins.property
+    def deploys(self) -> _containers.RepeatedCompositeFieldContainer[Global___DeployInfoWithEventData]: ...
+    @_builtins.property
+    def systemDeploys(self) -> _containers.RepeatedCompositeFieldContainer[Global___SystemDeployInfoWithEventData]: ...
     def __init__(
         self,
         *,
         blockInfo: Global___LightBlockInfo | None = ...,
-        deploys: collections.abc.Iterable[Global___DeployInfoWithEventData] | None = ...,
-        systemDeploys: collections.abc.Iterable[Global___SystemDeployInfoWithEventData] | None = ...,
-        postStateHash: builtins.bytes = ...,
+        deploys: _abc.Iterable[Global___DeployInfoWithEventData] | None = ...,
+        systemDeploys: _abc.Iterable[Global___SystemDeployInfoWithEventData] | None = ...,
+        postStateHash: _builtins.bytes = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["blockInfo", b"blockInfo"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["blockInfo", b"blockInfo", "deploys", b"deploys", "postStateHash", b"postStateHash", "systemDeploys", b"systemDeploys"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["blockInfo", b"blockInfo"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["blockInfo", b"blockInfo", "deploys", b"deploys", "postStateHash", b"postStateHash", "systemDeploys", b"systemDeploys"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___BlockEventInfo: typing_extensions.TypeAlias = BlockEventInfo
+Global___BlockEventInfo: _TypeAlias = BlockEventInfo  # noqa: Y015
 
-@typing.final
-class PeerInfo(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class PeerInfo(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    ADDRESS_FIELD_NUMBER: builtins.int
-    NODEID_FIELD_NUMBER: builtins.int
-    HOST_FIELD_NUMBER: builtins.int
-    PROTOCOLPORT_FIELD_NUMBER: builtins.int
-    DISCOVERYPORT_FIELD_NUMBER: builtins.int
-    ISCONNECTED_FIELD_NUMBER: builtins.int
-    address: builtins.str
+    ADDRESS_FIELD_NUMBER: _builtins.int
+    NODEID_FIELD_NUMBER: _builtins.int
+    HOST_FIELD_NUMBER: _builtins.int
+    PROTOCOLPORT_FIELD_NUMBER: _builtins.int
+    DISCOVERYPORT_FIELD_NUMBER: _builtins.int
+    ISCONNECTED_FIELD_NUMBER: _builtins.int
+    address: _builtins.str
     """Full rnode:// URL"""
-    nodeId: builtins.str
+    nodeId: _builtins.str
     """Public key hash (hex)"""
-    host: builtins.str
+    host: _builtins.str
     """Hostname or IP"""
-    protocolPort: builtins.int
+    protocolPort: _builtins.int
     """TCP port"""
-    discoveryPort: builtins.int
+    discoveryPort: _builtins.int
     """UDP port"""
-    isConnected: builtins.bool
+    isConnected: _builtins.bool
     """True if active connection"""
     def __init__(
         self,
         *,
-        address: builtins.str = ...,
-        nodeId: builtins.str = ...,
-        host: builtins.str = ...,
-        protocolPort: builtins.int = ...,
-        discoveryPort: builtins.int = ...,
-        isConnected: builtins.bool = ...,
+        address: _builtins.str = ...,
+        nodeId: _builtins.str = ...,
+        host: _builtins.str = ...,
+        protocolPort: _builtins.int = ...,
+        discoveryPort: _builtins.int = ...,
+        isConnected: _builtins.bool = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["address", b"address", "discoveryPort", b"discoveryPort", "host", b"host", "isConnected", b"isConnected", "nodeId", b"nodeId", "protocolPort", b"protocolPort"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["address", b"address", "discoveryPort", b"discoveryPort", "host", b"host", "isConnected", b"isConnected", "nodeId", b"nodeId", "protocolPort", b"protocolPort"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___PeerInfo: typing_extensions.TypeAlias = PeerInfo
+Global___PeerInfo: _TypeAlias = PeerInfo  # noqa: Y015
 
-@typing.final
-class Status(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class Status(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    VERSION_FIELD_NUMBER: builtins.int
-    ADDRESS_FIELD_NUMBER: builtins.int
-    NETWORKID_FIELD_NUMBER: builtins.int
-    SHARDID_FIELD_NUMBER: builtins.int
-    PEERS_FIELD_NUMBER: builtins.int
-    NODES_FIELD_NUMBER: builtins.int
-    MINPHLOPRICE_FIELD_NUMBER: builtins.int
-    PEERLIST_FIELD_NUMBER: builtins.int
-    address: builtins.str
-    networkId: builtins.str
-    shardId: builtins.str
-    peers: builtins.int
-    nodes: builtins.int
-    minPhloPrice: builtins.int
-    @property
+    VERSION_FIELD_NUMBER: _builtins.int
+    ADDRESS_FIELD_NUMBER: _builtins.int
+    NETWORKID_FIELD_NUMBER: _builtins.int
+    SHARDID_FIELD_NUMBER: _builtins.int
+    PEERS_FIELD_NUMBER: _builtins.int
+    NODES_FIELD_NUMBER: _builtins.int
+    MINPHLOPRICE_FIELD_NUMBER: _builtins.int
+    PEERLIST_FIELD_NUMBER: _builtins.int
+    address: _builtins.str
+    networkId: _builtins.str
+    shardId: _builtins.str
+    peers: _builtins.int
+    nodes: _builtins.int
+    minPhloPrice: _builtins.int
+    @_builtins.property
     def version(self) -> Global___VersionInfo: ...
-    @property
-    def peerList(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[Global___PeerInfo]:
+    @_builtins.property
+    def peerList(self) -> _containers.RepeatedCompositeFieldContainer[Global___PeerInfo]:
         """New: detailed peer list"""
 
     def __init__(
         self,
         *,
         version: Global___VersionInfo | None = ...,
-        address: builtins.str = ...,
-        networkId: builtins.str = ...,
-        shardId: builtins.str = ...,
-        peers: builtins.int = ...,
-        nodes: builtins.int = ...,
-        minPhloPrice: builtins.int = ...,
-        peerList: collections.abc.Iterable[Global___PeerInfo] | None = ...,
+        address: _builtins.str = ...,
+        networkId: _builtins.str = ...,
+        shardId: _builtins.str = ...,
+        peers: _builtins.int = ...,
+        nodes: _builtins.int = ...,
+        minPhloPrice: _builtins.int = ...,
+        peerList: _abc.Iterable[Global___PeerInfo] | None = ...,
     ) -> None: ...
-    _HasFieldArgType: typing_extensions.TypeAlias = typing.Literal["version", b"version"]
-    def HasField(self, field_name: _HasFieldArgType) -> builtins.bool: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["address", b"address", "minPhloPrice", b"minPhloPrice", "networkId", b"networkId", "nodes", b"nodes", "peerList", b"peerList", "peers", b"peers", "shardId", b"shardId", "version", b"version"]
+    _HasFieldArgType: _TypeAlias = _typing.Literal["version", b"version"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["address", b"address", "minPhloPrice", b"minPhloPrice", "networkId", b"networkId", "nodes", b"nodes", "peerList", b"peerList", "peers", b"peers", "shardId", b"shardId", "version", b"version"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___Status: typing_extensions.TypeAlias = Status
+Global___Status: _TypeAlias = Status  # noqa: Y015
 
-@typing.final
-class VersionInfo(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+@_typing.final
+class VersionInfo(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
 
-    API_FIELD_NUMBER: builtins.int
-    NODE_FIELD_NUMBER: builtins.int
-    api: builtins.str
-    node: builtins.str
+    API_FIELD_NUMBER: _builtins.int
+    NODE_FIELD_NUMBER: _builtins.int
+    api: _builtins.str
+    node: _builtins.str
     def __init__(
         self,
         *,
-        api: builtins.str = ...,
-        node: builtins.str = ...,
+        api: _builtins.str = ...,
+        node: _builtins.str = ...,
     ) -> None: ...
-    _ClearFieldArgType: typing_extensions.TypeAlias = typing.Literal["api", b"api", "node", b"node"]
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["api", b"api", "node", b"node"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
-Global___VersionInfo: typing_extensions.TypeAlias = VersionInfo
+Global___VersionInfo: _TypeAlias = VersionInfo  # noqa: Y015

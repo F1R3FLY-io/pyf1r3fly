@@ -8,7 +8,7 @@ from . import DeployServiceCommon_pb2 as DeployServiceCommon__pb2
 from . import DeployServiceV1_pb2 as DeployServiceV1__pb2
 from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
 
-GRPC_GENERATED_VERSION = '1.76.0'
+GRPC_GENERATED_VERSION = '1.78.0'
 GRPC_VERSION = grpc.__version__
 _version_not_supported = False
 
@@ -131,6 +131,16 @@ class DeployServiceStub(object):
                 '/casper.v1.DeployService/status',
                 request_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
                 response_deserializer=DeployServiceV1__pb2.StatusResponse.FromString,
+                _registered_method=True)
+        self.uploadFile = channel.stream_unary(
+                '/casper.v1.DeployService/uploadFile',
+                request_serializer=DeployServiceV1__pb2.FileUploadChunk.SerializeToString,
+                response_deserializer=DeployServiceV1__pb2.FileUploadResponse.FromString,
+                _registered_method=True)
+        self.downloadFile = channel.unary_stream(
+                '/casper.v1.DeployService/downloadFile',
+                request_serializer=DeployServiceV1__pb2.FileDownloadRequest.SerializeToString,
+                response_deserializer=DeployServiceV1__pb2.FileDownloadChunk.FromString,
                 _registered_method=True)
 
 
@@ -269,6 +279,20 @@ class DeployServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def uploadFile(self, request_iterator, context):
+        """Upload large files via streaming
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def downloadFile(self, request, context):
+        """Stream file bytes by content hash. Observer-only — rejected on validator nodes.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_DeployServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -361,6 +385,16 @@ def add_DeployServiceServicer_to_server(servicer, server):
                     servicer.status,
                     request_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                     response_serializer=DeployServiceV1__pb2.StatusResponse.SerializeToString,
+            ),
+            'uploadFile': grpc.stream_unary_rpc_method_handler(
+                    servicer.uploadFile,
+                    request_deserializer=DeployServiceV1__pb2.FileUploadChunk.FromString,
+                    response_serializer=DeployServiceV1__pb2.FileUploadResponse.SerializeToString,
+            ),
+            'downloadFile': grpc.unary_stream_rpc_method_handler(
+                    servicer.downloadFile,
+                    request_deserializer=DeployServiceV1__pb2.FileDownloadRequest.FromString,
+                    response_serializer=DeployServiceV1__pb2.FileDownloadChunk.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -854,6 +888,60 @@ class DeployService(object):
             '/casper.v1.DeployService/status',
             google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             DeployServiceV1__pb2.StatusResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def uploadFile(request_iterator,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.stream_unary(
+            request_iterator,
+            target,
+            '/casper.v1.DeployService/uploadFile',
+            DeployServiceV1__pb2.FileUploadChunk.SerializeToString,
+            DeployServiceV1__pb2.FileUploadResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def downloadFile(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_stream(
+            request,
+            target,
+            '/casper.v1.DeployService/downloadFile',
+            DeployServiceV1__pb2.FileDownloadRequest.SerializeToString,
+            DeployServiceV1__pb2.FileDownloadChunk.FromString,
             options,
             channel_credentials,
             insecure,
