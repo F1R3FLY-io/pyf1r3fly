@@ -75,10 +75,11 @@ class DataQueries:
 class F1r3flyClient:
 
     def __init__(self, host: str, port: int, grpc_options: Optional[Tuple[Tuple[str, Union[str, int]], ...]] = None,
-                 compress: bool = False):
+                 compress: bool = False, timeout: float = 30.0):
         compression = grpc.Compression.Gzip if compress else None
         self.channel = grpc.insecure_channel("{}:{}".format(host, port), grpc_options, compression)
         self._deploy_stub = DeployServiceStub(self.channel)
+        self.timeout = timeout
         self.param: Optional[Params] = None
 
     def close(self) -> None:
@@ -126,7 +127,7 @@ class F1r3flyClient:
 
     def exploratory_deploy(self, term: str, blockHash: str, usePreStateHash: bool = False) -> List[Par]:
         exploratory_query = ExploratoryDeployQuery(term=term, blockHash=blockHash, usePreStateHash=usePreStateHash)
-        response = self._deploy_stub.exploratoryDeploy(exploratory_query)
+        response = self._deploy_stub.exploratoryDeploy(exploratory_query, timeout=self.timeout)
         self._check_response(response)
         return list(response.result.postBlockData)
 
@@ -146,44 +147,44 @@ class F1r3flyClient:
         return self.send_deploy(deploy_data)
 
     def send_deploy(self, deploy: DeployDataProto) -> str:
-        response = self._deploy_stub.doDeploy(deploy)
+        response = self._deploy_stub.doDeploy(deploy, timeout=self.timeout)
         self._check_response(response)
         # sig of deploy data is deployId
         return deploy.sig.hex()
 
     def show_block(self, block_hash: str) -> BlockInfo:
         block_query = BlockQuery(hash=block_hash)
-        response = self._deploy_stub.getBlock(block_query)
+        response = self._deploy_stub.getBlock(block_query, timeout=self.timeout)
         self._check_response(response)
         return response.blockInfo
 
     def show_blocks(self, depth: int = 1) -> List[LightBlockInfo]:
         blocks_query = BlocksQuery(depth=depth)
-        response = self._deploy_stub.getBlocks(blocks_query)
+        response = self._deploy_stub.getBlocks(blocks_query, timeout=self.timeout)
         result = self._handle_stream(response)
         return list(map(lambda x: x.blockInfo, result))  # type: ignore
 
     def find_deploy(self, deploy_id: str) -> LightBlockInfo:
         find_deploy_query = FindDeployQuery(deployId=bytes.fromhex(deploy_id))
-        response = self._deploy_stub.findDeploy(find_deploy_query)
+        response = self._deploy_stub.findDeploy(find_deploy_query, timeout=self.timeout)
         self._check_response(response)
         return response.blockInfo
 
     def last_finalized_block(self) -> BlockInfo:
         last_finalized_query = LastFinalizedBlockQuery()
-        response = self._deploy_stub.lastFinalizedBlock(last_finalized_query)
+        response = self._deploy_stub.lastFinalizedBlock(last_finalized_query, timeout=self.timeout)
         self._check_response(response)
         return response.blockInfo
 
     def is_finalized(self, block_hash: str) -> bool:
         is_finalized_query = IsFinalizedQuery(hash=block_hash)
-        response = self._deploy_stub.isFinalized(is_finalized_query)
+        response = self._deploy_stub.isFinalized(is_finalized_query, timeout=self.timeout)
         self._check_response(response)
         return response.isFinalized
 
     def propose(self, is_async: bool = False) -> str:
         stub = ProposeServiceStub(self.channel)
-        response: ProposeResponse = stub.propose(ProposeQuery(isAsync=is_async))
+        response: ProposeResponse = stub.propose(ProposeQuery(isAsync=is_async), timeout=self.timeout)
         self._check_response(response)
         match_result = propose_result_match.match(response.result)
         assert match_result is not None
@@ -191,52 +192,65 @@ class F1r3flyClient:
 
     def get_data_at_name(self, par: Par, depth: int = -1) -> Data:
         query = DataAtNameQuery(depth=depth, name=par)
-        response = self._deploy_stub.listenForDataAtName(query)
+        response = self._deploy_stub.listenForDataAtName(query, timeout=self.timeout)
         self._check_response(response)
         wrapped = response.payload
         return Data.FromString(wrapped.SerializeToString())
 
-    def get_data_at_par(self, par: Par, block_hash: str, use_pre_state_hash: bool) -> RhoDataPayload:
+    def get_data_at_par(self, par: Par, block_hash: str, use_pre_state_hash: bool) -> Optional[RhoDataPayload]:
         query = DataAtNameByBlockQuery(par=par, blockHash=block_hash, usePreStateHash=use_pre_state_hash)
-        response = self._deploy_stub.getDataAtName(query)
-        self._check_response(response)
+        response = self._deploy_stub.getDataAtName(query, timeout=self.timeout)
+        if response.WhichOneof("message") == 'error':
+            error_msg = '\n'.join(response.error.messages)
+            if "No data found" in error_msg:
+                return None
+            raise F1r3flyClientException(error_msg)
         wrapped = response.payload
         return RhoDataPayload.FromString(wrapped.SerializeToString())
 
     def get_data_at_public_names(self, names: List[str], depth: int = -1) -> Optional[Data]:
         return self.get_data_at_name(DataQueries.public_names(names), depth)
 
-    def get_data_at_deploy_id(self, deploy_id: str, depth: int = -1) -> Optional[Data]:
-        return self.get_data_at_name(DataQueries.deploy_id(deploy_id), depth)
+    def get_data_at_deploy_id(self, deploy_id: str, block_hash: str = "", depth: int = -1) -> Union[RhoDataPayload, Data]:
+        """Get data sent to a deploy's deployId channel.
+
+        If block_hash is provided, uses the block-specific getDataAtName
+        gRPC method (recommended). Otherwise falls back to the obsolete
+        listenForDataAtName method.
+        """
+        par = DataQueries.deploy_id(deploy_id)
+        if block_hash:
+            return self.get_data_at_par(par, block_hash, use_pre_state_hash=False)
+        return self.get_data_at_name(par, depth)
 
     def get_blocks_by_heights(self, start_block_number: int, end_block_number: int) -> List[LightBlockInfo]:
         query = BlocksQueryByHeight(startBlockNumber=start_block_number, endBlockNumber=end_block_number)
-        response = self._deploy_stub.getBlocksByHeights(query)
+        response = self._deploy_stub.getBlocksByHeights(query, timeout=self.timeout)
         result = self._handle_stream(response)
         return list(map(lambda x: x.blockInfo, result))  # type: ignore
 
     def get_continuation(self, par: Par, depth: int = 1) -> ContinuationAtNameResponse:
         query = ContinuationAtNameQuery(depth=depth, names=[par])
-        response = self._deploy_stub.listenForContinuationAtName(query)
+        response = self._deploy_stub.listenForContinuationAtName(query, timeout=self.timeout)
         self._check_response(response)
         return response
 
     def previewPrivateNames(self, public_key: PublicKey, timestamp: int, nameQty: int) -> PrivateNamePreviewResponse:
         query = PrivateNamePreviewQuery(user=public_key.to_bytes(), timestamp=timestamp, nameQty=nameQty)
-        response = self._deploy_stub.previewPrivateNames(query)
+        response = self._deploy_stub.previewPrivateNames(query, timeout=self.timeout)
         self._check_response(response)
         return response
 
     def get_event_data(self, block_hash: str) -> EventInfoResponse:
         query = BlockQuery(hash=block_hash)
-        response = self._deploy_stub.getEventByHash(query)
+        response = self._deploy_stub.getEventByHash(query, timeout=self.timeout)
         self._check_response(response)
         return response
 
     def visual_dag(self, depth: int, showJustificationLines: bool, startBlockNumber: int) -> str:
         query = VisualizeDagQuery(depth=depth, showJustificationLines=showJustificationLines,
                                   startBlockNumber=startBlockNumber)
-        response = self._deploy_stub.visualizeDag(query)
+        response = self._deploy_stub.visualizeDag(query, timeout=self.timeout)
         result = self._handle_stream(response)
         return ''.join(list(map(lambda x: x.content, result)))  # type: ignore
 

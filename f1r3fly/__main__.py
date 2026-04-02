@@ -100,5 +100,43 @@ def submit_deploy(ctx: click.core.Context, deployer: str, term: str, phlo_price:
     else:
         click.echo("Send {} deploy succeeded".format(sig))
 
+@cli.command()
+@click.option('--host', default='localhost', help='Node host')
+@click.option('--ports', default='40401,40411,40421,40431,40451',
+              help='Comma-separated gRPC ports to check')
+@click.option('--names', default='bootstrap,validator1,validator2,validator3,readonly',
+              help='Comma-separated node names (parallel to --ports)')
+@click.pass_context
+def status(ctx: click.core.Context, host: str, ports: str, names: str) -> None:
+    """Check LFB and sync status of all nodes."""
+    port_list = [int(p) for p in ports.split(',')]
+    name_list = names.split(',')
+    results = []
+    for name, port in zip(name_list, port_list):
+        try:
+            with F1r3flyClient(host, port) as client:
+                lfb = client.last_finalized_block()
+                lfb_num = lfb.blockInfo.blockNumber
+                lfb_hash = lfb.blockInfo.blockHash[:16]
+                results.append({"node": name, "port": port, "lfb": lfb_num, "lfb_hash": lfb_hash, "status": "ok"})
+        except Exception as e:
+            results.append({"node": name, "port": port, "lfb": -1, "lfb_hash": "", "status": str(e)[:80]})
+
+    if ctx.obj['json_output']:
+        click.echo(json.dumps(results, indent=2))
+    else:
+        lfb_values = [r["lfb"] for r in results if r["status"] == "ok"]
+        synced = len(set(lfb_values)) <= 1 and len(lfb_values) == len(results)
+        for r in results:
+            if r["status"] == "ok":
+                click.echo(f"  {r['node']:12s} LFB=#{r['lfb']} ({r['lfb_hash']})")
+            else:
+                click.echo(f"  {r['node']:12s} ERROR: {r['status']}")
+        if synced:
+            click.echo(f"All {len(results)} nodes synced at LFB #{lfb_values[0]}")
+        elif lfb_values:
+            click.echo(f"Nodes out of sync: LFB range #{min(lfb_values)}-#{max(lfb_values)}")
+
+
 if __name__ == '__main__':
     cli()
