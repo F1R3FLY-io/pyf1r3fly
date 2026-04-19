@@ -23,6 +23,7 @@ See `pyproject.toml` for information about 3rd party library dependencies.
 | `contracts.py` | `registry_lookup`, `registry_query` -- read-only queries against on-chain contracts via exploratory deploy |
 | `vault.py` | `VaultAPI(client, shard_id='root')` -- token transfers and balance queries. Methods: `get_balance` (exploratory deploy, readonly only on Rust node), `deploy_get_balance` (real deploy via `DEPLOY_GET_BALANCE_RHO_TPL`, works on validators), `transfer`, `transfer_ensure`, `read_transfer_result`. All deploy methods use the constructor's `shard_id`. |
 | `system_contracts.py` | `query_token_metadata` -- queries for genesis-deployed system contracts |
+| `websocket.py` | `connect_ws`, `wait_for_events`, `validate_block_event` -- WebSocket `/ws/events` client with event type constants and connection retry |
 | `util.py` | `create_deploy_data`, `sign_deploy_data` -- deploy proto construction and signing |
 
 ## Quick Start
