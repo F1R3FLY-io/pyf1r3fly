@@ -95,10 +95,10 @@ def registry_query(
         RuntimeError: If the exploratory deploy returns no results.
     """
     term = f"""
-new ret, lookup(`rho:registry:lookup`), contractCh in {{
-  lookup!(`{uri}`, *contractCh) |
-  for (contract <- contractCh) {{
-    contract!("{method}", {param}, *ret)
+new ret, lookup(`rho:registry:lookup`), ch in {{
+  lookup!(`{uri}`, *ch) |
+  for (c <- ch) {{
+    c!("{method}", {param}, *ret)
   }}
 }}
 """
