@@ -72,11 +72,6 @@ class DeployServiceStub(object):
                 request_serializer=DeployServiceCommon__pb2.BlocksQuery.SerializeToString,
                 response_deserializer=DeployServiceV1__pb2.BlockInfoResponse.FromString,
                 _registered_method=True)
-        self.listenForDataAtName = channel.unary_unary(
-                '/casper.v1.DeployService/listenForDataAtName',
-                request_serializer=DeployServiceCommon__pb2.DataAtNameQuery.SerializeToString,
-                response_deserializer=DeployServiceV1__pb2.ListeningNameDataResponse.FromString,
-                _registered_method=True)
         self.getDataAtName = channel.unary_unary(
                 '/casper.v1.DeployService/getDataAtName',
                 request_serializer=DeployServiceCommon__pb2.DataAtNameByBlockQuery.SerializeToString,
@@ -188,14 +183,6 @@ class DeployServiceServicer(object):
 
     def getBlocks(self, request, context):
         """Get a summary of blocks on the blockchain.
-        """
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def listenForDataAtName(self, request, context):
-        """Find data sent to a name.
-        OBSOLETE: Use getDataAtName instead. This method will be removed in the future version of RNode.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -325,11 +312,6 @@ def add_DeployServiceServicer_to_server(servicer, server):
                     servicer.getBlocks,
                     request_deserializer=DeployServiceCommon__pb2.BlocksQuery.FromString,
                     response_serializer=DeployServiceV1__pb2.BlockInfoResponse.SerializeToString,
-            ),
-            'listenForDataAtName': grpc.unary_unary_rpc_method_handler(
-                    servicer.listenForDataAtName,
-                    request_deserializer=DeployServiceCommon__pb2.DataAtNameQuery.FromString,
-                    response_serializer=DeployServiceV1__pb2.ListeningNameDataResponse.SerializeToString,
             ),
             'getDataAtName': grpc.unary_unary_rpc_method_handler(
                     servicer.getDataAtName,
@@ -564,33 +546,6 @@ class DeployService(object):
             '/casper.v1.DeployService/getBlocks',
             DeployServiceCommon__pb2.BlocksQuery.SerializeToString,
             DeployServiceV1__pb2.BlockInfoResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
-
-    @staticmethod
-    def listenForDataAtName(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/casper.v1.DeployService/listenForDataAtName',
-            DeployServiceCommon__pb2.DataAtNameQuery.SerializeToString,
-            DeployServiceV1__pb2.ListeningNameDataResponse.FromString,
             options,
             channel_credentials,
             insecure,
