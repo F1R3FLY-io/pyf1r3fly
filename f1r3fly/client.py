@@ -13,10 +13,10 @@ from .param import Params
 from .pb.CasperMessage_pb2 import DeployDataProto
 from .pb.DeployServiceCommon_pb2 import (
     BlockInfo, BlockQuery, BlocksQuery, BlocksQueryByHeight,
-    ContinuationAtNameQuery, DataAtNameByBlockQuery, DataAtNameQuery,
-    ExploratoryDeployQuery, FindDeployQuery, IsFinalizedQuery,
-    LastFinalizedBlockQuery, LightBlockInfo, PrivateNamePreviewQuery,
-    SingleReport, VisualizeDagQuery,
+    BondStatusQuery, ContinuationAtNameQuery, DataAtNameByBlockQuery,
+    DataAtNameQuery, ExploratoryDeployQuery, FindDeployQuery,
+    IsFinalizedQuery, LastFinalizedBlockQuery, LightBlockInfo,
+    PrivateNamePreviewQuery, ReportQuery, SingleReport, VisualizeDagQuery,
 )
 from .pb.DeployServiceV1_pb2 import (
     BlockInfoResponse, BlockResponse, ContinuationAtNameResponse,
@@ -180,6 +180,21 @@ class F1r3flyClient:
         self._check_response(response)
         return response.isFinalized
 
+    def status(self):
+        """Get node status. Returns Status proto object."""
+        from google.protobuf.empty_pb2 import Empty
+        response = self._deploy_stub.status(Empty(), timeout=self.timeout)
+        self._check_response(response)
+        return response.status
+
+    def bond_status(self, public_key_hex: str) -> bool:
+        """Check if a public key is bonded. Returns bool."""
+        public_key_bytes = bytes.fromhex(public_key_hex)
+        query = BondStatusQuery(publicKey=public_key_bytes)
+        response = self._deploy_stub.bondStatus(query, timeout=self.timeout)
+        self._check_response(response)
+        return response.isBonded
+
     def propose(self, is_async: bool = False) -> str:
         stub = ProposeServiceStub(self.channel)
         response: ProposeResponse = stub.propose(ProposeQuery(isAsync=is_async), timeout=self.timeout)
@@ -210,6 +225,13 @@ class F1r3flyClient:
         par = DataQueries.deploy_id(deploy_id)
         return self.get_data_at_par(par, block_hash)
 
+    def show_main_chain(self, depth: int = 1) -> List[LightBlockInfo]:
+        """Get blocks on the main chain. Streaming. Returns LightBlockInfo list."""
+        blocks_query = BlocksQuery(depth=depth)
+        response = self._deploy_stub.showMainChain(blocks_query, timeout=self.timeout)
+        result = self._handle_stream(response)
+        return list(map(lambda x: x.blockInfo, result))  # type: ignore
+
     def get_blocks_by_heights(self, start_block_number: int, end_block_number: int) -> List[LightBlockInfo]:
         query = BlocksQueryByHeight(startBlockNumber=start_block_number, endBlockNumber=end_block_number)
         response = self._deploy_stub.getBlocksByHeights(query, timeout=self.timeout)
@@ -228,8 +250,9 @@ class F1r3flyClient:
         self._check_response(response)
         return response
 
-    def get_event_data(self, block_hash: str) -> EventInfoResponse:
-        query = BlockQuery(hash=block_hash)
+    def get_event_data(self, block_hash: str, force_replay: bool = False) -> EventInfoResponse:
+        """Get block execution trace (COMM/produce/consume events per deploy)."""
+        query = ReportQuery(hash=block_hash, forceReplay=force_replay)
         response = self._deploy_stub.getEventByHash(query, timeout=self.timeout)
         self._check_response(response)
         return response

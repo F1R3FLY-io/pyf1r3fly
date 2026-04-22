@@ -15,7 +15,7 @@ See `pyproject.toml` for information about 3rd party library dependencies.
 
 | Module | Description |
 |--------|-------------|
-| `client.py` | `F1r3flyClient` -- gRPC client for deploy, block query, data query, file upload/download |
+| `client.py` | `F1r3flyClient` -- gRPC client for deploy, block query, data query, status, bond status, file upload/download |
 | `crypto.py` | `PrivateKey`, `PublicKey` -- SECP256k1 key handling, vault address derivation |
 | `par.py` | `par_as_string`, `par_as_int`, `par_as_map`, etc. -- type-safe extraction from Rholang Par protobuf messages |
 | `polling.py` | `poll_until`, `deploy_and_read`, `wait_for_finalized`, `deploy_with_fallback` -- polling and deploy workflow utilities |

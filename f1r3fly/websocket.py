@@ -59,7 +59,6 @@ VALIDATOR_STARTUP_EVENTS = {
 
 BOOT_GENESIS_EVENTS = {
     "sent-unapproved-block",
-    "block-approval-received",
     "sent-approved-block",
 }
 
