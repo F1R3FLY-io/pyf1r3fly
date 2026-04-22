@@ -23,7 +23,6 @@ from .pb.DeployServiceV1_pb2 import (
     DeployResponse, EventInfoResponse, ExploratoryDeployResponse,
     FileDownloadChunk, FileDownloadRequest, FileUploadChunk,
     FileUploadMetadata, FileUploadResponse, FileUploadResult,
-    ListeningNameDataPayload as Data, ListeningNameDataResponse,
     PrivateNamePreviewResponse, RhoDataPayload, VisualizeBlocksResponse,
 )
 from .pb.DeployServiceV1_pb2_grpc import DeployServiceStub
@@ -38,7 +37,6 @@ from .util import (
 
 GRPC_Response_T = Union[ProposeResponse,
                         DeployResponse,
-                        ListeningNameDataResponse,
                         BlockResponse,
                         BlockInfoResponse,
                         ExploratoryDeployResponse,
@@ -190,14 +188,7 @@ class F1r3flyClient:
         assert match_result is not None
         return match_result.group("block_hash")
 
-    def get_data_at_name(self, par: Par, depth: int = -1) -> Data:
-        query = DataAtNameQuery(depth=depth, name=par)
-        response = self._deploy_stub.listenForDataAtName(query, timeout=self.timeout)
-        self._check_response(response)
-        wrapped = response.payload
-        return Data.FromString(wrapped.SerializeToString())
-
-    def get_data_at_par(self, par: Par, block_hash: str, use_pre_state_hash: bool) -> Optional[RhoDataPayload]:
+    def get_data_at_par(self, par: Par, block_hash: str, use_pre_state_hash: bool = False) -> Optional[RhoDataPayload]:
         query = DataAtNameByBlockQuery(par=par, blockHash=block_hash, usePreStateHash=use_pre_state_hash)
         response = self._deploy_stub.getDataAtName(query, timeout=self.timeout)
         if response.WhichOneof("message") == 'error':
@@ -208,20 +199,16 @@ class F1r3flyClient:
         wrapped = response.payload
         return RhoDataPayload.FromString(wrapped.SerializeToString())
 
-    def get_data_at_public_names(self, names: List[str], depth: int = -1) -> Optional[Data]:
-        return self.get_data_at_name(DataQueries.public_names(names), depth)
-
-    def get_data_at_deploy_id(self, deploy_id: str, block_hash: str = "", depth: int = -1) -> Union[RhoDataPayload, Data]:
+    def get_data_at_deploy_id(self, deploy_id: str, block_hash: str = "") -> Optional[RhoDataPayload]:
         """Get data sent to a deploy's deployId channel.
 
-        If block_hash is provided, uses the block-specific getDataAtName
-        gRPC method (recommended). Otherwise falls back to the obsolete
-        listenForDataAtName method.
+        Requires block_hash — queries against a specific block's post-state
+        via getDataAtName gRPC method.
         """
+        if not block_hash:
+            raise F1r3flyClientException("block_hash is required for get_data_at_deploy_id")
         par = DataQueries.deploy_id(deploy_id)
-        if block_hash:
-            return self.get_data_at_par(par, block_hash, use_pre_state_hash=False)
-        return self.get_data_at_name(par, depth)
+        return self.get_data_at_par(par, block_hash)
 
     def get_blocks_by_heights(self, start_block_number: int, end_block_number: int) -> List[LightBlockInfo]:
         query = BlocksQueryByHeight(startBlockNumber=start_block_number, endBlockNumber=end_block_number)

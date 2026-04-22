@@ -46,7 +46,8 @@ logger = logging.getLogger(__name__)
 BLOCK_LIFECYCLE_EVENTS = {"block-created", "block-added", "block-finalised"}
 
 BLOCK_PAYLOAD_FIELDS = {
-    "block-hash", "parent-hashes", "justification-hashes",
+    "block-hash", "block-number", "timestamp",
+    "parent-hashes", "justification-hashes",
     "deploys", "creator", "seq-num",
 }
 
@@ -197,6 +198,8 @@ def validate_block_event(event: dict) -> None:
         f"{event_type} payload missing fields: {sorted(missing)}"
     )
     assert isinstance(payload["block-hash"], str) and len(payload["block-hash"]) > 0
+    assert isinstance(payload["block-number"], int) and payload["block-number"] >= 0
+    assert isinstance(payload["timestamp"], int) and payload["timestamp"] > 0
     assert isinstance(payload["parent-hashes"], list)
     assert isinstance(payload["deploys"], list)
     assert isinstance(payload["seq-num"], int)
