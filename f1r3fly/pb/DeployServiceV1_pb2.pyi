@@ -213,54 +213,6 @@ class BlockInfoResponse(_message.Message):
 Global___BlockInfoResponse: _TypeAlias = BlockInfoResponse  # noqa: Y015
 
 @_typing.final
-class ListeningNameDataResponse(_message.Message):
-    """listenForDataAtName"""
-
-    DESCRIPTOR: _descriptor.Descriptor
-
-    ERROR_FIELD_NUMBER: _builtins.int
-    PAYLOAD_FIELD_NUMBER: _builtins.int
-    @_builtins.property
-    def error(self) -> _ServiceError_pb2.ServiceError: ...
-    @_builtins.property
-    def payload(self) -> Global___ListeningNameDataPayload: ...
-    def __init__(
-        self,
-        *,
-        error: _ServiceError_pb2.ServiceError | None = ...,
-        payload: Global___ListeningNameDataPayload | None = ...,
-    ) -> None: ...
-    _HasFieldArgType: _TypeAlias = _typing.Literal["error", b"error", "message", b"message", "payload", b"payload"]  # noqa: Y015
-    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["error", b"error", "message", b"message", "payload", b"payload"]  # noqa: Y015
-    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
-    _WhichOneofReturnType_message: _TypeAlias = _typing.Literal["error", "payload"]  # noqa: Y015
-    _WhichOneofArgType_message: _TypeAlias = _typing.Literal["message", b"message"]  # noqa: Y015
-    def WhichOneof(self, oneof_group: _WhichOneofArgType_message) -> _WhichOneofReturnType_message | None: ...
-
-Global___ListeningNameDataResponse: _TypeAlias = ListeningNameDataResponse  # noqa: Y015
-
-@_typing.final
-class ListeningNameDataPayload(_message.Message):
-    DESCRIPTOR: _descriptor.Descriptor
-
-    BLOCKINFO_FIELD_NUMBER: _builtins.int
-    LENGTH_FIELD_NUMBER: _builtins.int
-    length: _builtins.int
-    @_builtins.property
-    def blockInfo(self) -> _containers.RepeatedCompositeFieldContainer[_DeployServiceCommon_pb2.DataWithBlockInfo]: ...
-    def __init__(
-        self,
-        *,
-        blockInfo: _abc.Iterable[_DeployServiceCommon_pb2.DataWithBlockInfo] | None = ...,
-        length: _builtins.int = ...,
-    ) -> None: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["blockInfo", b"blockInfo", "length", b"length"]  # noqa: Y015
-    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
-
-Global___ListeningNameDataPayload: _TypeAlias = ListeningNameDataPayload  # noqa: Y015
-
-@_typing.final
 class RhoDataResponse(_message.Message):
     """listenForDataAtPar"""
 
@@ -488,6 +440,34 @@ class IsFinalizedResponse(_message.Message):
     def WhichOneof(self, oneof_group: _WhichOneofArgType_message) -> _WhichOneofReturnType_message | None: ...
 
 Global___IsFinalizedResponse: _TypeAlias = IsFinalizedResponse  # noqa: Y015
+
+@_typing.final
+class DeployFinalizationStatusResponse(_message.Message):
+    """deployFinalizationStatus"""
+
+    DESCRIPTOR: _descriptor.Descriptor
+
+    ERROR_FIELD_NUMBER: _builtins.int
+    STATUS_FIELD_NUMBER: _builtins.int
+    @_builtins.property
+    def error(self) -> _ServiceError_pb2.ServiceError: ...
+    @_builtins.property
+    def status(self) -> _DeployServiceCommon_pb2.DeployFinalizationStatusInfo: ...
+    def __init__(
+        self,
+        *,
+        error: _ServiceError_pb2.ServiceError | None = ...,
+        status: _DeployServiceCommon_pb2.DeployFinalizationStatusInfo | None = ...,
+    ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _typing.Literal["error", b"error", "message", b"message", "status", b"status"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["error", b"error", "message", b"message", "status", b"status"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    _WhichOneofReturnType_message: _TypeAlias = _typing.Literal["error", "status"]  # noqa: Y015
+    _WhichOneofArgType_message: _TypeAlias = _typing.Literal["message", b"message"]  # noqa: Y015
+    def WhichOneof(self, oneof_group: _WhichOneofArgType_message) -> _WhichOneofReturnType_message | None: ...
+
+Global___DeployFinalizationStatusResponse: _TypeAlias = DeployFinalizationStatusResponse  # noqa: Y015
 
 @_typing.final
 class BondStatusResponse(_message.Message):

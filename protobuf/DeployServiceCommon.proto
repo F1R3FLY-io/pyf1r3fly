@@ -83,6 +83,26 @@ message IsFinalizedQuery {
   string hash = 1;
 }
 
+message DeployFinalizationStatusQuery {
+  bytes deploySig = 1;
+}
+
+enum DeployFinalizationStateProto {
+  DEPLOY_STATE_UNSPECIFIED = 0;
+  DEPLOY_STATE_FINALIZED   = 1;
+  DEPLOY_STATE_FAILED      = 2;
+  DEPLOY_STATE_PENDING     = 3;
+  DEPLOY_STATE_EXPIRED     = 4;
+}
+
+message DeployFinalizationStatusInfo {
+  DeployFinalizationStateProto state = 1;
+  uint32 rejectionCount              = 2;
+  // Present when the sig has been included in at least one block.
+  // Absent (no field set) when the deploy is unknown to this node.
+  optional bytes latestBlockHash     = 3;
+}
+
 message BondStatusQuery {
   bytes publicKey = 1;
 }
@@ -147,6 +167,7 @@ message LightBlockInfo {
 
   repeated JustificationInfo justifications   = 20;
   repeated RejectedDeployInfo rejectedDeploys = 21;
+  bool isFinalized                            = 22;
 }
 
 message RejectedDeployInfo{
@@ -245,7 +266,16 @@ message Status {
   int32 peers         = 5;
   int32 nodes         = 6;
   int64 minPhloPrice  = 7;
-  repeated PeerInfo peerList = 8;  // New: detailed peer list
+  repeated PeerInfo peerList         = 8;
+  string nativeTokenName             = 9;
+  string nativeTokenSymbol           = 10;
+  uint32 nativeTokenDecimals         = 11;
+  int64  lastFinalizedBlockNumber    = 12;
+  bool   isValidator                 = 13;
+  bool   isReadOnly                  = 14;
+  bool   isReady                     = 15;
+  int64  currentEpoch                = 16;
+  int32  epochLength                 = 17;
 }
 
 message VersionInfo {

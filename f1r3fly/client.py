@@ -13,17 +13,17 @@ from .param import Params
 from .pb.CasperMessage_pb2 import DeployDataProto
 from .pb.DeployServiceCommon_pb2 import (
     BlockInfo, BlockQuery, BlocksQuery, BlocksQueryByHeight,
-    ContinuationAtNameQuery, DataAtNameByBlockQuery, DataAtNameQuery,
-    ExploratoryDeployQuery, FindDeployQuery, IsFinalizedQuery,
-    LastFinalizedBlockQuery, LightBlockInfo, PrivateNamePreviewQuery,
-    SingleReport, VisualizeDagQuery,
+    BondStatusQuery, ContinuationAtNameQuery, DataAtNameByBlockQuery,
+    DataAtNameQuery, DeployFinalizationStatusInfo,
+    DeployFinalizationStatusQuery, ExploratoryDeployQuery, FindDeployQuery,
+    IsFinalizedQuery, LastFinalizedBlockQuery, LightBlockInfo,
+    PrivateNamePreviewQuery, ReportQuery, SingleReport, VisualizeDagQuery,
 )
 from .pb.DeployServiceV1_pb2 import (
     BlockInfoResponse, BlockResponse, ContinuationAtNameResponse,
     DeployResponse, EventInfoResponse, ExploratoryDeployResponse,
     FileDownloadChunk, FileDownloadRequest, FileUploadChunk,
     FileUploadMetadata, FileUploadResponse, FileUploadResult,
-    ListeningNameDataPayload as Data, ListeningNameDataResponse,
     PrivateNamePreviewResponse, RhoDataPayload, VisualizeBlocksResponse,
 )
 from .pb.DeployServiceV1_pb2_grpc import DeployServiceStub
@@ -38,7 +38,6 @@ from .util import (
 
 GRPC_Response_T = Union[ProposeResponse,
                         DeployResponse,
-                        ListeningNameDataResponse,
                         BlockResponse,
                         BlockInfoResponse,
                         ExploratoryDeployResponse,
@@ -182,6 +181,43 @@ class F1r3flyClient:
         self._check_response(response)
         return response.isFinalized
 
+    def deploy_finalization_status(self, deploy_sig_hex: str) -> DeployFinalizationStatusInfo:
+        """Query canonical-state finalization status for a deploy by its signature.
+
+        Prefer this over ``is_finalized(block_hash)`` for deploy tracking.
+        ``is_finalized`` can return True for a block whose deploy effects were
+        dropped by multi-parent merge rejection; this API reports the deploy's
+        actual state in canonical state.
+
+        Returns a ``DeployFinalizationStatusInfo`` with:
+          - ``state``: ``DeployFinalizationStateProto`` enum
+            (``DEPLOY_STATE_FINALIZED`` / ``FAILED`` / ``PENDING`` / ``EXPIRED``)
+          - ``rejectionCount``: number of times this deploy was rejected during
+            merges (monotonically increases, carries through to terminal states)
+          - ``latestBlockHash``: bytes of the most recent canonical block
+            containing this deploy sig; empty/absent when the deploy has
+            never been included.
+        """
+        query = DeployFinalizationStatusQuery(deploySig=bytes.fromhex(deploy_sig_hex))
+        response = self._deploy_stub.deployFinalizationStatus(query, timeout=self.timeout)
+        self._check_response(response)
+        return response.status
+
+    def status(self):
+        """Get node status. Returns Status proto object."""
+        from google.protobuf.empty_pb2 import Empty
+        response = self._deploy_stub.status(Empty(), timeout=self.timeout)
+        self._check_response(response)
+        return response.status
+
+    def bond_status(self, public_key_hex: str) -> bool:
+        """Check if a public key is bonded. Returns bool."""
+        public_key_bytes = bytes.fromhex(public_key_hex)
+        query = BondStatusQuery(publicKey=public_key_bytes)
+        response = self._deploy_stub.bondStatus(query, timeout=self.timeout)
+        self._check_response(response)
+        return response.isBonded
+
     def propose(self, is_async: bool = False) -> str:
         stub = ProposeServiceStub(self.channel)
         response: ProposeResponse = stub.propose(ProposeQuery(isAsync=is_async), timeout=self.timeout)
@@ -190,14 +226,7 @@ class F1r3flyClient:
         assert match_result is not None
         return match_result.group("block_hash")
 
-    def get_data_at_name(self, par: Par, depth: int = -1) -> Data:
-        query = DataAtNameQuery(depth=depth, name=par)
-        response = self._deploy_stub.listenForDataAtName(query, timeout=self.timeout)
-        self._check_response(response)
-        wrapped = response.payload
-        return Data.FromString(wrapped.SerializeToString())
-
-    def get_data_at_par(self, par: Par, block_hash: str, use_pre_state_hash: bool) -> Optional[RhoDataPayload]:
+    def get_data_at_par(self, par: Par, block_hash: str, use_pre_state_hash: bool = False) -> Optional[RhoDataPayload]:
         query = DataAtNameByBlockQuery(par=par, blockHash=block_hash, usePreStateHash=use_pre_state_hash)
         response = self._deploy_stub.getDataAtName(query, timeout=self.timeout)
         if response.WhichOneof("message") == 'error':
@@ -208,20 +237,23 @@ class F1r3flyClient:
         wrapped = response.payload
         return RhoDataPayload.FromString(wrapped.SerializeToString())
 
-    def get_data_at_public_names(self, names: List[str], depth: int = -1) -> Optional[Data]:
-        return self.get_data_at_name(DataQueries.public_names(names), depth)
-
-    def get_data_at_deploy_id(self, deploy_id: str, block_hash: str = "", depth: int = -1) -> Union[RhoDataPayload, Data]:
+    def get_data_at_deploy_id(self, deploy_id: str, block_hash: str = "") -> Optional[RhoDataPayload]:
         """Get data sent to a deploy's deployId channel.
 
-        If block_hash is provided, uses the block-specific getDataAtName
-        gRPC method (recommended). Otherwise falls back to the obsolete
-        listenForDataAtName method.
+        Requires block_hash — queries against a specific block's post-state
+        via getDataAtName gRPC method.
         """
+        if not block_hash:
+            raise F1r3flyClientException("block_hash is required for get_data_at_deploy_id")
         par = DataQueries.deploy_id(deploy_id)
-        if block_hash:
-            return self.get_data_at_par(par, block_hash, use_pre_state_hash=False)
-        return self.get_data_at_name(par, depth)
+        return self.get_data_at_par(par, block_hash)
+
+    def show_main_chain(self, depth: int = 1) -> List[LightBlockInfo]:
+        """Get blocks on the main chain. Streaming. Returns LightBlockInfo list."""
+        blocks_query = BlocksQuery(depth=depth)
+        response = self._deploy_stub.showMainChain(blocks_query, timeout=self.timeout)
+        result = self._handle_stream(response)
+        return list(map(lambda x: x.blockInfo, result))  # type: ignore
 
     def get_blocks_by_heights(self, start_block_number: int, end_block_number: int) -> List[LightBlockInfo]:
         query = BlocksQueryByHeight(startBlockNumber=start_block_number, endBlockNumber=end_block_number)
@@ -241,8 +273,9 @@ class F1r3flyClient:
         self._check_response(response)
         return response
 
-    def get_event_data(self, block_hash: str) -> EventInfoResponse:
-        query = BlockQuery(hash=block_hash)
+    def get_event_data(self, block_hash: str, force_replay: bool = False) -> EventInfoResponse:
+        """Get block execution trace (COMM/produce/consume events per deploy)."""
+        query = ReportQuery(hash=block_hash, forceReplay=force_replay)
         response = self._deploy_stub.getEventByHash(query, timeout=self.timeout)
         self._check_response(response)
         return response
