@@ -71,7 +71,7 @@ def registry_query(
     client,
     uri: str,
     method: str,
-    param: str = "Nil",
+    param="Nil",
     block_hash: str = "",
 ) -> list:
     """Query a registry-registered contract via exploratory deploy.
@@ -84,7 +84,12 @@ def registry_query(
         client: F1r3flyClient instance.
         uri: Registry URI (e.g. ``rho:id:abc123``).
         method: Contract method name (e.g. ``"getNonce"``).
-        param: Rholang expression for the method parameter (default ``"Nil"``).
+        param: Rholang expression for the method parameter (default
+            ``"Nil"``, matching the 3-arg pattern
+            ``(@method, @param, ret)`` used by bridge contracts), or
+            None to call with no parameter (2-arg pattern
+            ``(@method, ret)``). Must match the contract's declared
+            arity.
         block_hash: Optional block hash to query against. Empty string
             means latest state.
 
@@ -94,18 +99,22 @@ def registry_query(
     Raises:
         RuntimeError: If the exploratory deploy returns no results.
     """
+    send_args = (
+        f'"{method}", *ret' if param is None else f'"{method}", {param}, *ret'
+    )
     term = f"""
 new ret, lookup(`rho:registry:lookup`), ch in {{
   lookup!(`{uri}`, *ch) |
   for (c <- ch) {{
-    c!("{method}", {param}, *ret)
+    c!({send_args})
   }}
 }}
 """
     results = client.exploratory_deploy(term, block_hash)
     if not results:
+        param_repr = "<none>" if param is None else str(param)
         raise RuntimeError(
-            f"Registry query {uri} -> {method}({param}) returned no results. "
+            f"Registry query {uri} -> {method}({param_repr}) returned no results. "
             f"The contract may not be deployed or the method may not respond."
         )
     return results
