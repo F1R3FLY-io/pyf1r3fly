@@ -14,7 +14,8 @@ from .pb.CasperMessage_pb2 import DeployDataProto
 from .pb.DeployServiceCommon_pb2 import (
     BlockInfo, BlockQuery, BlocksQuery, BlocksQueryByHeight,
     BondStatusQuery, ContinuationAtNameQuery, DataAtNameByBlockQuery,
-    DataAtNameQuery, ExploratoryDeployQuery, FindDeployQuery,
+    DataAtNameQuery, DeployFinalizationStatusInfo,
+    DeployFinalizationStatusQuery, ExploratoryDeployQuery, FindDeployQuery,
     IsFinalizedQuery, LastFinalizedBlockQuery, LightBlockInfo,
     PrivateNamePreviewQuery, ReportQuery, SingleReport, VisualizeDagQuery,
 )
@@ -179,6 +180,28 @@ class F1r3flyClient:
         response = self._deploy_stub.isFinalized(is_finalized_query, timeout=self.timeout)
         self._check_response(response)
         return response.isFinalized
+
+    def deploy_finalization_status(self, deploy_sig_hex: str) -> DeployFinalizationStatusInfo:
+        """Query canonical-state finalization status for a deploy by its signature.
+
+        Prefer this over ``is_finalized(block_hash)`` for deploy tracking.
+        ``is_finalized`` can return True for a block whose deploy effects were
+        dropped by multi-parent merge rejection; this API reports the deploy's
+        actual state in canonical state.
+
+        Returns a ``DeployFinalizationStatusInfo`` with:
+          - ``state``: ``DeployFinalizationStateProto`` enum
+            (``DEPLOY_STATE_FINALIZED`` / ``FAILED`` / ``PENDING`` / ``EXPIRED``)
+          - ``rejectionCount``: number of times this deploy was rejected during
+            merges (monotonically increases, carries through to terminal states)
+          - ``latestBlockHash``: bytes of the most recent canonical block
+            containing this deploy sig; empty/absent when the deploy has
+            never been included.
+        """
+        query = DeployFinalizationStatusQuery(deploySig=bytes.fromhex(deploy_sig_hex))
+        response = self._deploy_stub.deployFinalizationStatus(query, timeout=self.timeout)
+        self._check_response(response)
+        return response.status
 
     def status(self):
         """Get node status. Returns Status proto object."""

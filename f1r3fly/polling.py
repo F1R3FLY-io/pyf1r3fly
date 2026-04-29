@@ -111,6 +111,77 @@ def wait_for_finalized(client, block_number: int, timeout: int) -> None:
     )
 
 
+def wait_for_deploy_finalized(
+    client,
+    deploy_id: str,
+    timeout: int,
+    interval: float = 3.0,
+):
+    """Poll deploy_finalization_status until the deploy reaches Finalized.
+
+    Unlike ``wait_for_finalized`` (which polls block-hash finalization),
+    this polls the deploy's actual canonical-state inclusion via
+    ``deploy_finalization_status``. A block can finalize while some of its
+    deploy effects were dropped by merge rejection; this helper reports the
+    deploy's true state.
+
+    Args:
+        client: F1r3flyClient instance.
+        deploy_id: Deploy signature hex string.
+        timeout: Maximum seconds to wait.
+        interval: Seconds between polls.
+
+    Returns:
+        DeployFinalizationStatusInfo with state=DEPLOY_STATE_FINALIZED.
+
+    Raises:
+        DeployError: If the deploy reaches terminal DEPLOY_STATE_FAILED
+            (explicit Rholang failure) or DEPLOY_STATE_EXPIRED (past
+            deployLifespan without successful inclusion).
+        TimeoutError: If the deploy stays in Pending past ``timeout``.
+    """
+    from .pb.DeployServiceCommon_pb2 import (
+        DEPLOY_STATE_EXPIRED, DEPLOY_STATE_FAILED, DEPLOY_STATE_FINALIZED,
+    )
+    deadline = time.time() + timeout
+    attempts = 0
+    last_err: Optional[Exception] = None
+    last_info = None
+
+    while time.time() < deadline:
+        attempts += 1
+        try:
+            info = client.deploy_finalization_status(deploy_id)
+            last_info = info
+            if info.state == DEPLOY_STATE_FINALIZED:
+                return info
+            if info.state == DEPLOY_STATE_FAILED:
+                raise DeployError(
+                    f"Deploy {deploy_id[:24]} reached terminal state Failed "
+                    f"(rejection_count={info.rejectionCount})"
+                )
+            if info.state == DEPLOY_STATE_EXPIRED:
+                raise DeployError(
+                    f"Deploy {deploy_id[:24]} reached terminal state Expired "
+                    f"(rejection_count={info.rejectionCount})"
+                )
+        except DeployError:
+            raise
+        except Exception as e:
+            last_err = e
+        time.sleep(interval)
+
+    status_detail = (
+        f" (last state: Pending, rejection_count={last_info.rejectionCount})"
+        if last_info is not None else ""
+    )
+    err_detail = f" (last error: {last_err})" if last_err else ""
+    raise TimeoutError(
+        f"deploy {deploy_id[:24]} finalization: timed out after {timeout}s "
+        f"({attempts} attempts){status_detail}{err_detail}"
+    )
+
+
 def deploy_and_read(
     client,
     term: str,
@@ -121,32 +192,39 @@ def deploy_and_read(
     phlo_price: int = 1,
     shard_id: str = "root",
 ) -> tuple:
-    """Deploy Rholang code, wait for finalization, and read the deployId channel.
+    """Deploy Rholang code, wait for canonical-state finalization, read deployId channel.
 
     Full workflow:
     1. Deploy with auto-filled validAfterBlockNumber
-    2. Wait for deploy inclusion in a block
-    3. Wait for the block to be finalized (LFB >= block number)
-    4. Verify the deploy was not errored
-    5. Read data from the deployId channel
+    2. Wait for deploy inclusion in a block (first observation)
+    3. Wait for ``deploy_finalization_status`` to report ``DEPLOY_STATE_FINALIZED``.
+       This polls the deploy's actual canonical-state inclusion, not just
+       block-hash finalization — so a block that finalizes while the deploy's
+       effects were dropped by merge rejection does NOT satisfy this check,
+       and the helper continues to wait for re-inclusion via the
+       rejected-deploy-buffer recovery path.
+    4. Read data from the deployId channel at the canonical block.
 
     Args:
         client: F1r3flyClient instance.
         term: Rholang source code to deploy.
         private_key: PrivateKey for signing.
-        inclusion_timeout: Seconds to wait for block inclusion.
-        finalization_timeout: Seconds to wait for finalization.
+        inclusion_timeout: Seconds to wait for first block inclusion.
+        finalization_timeout: Seconds to wait for canonical-state finalization.
         phlo_limit: Maximum phlo to spend.
         phlo_price: Phlo price per unit.
         shard_id: Target shard identifier.
 
     Returns:
-        Tuple of (par_list, block_hash, block_number) where par_list is
-        the list of Par values from the deployId channel.
+        Tuple of ``(par_list, block_hash, block_number)`` where ``block_hash``
+        and ``block_number`` refer to the canonical-state block containing
+        the deploy's effects. This may differ from the first inclusion block
+        if the deploy was merge-rejected and re-included in a later block.
 
     Raises:
         TimeoutError: If inclusion or finalization times out.
-        DeployError: If the deploy is marked as errored.
+        DeployError: If the deploy reaches terminal Failed (Rholang execution
+            failure) or Expired (past ``deployLifespan`` without inclusion).
     """
     deploy_id = client.deploy_with_vabn_filled(
         key=private_key,
@@ -158,17 +236,25 @@ def deploy_and_read(
     logger.info("Deployed, deploy_id=%s", deploy_id[:24])
 
     info = wait_for_deploy_included(client, deploy_id, inclusion_timeout)
-    block_hash = info.blockHash
-    block_number = info.blockNumber
-    logger.info("Deploy included in block #%d (%s)", block_number, block_hash[:16])
+    logger.info(
+        "Deploy included in block #%d (%s)", info.blockNumber, info.blockHash[:16]
+    )
 
-    wait_for_finalized(client, block_number, finalization_timeout)
+    status = wait_for_deploy_finalized(client, deploy_id, finalization_timeout)
 
-    from .deploy import check_deploy_not_errored
-    block_info = client.show_block(block_hash)
-    check_deploy_not_errored(block_info, deploy_id)
+    if status.latestBlockHash:
+        canonical_block_hash = status.latestBlockHash.hex()
+    else:
+        canonical_block_hash = info.blockHash
+    if canonical_block_hash != info.blockHash:
+        logger.info(
+            "Deploy %s recovered: initial block %s -> canonical block %s (rejection_count=%d)",
+            deploy_id[:24], info.blockHash[:16], canonical_block_hash[:16],
+            status.rejectionCount,
+        )
+    canonical_block_number = client.show_block(canonical_block_hash).blockInfo.blockNumber
 
-    data = client.get_data_at_deploy_id(deploy_id, block_hash=block_hash)
+    data = client.get_data_at_deploy_id(deploy_id, block_hash=canonical_block_hash)
     if data is None:
         raise DeployError(
             f"Deploy {deploy_id[:24]} returned None from get_data_at_deploy_id"
@@ -179,7 +265,7 @@ def deploy_and_read(
             f"Deploy {deploy_id[:24]} returned empty par list from deployId channel"
         )
 
-    return par_list, block_hash, block_number
+    return par_list, canonical_block_hash, canonical_block_number
 
 
 def deploy_with_fallback(

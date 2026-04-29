@@ -15,10 +15,10 @@ See `pyproject.toml` for information about 3rd party library dependencies.
 
 | Module | Description |
 |--------|-------------|
-| `client.py` | `F1r3flyClient` -- gRPC client for deploy, block query, data query, status, bond status, file upload/download |
+| `client.py` | `F1r3flyClient` -- gRPC client for deploy, block query, data query, deploy finalization status, status, bond status, file upload/download |
 | `crypto.py` | `PrivateKey`, `PublicKey` -- SECP256k1 key handling, vault address derivation |
 | `par.py` | `par_as_string`, `par_as_int`, `par_as_map`, etc. -- type-safe extraction from Rholang Par protobuf messages |
-| `polling.py` | `poll_until`, `deploy_and_read`, `wait_for_finalized`, `deploy_with_fallback` -- polling and deploy workflow utilities |
+| `polling.py` | `poll_until`, `deploy_and_read`, `wait_for_finalized`, `wait_for_deploy_finalized`, `deploy_with_fallback` -- polling and deploy workflow utilities |
 | `deploy.py` | `check_deploy_succeeded`, `check_deploy_errored`, `find_deploy_in_block` -- deploy result inspection |
 | `contracts.py` | `registry_lookup`, `registry_query` -- read-only queries against on-chain contracts via exploratory deploy |
 | `vault.py` | `VaultAPI(client, shard_id='root')` -- token transfers and balance queries. Methods: `get_balance` (exploratory deploy, readonly only on Rust node), `deploy_get_balance` (real deploy via `DEPLOY_GET_BALANCE_RHO_TPL`, works on validators), `transfer`, `transfer_ensure`, `read_transfer_result`. All deploy methods use the constructor's `shard_id`. |
