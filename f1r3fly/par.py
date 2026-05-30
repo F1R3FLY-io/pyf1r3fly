@@ -73,6 +73,14 @@ def par_as_map(par) -> Dict[Any, Any]:
     raise ValueError(f"Expected a map-bearing Par, got {par}")
 
 
+def par_as_bytes(par) -> bytes:
+    """Extract a Rholang byte array from a Par protobuf message."""
+    for expr in par.exprs:
+        if expr.HasField("g_byte_array"):
+            return expr.g_byte_array
+    raise ValueError(f"Expected a byte-array-bearing Par, got {par}")
+
+
 def par_as_uri(par) -> str:
     """Extract a URI string from a Par protobuf message.
 
@@ -108,6 +116,8 @@ def par_value(par) -> Any:
             return {par_value(kv.key): par_value(kv.value) for kv in expr.e_map_body.kvs}
         if expr.HasField("g_uri"):
             return expr.g_uri
+        if expr.HasField("g_byte_array"):
+            return expr.g_byte_array.hex()
     for uri in par.uris:
         return uri.value
     raise ValueError(f"Cannot extract value from Par: {par}")
