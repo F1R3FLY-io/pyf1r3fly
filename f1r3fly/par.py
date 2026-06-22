@@ -109,9 +109,15 @@ def par_value(par) -> Any:
         if expr.HasField("g_bool"):
             return bool(expr.g_bool)
         if expr.HasField("e_tuple_body"):
-            return list(expr.e_tuple_body.ps)
+            return [par_value(e) for e in expr.e_tuple_body.ps]
         if expr.HasField("e_list_body"):
-            return list(expr.e_list_body.ps)
+            return [par_value(e) for e in expr.e_list_body.ps]
+        if expr.HasField("e_set_body"):
+            elems = [par_value(e) for e in expr.e_set_body.ps]
+            try:
+                return set(elems)
+            except TypeError:  # unhashable (e.g. nested list/map) — keep as a list
+                return elems
         if expr.HasField("e_map_body"):
             return {par_value(kv.key): par_value(kv.value) for kv in expr.e_map_body.kvs}
         if expr.HasField("g_uri"):
