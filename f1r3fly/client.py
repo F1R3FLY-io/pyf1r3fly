@@ -9,6 +9,7 @@ from typing import (
 import grpc
 
 from .crypto import PrivateKey, PublicKey
+from .par import par_value
 from .param import Params
 from .pb.CasperMessage_pb2 import DeployDataProto
 from .pb.DeployServiceCommon_pb2 import (
@@ -129,6 +130,23 @@ class F1r3flyClient:
         response = self._deploy_stub.exploratoryDeploy(exploratory_query, timeout=self.timeout)
         self._check_response(response)
         return list(response.result.postBlockData)
+
+    def read_channel(self, channel: str, block_hash: str = ""):
+        """Peek the current value on a named channel via a non-consuming
+        exploratory read (``<<-``), returning the auto-typed Python value
+        (``dict`` for a Map, ``int`` for an Int, ``str`` for a String, ...),
+        or ``None`` when the channel holds no value.
+
+        Read-only: no block created, no phlo consumed. ``channel`` is the bare
+        name used as ``@"<channel>"`` in the contract. Reading against the
+        latest state by default; pass ``block_hash`` to read at a specific
+        block (e.g. a finalized hash).
+        """
+        term = f'new return in {{ for (@v <<- @"{channel}") {{ return!(v) }} }}'
+        results = self.exploratory_deploy(term, block_hash)
+        if not results:
+            return None
+        return par_value(results[0])
 
     def deploy(
             self,
