@@ -9,6 +9,7 @@ from collections import abc as _abc
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
 from google.protobuf.internal import containers as _containers
+from google.protobuf.internal import enum_type_wrapper as _enum_type_wrapper
 import CasperMessage_pb2 as _CasperMessage_pb2
 import RhoTypes_pb2 as _RhoTypes_pb2
 import builtins as _builtins
@@ -21,6 +22,27 @@ else:
     from typing_extensions import TypeAlias as _TypeAlias
 
 DESCRIPTOR: _descriptor.FileDescriptor
+
+class _DeployFinalizationStateProto:
+    ValueType = _typing.NewType("ValueType", _builtins.int)
+    V: _TypeAlias = ValueType  # noqa: Y015
+
+class _DeployFinalizationStateProtoEnumTypeWrapper(_enum_type_wrapper._EnumTypeWrapper[_DeployFinalizationStateProto.ValueType], _builtins.type):
+    DESCRIPTOR: _descriptor.EnumDescriptor
+    DEPLOY_STATE_UNSPECIFIED: _DeployFinalizationStateProto.ValueType  # 0
+    DEPLOY_STATE_FINALIZED: _DeployFinalizationStateProto.ValueType  # 1
+    DEPLOY_STATE_FAILED: _DeployFinalizationStateProto.ValueType  # 2
+    DEPLOY_STATE_PENDING: _DeployFinalizationStateProto.ValueType  # 3
+    DEPLOY_STATE_EXPIRED: _DeployFinalizationStateProto.ValueType  # 4
+
+class DeployFinalizationStateProto(_DeployFinalizationStateProto, metaclass=_DeployFinalizationStateProtoEnumTypeWrapper): ...
+
+DEPLOY_STATE_UNSPECIFIED: DeployFinalizationStateProto.ValueType  # 0
+DEPLOY_STATE_FINALIZED: DeployFinalizationStateProto.ValueType  # 1
+DEPLOY_STATE_FAILED: DeployFinalizationStateProto.ValueType  # 2
+DEPLOY_STATE_PENDING: DeployFinalizationStateProto.ValueType  # 3
+DEPLOY_STATE_EXPIRED: DeployFinalizationStateProto.ValueType  # 4
+Global___DeployFinalizationStateProto: _TypeAlias = DeployFinalizationStateProto  # noqa: Y015
 
 @_typing.final
 class FindDeployQuery(_message.Message):
@@ -259,6 +281,52 @@ class IsFinalizedQuery(_message.Message):
 Global___IsFinalizedQuery: _TypeAlias = IsFinalizedQuery  # noqa: Y015
 
 @_typing.final
+class DeployFinalizationStatusQuery(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
+
+    DEPLOYSIG_FIELD_NUMBER: _builtins.int
+    deploySig: _builtins.bytes
+    def __init__(
+        self,
+        *,
+        deploySig: _builtins.bytes = ...,
+    ) -> None: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["deploySig", b"deploySig"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___DeployFinalizationStatusQuery: _TypeAlias = DeployFinalizationStatusQuery  # noqa: Y015
+
+@_typing.final
+class DeployFinalizationStatusInfo(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
+
+    STATE_FIELD_NUMBER: _builtins.int
+    REJECTIONCOUNT_FIELD_NUMBER: _builtins.int
+    LATESTBLOCKHASH_FIELD_NUMBER: _builtins.int
+    state: Global___DeployFinalizationStateProto.ValueType
+    rejectionCount: _builtins.int
+    latestBlockHash: _builtins.bytes
+    """Present when the sig has been included in at least one block.
+    Absent (no field set) when the deploy is unknown to this node.
+    """
+    def __init__(
+        self,
+        *,
+        state: Global___DeployFinalizationStateProto.ValueType = ...,
+        rejectionCount: _builtins.int = ...,
+        latestBlockHash: _builtins.bytes | None = ...,
+    ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _typing.Literal["_latestBlockHash", b"_latestBlockHash", "latestBlockHash", b"latestBlockHash"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["_latestBlockHash", b"_latestBlockHash", "latestBlockHash", b"latestBlockHash", "rejectionCount", b"rejectionCount", "state", b"state"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    _WhichOneofReturnType__latestBlockHash: _TypeAlias = _typing.Literal["latestBlockHash"]  # noqa: Y015
+    _WhichOneofArgType__latestBlockHash: _TypeAlias = _typing.Literal["_latestBlockHash", b"_latestBlockHash"]  # noqa: Y015
+    def WhichOneof(self, oneof_group: _WhichOneofArgType__latestBlockHash) -> _WhichOneofReturnType__latestBlockHash | None: ...
+
+Global___DeployFinalizationStatusInfo: _TypeAlias = DeployFinalizationStatusInfo  # noqa: Y015
+
+@_typing.final
 class BondStatusQuery(_message.Message):
     DESCRIPTOR: _descriptor.Descriptor
 
@@ -405,6 +473,7 @@ class LightBlockInfo(_message.Message):
     FAULTTOLERANCE_FIELD_NUMBER: _builtins.int
     JUSTIFICATIONS_FIELD_NUMBER: _builtins.int
     REJECTEDDEPLOYS_FIELD_NUMBER: _builtins.int
+    ISFINALIZED_FIELD_NUMBER: _builtins.int
     blockHash: _builtins.str
     """BlockMessageProto message"""
     sender: _builtins.str
@@ -426,6 +495,7 @@ class LightBlockInfo(_message.Message):
     """extra"""
     deployCount: _builtins.int
     faultTolerance: _builtins.float
+    isFinalized: _builtins.bool
     @_builtins.property
     def parentsHashList(self) -> _containers.RepeatedScalarFieldContainer[_builtins.str]: ...
     @_builtins.property
@@ -458,8 +528,9 @@ class LightBlockInfo(_message.Message):
         faultTolerance: _builtins.float = ...,
         justifications: _abc.Iterable[Global___JustificationInfo] | None = ...,
         rejectedDeploys: _abc.Iterable[Global___RejectedDeployInfo] | None = ...,
+        isFinalized: _builtins.bool = ...,
     ) -> None: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["blockHash", b"blockHash", "blockNumber", b"blockNumber", "blockSize", b"blockSize", "bodyExtraBytes", b"bodyExtraBytes", "bonds", b"bonds", "deployCount", b"deployCount", "extraBytes", b"extraBytes", "faultTolerance", b"faultTolerance", "headerExtraBytes", b"headerExtraBytes", "justifications", b"justifications", "parentsHashList", b"parentsHashList", "postStateHash", b"postStateHash", "preStateHash", b"preStateHash", "rejectedDeploys", b"rejectedDeploys", "sender", b"sender", "seqNum", b"seqNum", "shardId", b"shardId", "sig", b"sig", "sigAlgorithm", b"sigAlgorithm", "timestamp", b"timestamp", "version", b"version"]  # noqa: Y015
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["blockHash", b"blockHash", "blockNumber", b"blockNumber", "blockSize", b"blockSize", "bodyExtraBytes", b"bodyExtraBytes", "bonds", b"bonds", "deployCount", b"deployCount", "extraBytes", b"extraBytes", "faultTolerance", b"faultTolerance", "headerExtraBytes", b"headerExtraBytes", "isFinalized", b"isFinalized", "justifications", b"justifications", "parentsHashList", b"parentsHashList", "postStateHash", b"postStateHash", "preStateHash", b"preStateHash", "rejectedDeploys", b"rejectedDeploys", "sender", b"sender", "seqNum", b"seqNum", "shardId", b"shardId", "sig", b"sig", "sigAlgorithm", b"sigAlgorithm", "timestamp", b"timestamp", "version", b"version"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
 Global___LightBlockInfo: _TypeAlias = LightBlockInfo  # noqa: Y015
@@ -821,18 +892,34 @@ class Status(_message.Message):
     NODES_FIELD_NUMBER: _builtins.int
     MINPHLOPRICE_FIELD_NUMBER: _builtins.int
     PEERLIST_FIELD_NUMBER: _builtins.int
+    NATIVETOKENNAME_FIELD_NUMBER: _builtins.int
+    NATIVETOKENSYMBOL_FIELD_NUMBER: _builtins.int
+    NATIVETOKENDECIMALS_FIELD_NUMBER: _builtins.int
+    LASTFINALIZEDBLOCKNUMBER_FIELD_NUMBER: _builtins.int
+    ISVALIDATOR_FIELD_NUMBER: _builtins.int
+    ISREADONLY_FIELD_NUMBER: _builtins.int
+    ISREADY_FIELD_NUMBER: _builtins.int
+    CURRENTEPOCH_FIELD_NUMBER: _builtins.int
+    EPOCHLENGTH_FIELD_NUMBER: _builtins.int
     address: _builtins.str
     networkId: _builtins.str
     shardId: _builtins.str
     peers: _builtins.int
     nodes: _builtins.int
     minPhloPrice: _builtins.int
+    nativeTokenName: _builtins.str
+    nativeTokenSymbol: _builtins.str
+    nativeTokenDecimals: _builtins.int
+    lastFinalizedBlockNumber: _builtins.int
+    isValidator: _builtins.bool
+    isReadOnly: _builtins.bool
+    isReady: _builtins.bool
+    currentEpoch: _builtins.int
+    epochLength: _builtins.int
     @_builtins.property
     def version(self) -> Global___VersionInfo: ...
     @_builtins.property
-    def peerList(self) -> _containers.RepeatedCompositeFieldContainer[Global___PeerInfo]:
-        """New: detailed peer list"""
-
+    def peerList(self) -> _containers.RepeatedCompositeFieldContainer[Global___PeerInfo]: ...
     def __init__(
         self,
         *,
@@ -844,10 +931,19 @@ class Status(_message.Message):
         nodes: _builtins.int = ...,
         minPhloPrice: _builtins.int = ...,
         peerList: _abc.Iterable[Global___PeerInfo] | None = ...,
+        nativeTokenName: _builtins.str = ...,
+        nativeTokenSymbol: _builtins.str = ...,
+        nativeTokenDecimals: _builtins.int = ...,
+        lastFinalizedBlockNumber: _builtins.int = ...,
+        isValidator: _builtins.bool = ...,
+        isReadOnly: _builtins.bool = ...,
+        isReady: _builtins.bool = ...,
+        currentEpoch: _builtins.int = ...,
+        epochLength: _builtins.int = ...,
     ) -> None: ...
     _HasFieldArgType: _TypeAlias = _typing.Literal["version", b"version"]  # noqa: Y015
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["address", b"address", "minPhloPrice", b"minPhloPrice", "networkId", b"networkId", "nodes", b"nodes", "peerList", b"peerList", "peers", b"peers", "shardId", b"shardId", "version", b"version"]  # noqa: Y015
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["address", b"address", "currentEpoch", b"currentEpoch", "epochLength", b"epochLength", "isReadOnly", b"isReadOnly", "isReady", b"isReady", "isValidator", b"isValidator", "lastFinalizedBlockNumber", b"lastFinalizedBlockNumber", "minPhloPrice", b"minPhloPrice", "nativeTokenDecimals", b"nativeTokenDecimals", "nativeTokenName", b"nativeTokenName", "nativeTokenSymbol", b"nativeTokenSymbol", "networkId", b"networkId", "nodes", b"nodes", "peerList", b"peerList", "peers", b"peers", "shardId", b"shardId", "version", b"version"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
 Global___Status: _TypeAlias = Status  # noqa: Y015

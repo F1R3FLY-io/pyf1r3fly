@@ -72,11 +72,6 @@ class DeployServiceStub(object):
                 request_serializer=DeployServiceCommon__pb2.BlocksQuery.SerializeToString,
                 response_deserializer=DeployServiceV1__pb2.BlockInfoResponse.FromString,
                 _registered_method=True)
-        self.listenForDataAtName = channel.unary_unary(
-                '/casper.v1.DeployService/listenForDataAtName',
-                request_serializer=DeployServiceCommon__pb2.DataAtNameQuery.SerializeToString,
-                response_deserializer=DeployServiceV1__pb2.ListeningNameDataResponse.FromString,
-                _registered_method=True)
         self.getDataAtName = channel.unary_unary(
                 '/casper.v1.DeployService/getDataAtName',
                 request_serializer=DeployServiceCommon__pb2.DataAtNameByBlockQuery.SerializeToString,
@@ -106,6 +101,11 @@ class DeployServiceStub(object):
                 '/casper.v1.DeployService/isFinalized',
                 request_serializer=DeployServiceCommon__pb2.IsFinalizedQuery.SerializeToString,
                 response_deserializer=DeployServiceV1__pb2.IsFinalizedResponse.FromString,
+                _registered_method=True)
+        self.deployFinalizationStatus = channel.unary_unary(
+                '/casper.v1.DeployService/deployFinalizationStatus',
+                request_serializer=DeployServiceCommon__pb2.DeployFinalizationStatusQuery.SerializeToString,
+                response_deserializer=DeployServiceV1__pb2.DeployFinalizationStatusResponse.FromString,
                 _registered_method=True)
         self.bondStatus = channel.unary_unary(
                 '/casper.v1.DeployService/bondStatus',
@@ -193,14 +193,6 @@ class DeployServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def listenForDataAtName(self, request, context):
-        """Find data sent to a name.
-        OBSOLETE: Use getDataAtName instead. This method will be removed in the future version of RNode.
-        """
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
     def getDataAtName(self, request, context):
         """Find data sent to a name.
         """
@@ -238,6 +230,15 @@ class DeployServiceServicer(object):
 
     def isFinalized(self, request, context):
         """Check if a given block is finalized.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def deployFinalizationStatus(self, request, context):
+        """Query the canonical-state finalization status of a deploy by its signature.
+        Prefer this over isFinalized for deploy tracking — isFinalized can return
+        true for a block whose deploy effects were dropped by merge rejection.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -326,11 +327,6 @@ def add_DeployServiceServicer_to_server(servicer, server):
                     request_deserializer=DeployServiceCommon__pb2.BlocksQuery.FromString,
                     response_serializer=DeployServiceV1__pb2.BlockInfoResponse.SerializeToString,
             ),
-            'listenForDataAtName': grpc.unary_unary_rpc_method_handler(
-                    servicer.listenForDataAtName,
-                    request_deserializer=DeployServiceCommon__pb2.DataAtNameQuery.FromString,
-                    response_serializer=DeployServiceV1__pb2.ListeningNameDataResponse.SerializeToString,
-            ),
             'getDataAtName': grpc.unary_unary_rpc_method_handler(
                     servicer.getDataAtName,
                     request_deserializer=DeployServiceCommon__pb2.DataAtNameByBlockQuery.FromString,
@@ -360,6 +356,11 @@ def add_DeployServiceServicer_to_server(servicer, server):
                     servicer.isFinalized,
                     request_deserializer=DeployServiceCommon__pb2.IsFinalizedQuery.FromString,
                     response_serializer=DeployServiceV1__pb2.IsFinalizedResponse.SerializeToString,
+            ),
+            'deployFinalizationStatus': grpc.unary_unary_rpc_method_handler(
+                    servicer.deployFinalizationStatus,
+                    request_deserializer=DeployServiceCommon__pb2.DeployFinalizationStatusQuery.FromString,
+                    response_serializer=DeployServiceV1__pb2.DeployFinalizationStatusResponse.SerializeToString,
             ),
             'bondStatus': grpc.unary_unary_rpc_method_handler(
                     servicer.bondStatus,
@@ -575,33 +576,6 @@ class DeployService(object):
             _registered_method=True)
 
     @staticmethod
-    def listenForDataAtName(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/casper.v1.DeployService/listenForDataAtName',
-            DeployServiceCommon__pb2.DataAtNameQuery.SerializeToString,
-            DeployServiceV1__pb2.ListeningNameDataResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
-
-    @staticmethod
     def getDataAtName(request,
             target,
             options=(),
@@ -753,6 +727,33 @@ class DeployService(object):
             '/casper.v1.DeployService/isFinalized',
             DeployServiceCommon__pb2.IsFinalizedQuery.SerializeToString,
             DeployServiceV1__pb2.IsFinalizedResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def deployFinalizationStatus(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/casper.v1.DeployService/deployFinalizationStatus',
+            DeployServiceCommon__pb2.DeployFinalizationStatusQuery.SerializeToString,
+            DeployServiceV1__pb2.DeployFinalizationStatusResponse.FromString,
             options,
             channel_credentials,
             insecure,
