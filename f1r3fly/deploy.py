@@ -15,12 +15,14 @@ from __future__ import annotations
 
 from typing import Optional
 
+from .pb.DeployServiceCommon_pb2 import BlockInfo, DeployInfo
+
 
 class DeployError(Exception):
     """Raised when a deploy is errored or missing from a block."""
 
 
-def find_deploy_in_block(block_info, deploy_id: str):
+def find_deploy_in_block(block_info: BlockInfo, deploy_id: str) -> DeployInfo:
     """Find a deploy by signature in a block's deploy list.
 
     Args:
@@ -43,7 +45,7 @@ def find_deploy_in_block(block_info, deploy_id: str):
     )
 
 
-def check_deploy_not_errored(block_info, deploy_id: str) -> None:
+def check_deploy_not_errored(block_info: BlockInfo, deploy_id: str) -> None:
     """Verify a deploy is in the block and was not errored.
 
     Args:
@@ -60,7 +62,7 @@ def check_deploy_not_errored(block_info, deploy_id: str) -> None:
         )
 
 
-def check_deploy_succeeded(block_info, deploy_id: str) -> None:
+def check_deploy_succeeded(block_info: BlockInfo, deploy_id: str) -> None:
     """Verify a deploy is in the block, not errored, and has cost > 0.
 
     Args:
@@ -83,7 +85,7 @@ def check_deploy_succeeded(block_info, deploy_id: str) -> None:
 
 
 def check_deploy_errored(
-    block_info,
+    block_info: BlockInfo,
     deploy_id: str,
     error_contains: Optional[str] = None,
 ) -> None:

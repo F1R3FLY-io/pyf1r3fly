@@ -29,12 +29,13 @@ Example::
 """
 from __future__ import annotations
 
+from typing import Optional
 
-
+from .client import F1r3flyClient
 
 
 def registry_lookup(
-    client,
+    client: F1r3flyClient,
     uri: str,
     block_hash: str = "",
 ) -> list:
@@ -68,10 +69,10 @@ new ret, lookup(`rho:registry:lookup`) in {{
 
 
 def registry_query(
-    client,
+    client: F1r3flyClient,
     uri: str,
     method: str,
-    param="Nil",
+    param: Optional[str] = "Nil",
     block_hash: str = "",
 ) -> list:
     """Query a registry-registered contract via exploratory deploy.

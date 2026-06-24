@@ -1,4 +1,5 @@
 import json
+from typing import Any, Dict, List
 
 import click
 
@@ -111,7 +112,7 @@ def status(ctx: click.core.Context, host: str, ports: str, names: str) -> None:
     """Check LFB and sync status of all nodes."""
     port_list = [int(p) for p in ports.split(',')]
     name_list = names.split(',')
-    results = []
+    results: List[Dict[str, Any]] = []
     for name, port in zip(name_list, port_list):
         try:
             with F1r3flyClient(host, port) as client:

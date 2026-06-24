@@ -17,6 +17,7 @@ from __future__ import annotations
 import dataclasses
 
 from .client import F1r3flyClient
+from .crypto import PrivateKey
 from .par import par_as_int, par_as_string, par_as_tuple
 
 
@@ -85,7 +86,7 @@ new deployId(`rho:system:deployId`),
 
 def deploy_query_token_metadata(
     client: F1r3flyClient,
-    private_key,
+    private_key: PrivateKey,
     inclusion_timeout: int,
     finalization_timeout: int,
     phlo_limit: int = 100_000,

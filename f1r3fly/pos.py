@@ -20,7 +20,9 @@ from typing import Dict, List, Mapping, Tuple
 
 from .client import F1r3flyClient
 from .crypto import PrivateKey
-from .par import par_as_bool, par_as_int, par_as_map, par_as_string, par_as_tuple
+from .par import (
+    par_as_bool, par_as_int, par_as_map, par_as_string, par_as_tuple,
+)
 
 BOND_RHO_TPL = """
 new retCh, PoSCh, rl(`rho:registry:lookup`), deployerId(`rho:system:deployerId`), deployId(`rho:system:deployId`) in {
@@ -294,8 +296,8 @@ class PosAPI:
         raw = self._read_map("getWithdrawers", block_hash)
         result: Dict[str, Tuple[int, int]] = {}
         for pk_hex, pair in raw.items():
-            # par_as_map decodes a tuple value to a list of raw Par elements.
-            result[pk_hex] = (par_as_int(pair[0]), par_as_int(pair[1]))
+            # par_as_map fully decodes the tuple value to a list of Python ints.
+            result[pk_hex] = (int(pair[0]), int(pair[1]))
         return result
 
     def get_coop_vault(self, block_hash: str = "") -> List:

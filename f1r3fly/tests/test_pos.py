@@ -9,7 +9,6 @@ from ..par import par_as_bytes, par_as_map, par_value
 from ..pb import RhoTypes_pb2 as rt
 from ..pos import PosAPI
 
-
 # ── Par builders ─────────────────────────────────────────────────────────
 
 def _int_par(n: int) -> rt.Par:

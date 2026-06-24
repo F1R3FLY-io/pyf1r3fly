@@ -35,7 +35,7 @@ import json
 import logging
 import threading
 import time
-from typing import Dict, List, Set
+from typing import Any, Dict, List, Set
 
 import websocket as ws_lib
 
@@ -107,7 +107,7 @@ def connect_ws(
     """
     connected = threading.Event()
 
-    def on_message(ws, message):
+    def on_message(ws: Any, message: str) -> None:
         try:
             event = json.loads(message)
             events.append(event)
@@ -115,13 +115,13 @@ def connect_ws(
         except json.JSONDecodeError as e:
             errors.append(f"Bad JSON: {e}")
 
-    def on_error(ws, error):
+    def on_error(ws: Any, error: Exception) -> None:
         msg = str(error)
         if any(expected in msg for expected in _EXPECTED_DISCONNECT_ERRORS):
             return
         errors.append(msg)
 
-    def on_open(ws):
+    def on_open(ws: Any) -> None:
         logger.info("WebSocket connected to %s", ws_url)
         connected.set()
 

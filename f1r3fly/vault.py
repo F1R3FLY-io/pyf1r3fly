@@ -124,8 +124,8 @@ class VaultAPI:
         Creates a block and consumes phlo. Use this on validator nodes
         where exploratory deploy is not available.
         """
-        from .polling import deploy_and_read
         from .par import par_as_int
+        from .polling import deploy_and_read
 
         contract = render_contract_template(
             DEPLOY_GET_BALANCE_RHO_TPL,

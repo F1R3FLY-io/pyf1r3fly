@@ -3,7 +3,7 @@ import os
 import re
 from types import TracebackType
 from typing import (
-    Iterable, Iterator, List, Optional, Tuple, Type, TypeVar, Union,
+    Any, Iterable, Iterator, List, Optional, Tuple, Type, TypeVar, Union,
 )
 
 import grpc
@@ -13,12 +13,12 @@ from .par import par_value
 from .param import Params
 from .pb.CasperMessage_pb2 import DeployDataProto
 from .pb.DeployServiceCommon_pb2 import (
-    BlockInfo, BlockQuery, BlocksQuery, BlocksQueryByHeight,
-    BondStatusQuery, ContinuationAtNameQuery, DataAtNameByBlockQuery,
-    DataAtNameQuery, DeployFinalizationStatusInfo,
-    DeployFinalizationStatusQuery, ExploratoryDeployQuery, FindDeployQuery,
-    IsFinalizedQuery, LastFinalizedBlockQuery, LightBlockInfo,
-    PrivateNamePreviewQuery, ReportQuery, SingleReport, VisualizeDagQuery,
+    BlockInfo, BlockQuery, BlocksQuery, BlocksQueryByHeight, BondStatusQuery,
+    ContinuationAtNameQuery, DataAtNameByBlockQuery, DataAtNameQuery,
+    DeployFinalizationStatusInfo, DeployFinalizationStatusQuery,
+    ExploratoryDeployQuery, FindDeployQuery, IsFinalizedQuery,
+    LastFinalizedBlockQuery, LightBlockInfo, PrivateNamePreviewQuery,
+    ReportQuery, SingleReport, Status, VisualizeDagQuery,
 )
 from .pb.DeployServiceV1_pb2 import (
     BlockInfoResponse, BlockResponse, ContinuationAtNameResponse,
@@ -131,7 +131,7 @@ class F1r3flyClient:
         self._check_response(response)
         return list(response.result.postBlockData)
 
-    def read_channel(self, channel: str, block_hash: str = ""):
+    def read_channel(self, channel: str, block_hash: str = "") -> Any:
         """Peek the current value on a named channel via a non-consuming
         exploratory read (``<<-``), returning the auto-typed Python value
         (``dict`` for a Map, ``int`` for an Int, ``str`` for a String, ...),
@@ -221,7 +221,7 @@ class F1r3flyClient:
         self._check_response(response)
         return response.status
 
-    def status(self):
+    def status(self) -> Status:
         """Get node status. Returns Status proto object."""
         from google.protobuf.empty_pb2 import Empty
         response = self._deploy_stub.status(Empty(), timeout=self.timeout)

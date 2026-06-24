@@ -21,7 +21,14 @@ from __future__ import annotations
 
 import logging
 import time
-from typing import Callable, Optional, TypeVar
+from typing import TYPE_CHECKING, Callable, List, Optional, TypeVar
+
+if TYPE_CHECKING:
+    from .client import F1r3flyClient
+    from .crypto import PrivateKey
+    from .pb.DeployServiceCommon_pb2 import (
+        BlockInfo, DeployFinalizationStatusInfo, LightBlockInfo,
+    )
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +36,7 @@ T = TypeVar("T")
 
 
 def poll_until(
-    predicate: Callable[[], T],
+    predicate: Callable[[], Optional[T]],
     timeout: int,
     interval: float = 3.0,
     description: str = "",
@@ -64,7 +71,7 @@ def poll_until(
     )
 
 
-def wait_for_deploy_included(client, deploy_id: str, timeout: int):
+def wait_for_deploy_included(client: F1r3flyClient, deploy_id: str, timeout: int) -> LightBlockInfo:
     """Poll ``find_deploy`` until the deploy is included in a block.
 
     Args:
@@ -75,7 +82,7 @@ def wait_for_deploy_included(client, deploy_id: str, timeout: int):
     Returns:
         LightBlockInfo for the block containing the deploy.
     """
-    def _check():
+    def _check() -> Optional[LightBlockInfo]:
         try:
             return client.find_deploy(deploy_id)
         except Exception:
@@ -89,7 +96,7 @@ def wait_for_deploy_included(client, deploy_id: str, timeout: int):
     )
 
 
-def wait_for_finalized(client, block_number: int, timeout: int) -> None:
+def wait_for_finalized(client: F1r3flyClient, block_number: int, timeout: int) -> None:
     """Poll until the last finalized block reaches or exceeds ``block_number``.
 
     Args:
@@ -97,7 +104,7 @@ def wait_for_finalized(client, block_number: int, timeout: int) -> None:
         block_number: Target block number to wait for.
         timeout: Maximum seconds to wait.
     """
-    def _check():
+    def _check() -> Optional[BlockInfo]:
         lfb = client.last_finalized_block()
         if lfb.blockInfo.blockNumber >= block_number:
             return lfb
@@ -112,11 +119,11 @@ def wait_for_finalized(client, block_number: int, timeout: int) -> None:
 
 
 def wait_for_deploy_finalized(
-    client,
+    client: F1r3flyClient,
     deploy_id: str,
     timeout: int,
     interval: float = 3.0,
-):
+) -> DeployFinalizationStatusInfo:
     """Poll deploy_finalization_status until the deploy reaches Finalized.
 
     Unlike ``wait_for_finalized`` (which polls block-hash finalization),
@@ -183,9 +190,9 @@ def wait_for_deploy_finalized(
 
 
 def deploy_and_read(
-    client,
+    client: F1r3flyClient,
     term: str,
-    private_key,
+    private_key: PrivateKey,
     inclusion_timeout: int,
     finalization_timeout: int,
     phlo_limit: int = 100_000,
@@ -269,15 +276,15 @@ def deploy_and_read(
 
 
 def deploy_with_fallback(
-    clients,
+    clients: List[F1r3flyClient],
     term: str,
-    private_key,
+    private_key: PrivateKey,
     timeout_per_client: int,
     phlo_limit: int = 100_000,
     phlo_price: int = 1,
     valid_after_block_no: Optional[int] = None,
     shard_id: str = "root",
-):
+) -> tuple:
     """Submit a deploy, falling back to other clients if inclusion times out.
 
     Builds the deploy proto once, submits to the first client, polls for

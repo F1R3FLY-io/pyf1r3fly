@@ -12,8 +12,10 @@ from __future__ import annotations
 
 from typing import Any, Dict, List
 
+from .pb.RhoTypes_pb2 import Par
 
-def par_as_string(par) -> str:
+
+def par_as_string(par: Par) -> str:
     """Extract a Rholang string from a Par protobuf message."""
     for expr in par.exprs:
         if expr.HasField("g_string"):
@@ -21,7 +23,7 @@ def par_as_string(par) -> str:
     raise ValueError(f"Expected a string-bearing Par, got {par}")
 
 
-def par_as_int(par) -> int:
+def par_as_int(par: Par) -> int:
     """Extract a Rholang integer from a Par protobuf message."""
     for expr in par.exprs:
         if expr.HasField("g_int"):
@@ -29,7 +31,7 @@ def par_as_int(par) -> int:
     raise ValueError(f"Expected an int-bearing Par, got {par}")
 
 
-def par_as_bool(par) -> bool:
+def par_as_bool(par: Par) -> bool:
     """Extract a Rholang boolean from a Par protobuf message."""
     for expr in par.exprs:
         if expr.HasField("g_bool"):
@@ -37,7 +39,7 @@ def par_as_bool(par) -> bool:
     raise ValueError(f"Expected a bool-bearing Par, got {par}")
 
 
-def par_as_tuple(par) -> List:
+def par_as_tuple(par: Par) -> List:
     """Extract the elements of a Rholang tuple from a Par.
 
     Returns a list of Par elements from the tuple body.
@@ -48,7 +50,7 @@ def par_as_tuple(par) -> List:
     raise ValueError(f"Expected a tuple-bearing Par, got {par}")
 
 
-def par_as_list(par) -> List:
+def par_as_list(par: Par) -> List:
     """Extract elements from a Rholang list Par.
 
     Returns a list of Par elements.
@@ -59,7 +61,7 @@ def par_as_list(par) -> List:
     raise ValueError(f"Expected a list-bearing Par, got {par}")
 
 
-def par_as_map(par) -> Dict[Any, Any]:
+def par_as_map(par: Par) -> Dict[Any, Any]:
     """Extract a Rholang map from a Par protobuf message.
 
     Returns a Python dict with keys and values extracted via ``par_value``.
@@ -73,7 +75,7 @@ def par_as_map(par) -> Dict[Any, Any]:
     raise ValueError(f"Expected a map-bearing Par, got {par}")
 
 
-def par_as_bytes(par) -> bytes:
+def par_as_bytes(par: Par) -> bytes:
     """Extract a Rholang byte array from a Par protobuf message."""
     for expr in par.exprs:
         if expr.HasField("g_byte_array"):
@@ -81,25 +83,20 @@ def par_as_bytes(par) -> bytes:
     raise ValueError(f"Expected a byte-array-bearing Par, got {par}")
 
 
-def par_as_uri(par) -> str:
-    """Extract a URI string from a Par protobuf message.
-
-    Handles both ``Expr.g_uri`` (inline URI in expression) and
-    ``Par.uris`` (top-level URI repeated field).
-    """
+def par_as_uri(par: Par) -> str:
+    """Extract a URI string from a Par protobuf message (``Expr.g_uri``)."""
     for expr in par.exprs:
         if expr.HasField("g_uri"):
             return expr.g_uri
-    for uri in par.uris:
-        return uri.value
     raise ValueError(f"Expected a URI-bearing Par, got {par}")
 
 
-def par_value(par) -> Any:
+def par_value(par: Par) -> Any:
     """Extract the first available value from a Par, auto-detecting the type.
 
-    Tries string, int, bool, tuple, list, URI in order. Returns the
-    first match. Raises ValueError if no known type is found.
+    Tries string, int, bool, tuple, list, set, map, URI, byte array in
+    order. Returns the first match. Raises ValueError if no known type is
+    found.
     """
     for expr in par.exprs:
         if expr.HasField("g_string"):
@@ -124,6 +121,4 @@ def par_value(par) -> Any:
             return expr.g_uri
         if expr.HasField("g_byte_array"):
             return expr.g_byte_array.hex()
-    for uri in par.uris:
-        return uri.value
     raise ValueError(f"Cannot extract value from Par: {par}")
