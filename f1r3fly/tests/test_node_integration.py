@@ -48,8 +48,7 @@ def _deploy_and_finalize(code: str) -> tuple:
         lfb = client.last_finalized_block()
         vabn = max(0, lfb.blockInfo.blockNumber - 1)
         deploy_data = create_deploy_data(
-            PRIVATE_KEY, code, 1, 500_000_000, vabn,
-            int(time.time() * 1000), "root",
+            PRIVATE_KEY, code, vabn, int(time.time() * 1000), "root",
         )
         deploy_id = client.send_deploy(deploy_data)
 

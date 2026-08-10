@@ -8,16 +8,12 @@ from .crypto import PrivateKey
 class APIClient(ABC):
     def deploy(self, key: PrivateKey,
                term: str,
-               phlo_price: int,
-               phlo_limit: int,
                valid_after_block_no: int,
                timestamp_millis: int) -> str:
         raise NotImplementedError()
 
     def deploy_with_vabn_filled(self, key: PrivateKey,
                                 term: str,
-                                phlo_price: int,
-                                phlo_limit: int,
                                 timestamp_millis: int) -> str:
         raise NotImplementedError()
 

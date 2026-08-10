@@ -1,10 +1,7 @@
 import logging
-import os
 import re
 from types import TracebackType
-from typing import (
-    Any, Iterable, Iterator, List, Optional, Tuple, Type, TypeVar, Union,
-)
+from typing import Any, Iterable, List, Optional, Tuple, Type, TypeVar, Union
 
 import grpc
 
@@ -23,8 +20,6 @@ from .pb.DeployServiceCommon_pb2 import (
 from .pb.DeployServiceV1_pb2 import (
     BlockInfoResponse, BlockResponse, ContinuationAtNameResponse,
     DeployResponse, EventInfoResponse, ExploratoryDeployResponse,
-    FileDownloadChunk, FileDownloadRequest, FileUploadChunk,
-    FileUploadMetadata, FileUploadResponse, FileUploadResult,
     PrivateNamePreviewResponse, RhoDataPayload, VisualizeBlocksResponse,
 )
 from .pb.DeployServiceV1_pb2_grpc import DeployServiceStub
@@ -33,9 +28,7 @@ from .pb.ProposeServiceV1_pb2 import ProposeResponse
 from .pb.ProposeServiceV1_pb2_grpc import ProposeServiceStub
 from .pb.RhoTypes_pb2 import Expr, GDeployId, GUnforgeable, Par
 from .report import DeployWithTransaction, Report, Transaction
-from .util import (
-    blake2b_256_hex_file, create_deploy_data, create_file_upload_metadata,
-)
+from .util import create_deploy_data
 
 GRPC_Response_T = Union[ProposeResponse,
                         DeployResponse,
@@ -46,8 +39,6 @@ GRPC_Response_T = Union[ProposeResponse,
 
 GRPC_StreamResponse_T = Union[BlockInfoResponse, VisualizeBlocksResponse]
 T = TypeVar("T")
-
-DEFAULT_CHUNK_SIZE = 1024 * 1024  # 1 MB
 
 propose_result_match = re.compile(r'Success! Block (?P<block_hash>[0-9a-f]+) created and added.')
 
@@ -112,10 +103,9 @@ class F1r3flyClient:
             self,
             key: PrivateKey,
             term: str,
-            phlo_price: int,
-            phlo_limit: int,
             timestamp_millis: int = -1,
             shard_id: str = '',
+            expiration_timestamp: int = 0,
     ) -> str:
         latest_blocks = self.show_blocks(1)
         # when the genesis block is not ready, it would be empty in show_blocks
@@ -123,7 +113,14 @@ class F1r3flyClient:
         assert len(latest_blocks) >= 1, "No latest block found"
         latest_block = latest_blocks[0]
         latest_block_num = latest_block.blockNumber
-        return self.deploy(key, term, phlo_price, phlo_limit, latest_block_num, timestamp_millis, shard_id)
+        return self.deploy(
+            key,
+            term,
+            latest_block_num,
+            timestamp_millis,
+            shard_id,
+            expiration_timestamp,
+        )
 
     def exploratory_deploy(self, term: str, blockHash: str, usePreStateHash: bool = False) -> List[Par]:
         exploratory_query = ExploratoryDeployQuery(term=term, blockHash=blockHash, usePreStateHash=usePreStateHash)
@@ -152,14 +149,18 @@ class F1r3flyClient:
             self,
             key: PrivateKey,
             term: str,
-            phlo_price: int,
-            phlo_limit: int,
             valid_after_block_no: int = -1,
             timestamp_millis: int = -1,
             shard_id: str = '',
+            expiration_timestamp: int = 0,
     ) -> str:
         deploy_data = create_deploy_data(
-            key, term, phlo_price, phlo_limit, valid_after_block_no, timestamp_millis, shard_id
+            key,
+            term,
+            valid_after_block_no,
+            timestamp_millis,
+            shard_id,
+            expiration_timestamp,
         )
         return self.send_deploy(deploy_data)
 
@@ -304,189 +305,6 @@ class F1r3flyClient:
         response = self._deploy_stub.visualizeDag(query, timeout=self.timeout)
         result = self._handle_stream(response)
         return ''.join(list(map(lambda x: x.content, result)))  # type: ignore
-
-    def upload_file(
-        self,
-        metadata: FileUploadMetadata,
-        data: bytes,
-        chunk_size: int = DEFAULT_CHUNK_SIZE,
-        timeout: Optional[float] = None,
-    ) -> FileUploadResult:
-        """Upload a file via the streaming uploadFile RPC.
-
-        Sends the metadata as the first chunk, followed by binary data
-        chunks. Returns the FileUploadResult on success.
-
-        Args:
-            metadata: Signed FileUploadMetadata (use create_file_upload_metadata).
-            data: Raw file bytes to upload.
-            chunk_size: Size of each data chunk (default 1 MB).
-            timeout: Optional gRPC deadline in seconds.
-
-        Returns:
-            FileUploadResult with fileHash, deployId, and cost info.
-
-        Raises:
-            F1r3flyClientException: On server-side errors.
-        """
-        def _chunk_iterator() -> Iterator[FileUploadChunk]:
-            yield FileUploadChunk(metadata=metadata)
-            offset = 0
-            while offset < len(data):
-                end = min(offset + chunk_size, len(data))
-                yield FileUploadChunk(data=data[offset:end])
-                offset = end
-
-        response = self._deploy_stub.uploadFile(
-            _chunk_iterator(), timeout=timeout,
-        )
-        self._check_response(response)
-        return response.result
-
-    def upload_file_from_path(
-        self,
-        key: 'PrivateKey',
-        file_path: str,
-        phlo_price: int,
-        phlo_limit: int,
-        valid_after_block_no: int = -1,
-        shard_id: str = '',
-        chunk_size: int = DEFAULT_CHUNK_SIZE,
-        timeout: Optional[float] = None,
-    ) -> FileUploadResult:
-        """Upload a file by path with automatic metadata construction.
-
-        Uses a two-pass approach to avoid loading the entire file into
-        memory:
-
-        1. First pass — stream through the file to compute Blake2b-256.
-        2. Second pass — re-open the file and yield chunks lazily to
-           the gRPC stream.
-
-        Args:
-            key: Private key for signing.
-            file_path: Path to the file to upload.
-            phlo_price: Phlo price per unit.
-            phlo_limit: Maximum phlo to spend.
-            valid_after_block_no: Block number validity constraint.
-            shard_id: Target shard identifier.
-            chunk_size: Size of each data chunk (default 1 MB).
-            timeout: Optional gRPC deadline in seconds.
-
-        Returns:
-            FileUploadResult with fileHash, deployId, and cost info.
-        """
-        # --- pass 1: hash without loading entire file ---------------
-        file_hash = blake2b_256_hex_file(file_path, chunk_size)
-        file_name = os.path.basename(file_path)
-        file_size = os.path.getsize(file_path)
-
-        metadata = create_file_upload_metadata(
-            key=key,
-            file_hash=file_hash,
-            file_size=file_size,
-            file_name=file_name,
-            phlo_price=phlo_price,
-            phlo_limit=phlo_limit,
-            valid_after_block_no=valid_after_block_no,
-            shard_id=shard_id,
-        )
-
-        # --- pass 2: stream chunks lazily from disk -----------------
-        def _chunk_iterator() -> Iterator[FileUploadChunk]:
-            yield FileUploadChunk(metadata=metadata)
-            with open(file_path, 'rb') as fh:
-                while True:
-                    buf = fh.read(chunk_size)
-                    if not buf:
-                        break
-                    yield FileUploadChunk(data=buf)
-
-        response = self._deploy_stub.uploadFile(
-            _chunk_iterator(), timeout=timeout,
-        )
-        self._check_response(response)
-        return response.result
-
-    def download_file(
-        self,
-        file_hash: str,
-        offset: int = 0,
-        timeout: Optional[float] = None,
-    ) -> bytes:
-        """Download a file via the streaming downloadFile RPC.
-
-        Collects all chunks in memory and returns the complete content.
-        For large files prefer :meth:`download_file_to_path` which
-        writes directly to disk.
-
-        Only works on observer (read-only) nodes.
-
-        Args:
-            file_hash: Blake2b-256 hash of the file.
-            offset: Resume offset in bytes (0 = start from beginning).
-            timeout: Optional gRPC deadline in seconds.
-
-        Returns:
-            Raw file bytes.
-
-        Raises:
-            F1r3flyClientException: On NOT_FOUND, PERMISSION_DENIED, etc.
-        """
-        request = FileDownloadRequest(
-            fileHash=file_hash, offset=offset,
-        )
-        response_stream = self._deploy_stub.downloadFile(
-            request, timeout=timeout,
-        )
-        chunks: List[bytes] = []
-        for chunk in response_stream:
-            which = chunk.WhichOneof('chunk')
-            if which == 'data':
-                chunks.append(chunk.data)
-            # metadata chunk is informational, skip
-        return b''.join(chunks)
-
-    def download_file_to_path(
-        self,
-        file_hash: str,
-        dest_path: str,
-        offset: int = 0,
-        timeout: Optional[float] = None,
-    ) -> int:
-        """Download a file and write it directly to *dest_path*.
-
-        Unlike :meth:`download_file`, this method never holds the full
-        file in memory — each chunk is flushed to disk immediately.
-
-        Only works on observer (read-only) nodes.
-
-        Args:
-            file_hash: Blake2b-256 hash of the file.
-            dest_path: Local filesystem path to write the file to.
-            offset: Resume offset in bytes (0 = start from beginning).
-            timeout: Optional gRPC deadline in seconds.
-
-        Returns:
-            Total number of bytes written.
-
-        Raises:
-            F1r3flyClientException: On NOT_FOUND, PERMISSION_DENIED, etc.
-        """
-        request = FileDownloadRequest(
-            fileHash=file_hash, offset=offset,
-        )
-        response_stream = self._deploy_stub.downloadFile(
-            request, timeout=timeout,
-        )
-        bytes_written = 0
-        with open(dest_path, 'wb') as fh:
-            for chunk in response_stream:
-                which = chunk.WhichOneof('chunk')
-                if which == 'data':
-                    fh.write(chunk.data)
-                    bytes_written += len(chunk.data)
-        return bytes_written
 
     def get_transaction(self, block_hash: str) -> List[DeployWithTransaction]:
         if self.param is None:

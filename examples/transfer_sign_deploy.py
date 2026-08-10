@@ -5,10 +5,7 @@ import grpc
 from f1r3fly.client import F1r3flyClient
 from f1r3fly.crypto import PrivateKey
 from f1r3fly.util import create_deploy_data
-from f1r3fly.vault import (
-    TRANSFER_PHLO_LIMIT, TRANSFER_PHLO_PRICE, TRANSFER_RHO_TPL,
-    render_contract_template,
-)
+from f1r3fly.vault import TRANSFER_RHO_TPL, render_contract_template
 
 a = PrivateKey.generate()
 b = PrivateKey.generate()
@@ -33,7 +30,9 @@ contract = render_contract_template(
 )
 timestamp_mill = int(time.time() * 1000)
 # this would create the protobuf needs to be signed and sign the protobuf and return protobuf back
-deploy = create_deploy_data(a, contract, TRANSFER_PHLO_PRICE, TRANSFER_PHLO_LIMIT, latest_block_num, timestamp_mill)
+deploy = create_deploy_data(
+    a, contract, latest_block_num, timestamp_mill, "root",
+)
 # deploy.sig is the deployId and you can use find_deploy to fetch the deployed block
 
 

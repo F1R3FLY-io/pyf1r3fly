@@ -9,17 +9,17 @@ from collections import abc as _abc
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
 from google.protobuf.internal import containers as _containers
-import DeployServiceCommon_pb2 as _DeployServiceCommon_pb2
-import RhoTypes_pb2 as _RhoTypes_pb2
-import ServiceError_pb2 as _ServiceError_pb2
+from . import DeployServiceCommon_pb2 as _DeployServiceCommon_pb2
+from . import RhoTypes_pb2 as _RhoTypes_pb2
+from . import ServiceError_pb2 as _ServiceError_pb2
 import builtins as _builtins
 import sys
 import typing as _typing
 
-if sys.version_info >= (3, 10):
-    from typing import TypeAlias as _TypeAlias
+if sys.version_info >= (3, 11):
+    from typing import TypeAlias as _TypeAlias, Never as _Never
 else:
-    from typing_extensions import TypeAlias as _TypeAlias
+    from typing_extensions import TypeAlias as _TypeAlias, Never as _Never
 
 DESCRIPTOR: _descriptor.FileDescriptor
 
@@ -55,6 +55,8 @@ class ExploratoryDeployResponse(_message.Message):
 
     ERROR_FIELD_NUMBER: _builtins.int
     RESULT_FIELD_NUMBER: _builtins.int
+    COST_FIELD_NUMBER: _builtins.int
+    cost: _builtins.int
     @_builtins.property
     def error(self) -> _ServiceError_pb2.ServiceError: ...
     @_builtins.property
@@ -64,10 +66,11 @@ class ExploratoryDeployResponse(_message.Message):
         *,
         error: _ServiceError_pb2.ServiceError | None = ...,
         result: _DeployServiceCommon_pb2.DataWithBlockInfo | None = ...,
+        cost: _builtins.int = ...,
     ) -> None: ...
     _HasFieldArgType: _TypeAlias = _typing.Literal["error", b"error", "message", b"message", "result", b"result"]  # noqa: Y015
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["error", b"error", "message", b"message", "result", b"result"]  # noqa: Y015
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["cost", b"cost", "error", b"error", "message", b"message", "result", b"result"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
     _WhichOneofReturnType_message: _TypeAlias = _typing.Literal["error", "result"]  # noqa: Y015
     _WhichOneofArgType_message: _TypeAlias = _typing.Literal["message", b"message"]  # noqa: Y015
@@ -260,6 +263,7 @@ class RhoDataPayload(_message.Message):
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
     _ClearFieldArgType: _TypeAlias = _typing.Literal["block", b"block", "par", b"par"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___RhoDataPayload: _TypeAlias = RhoDataPayload  # noqa: Y015
 
@@ -306,8 +310,11 @@ class ContinuationAtNamePayload(_message.Message):
         blockResults: _abc.Iterable[_DeployServiceCommon_pb2.ContinuationsWithBlockInfo] | None = ...,
         length: _builtins.int = ...,
     ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _Never  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
     _ClearFieldArgType: _TypeAlias = _typing.Literal["blockResults", b"blockResults", "length", b"length"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___ContinuationAtNamePayload: _TypeAlias = ContinuationAtNamePayload  # noqa: Y015
 
@@ -319,6 +326,10 @@ class FindDeployResponse(_message.Message):
 
     ERROR_FIELD_NUMBER: _builtins.int
     BLOCKINFO_FIELD_NUMBER: _builtins.int
+    FINALIZATIONSTATE_FIELD_NUMBER: _builtins.int
+    REJECTIONCOUNT_FIELD_NUMBER: _builtins.int
+    finalizationState: _DeployServiceCommon_pb2.DeployFinalizationStateProto.ValueType
+    rejectionCount: _builtins.int
     @_builtins.property
     def error(self) -> _ServiceError_pb2.ServiceError: ...
     @_builtins.property
@@ -328,10 +339,12 @@ class FindDeployResponse(_message.Message):
         *,
         error: _ServiceError_pb2.ServiceError | None = ...,
         blockInfo: _DeployServiceCommon_pb2.LightBlockInfo | None = ...,
+        finalizationState: _DeployServiceCommon_pb2.DeployFinalizationStateProto.ValueType = ...,
+        rejectionCount: _builtins.int = ...,
     ) -> None: ...
     _HasFieldArgType: _TypeAlias = _typing.Literal["blockInfo", b"blockInfo", "error", b"error", "message", b"message"]  # noqa: Y015
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["blockInfo", b"blockInfo", "error", b"error", "message", b"message"]  # noqa: Y015
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["blockInfo", b"blockInfo", "error", b"error", "finalizationState", b"finalizationState", "message", b"message", "rejectionCount", b"rejectionCount"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
     _WhichOneofReturnType_message: _TypeAlias = _typing.Literal["error", "blockInfo"]  # noqa: Y015
     _WhichOneofArgType_message: _TypeAlias = _typing.Literal["message", b"message"]  # noqa: Y015
@@ -381,8 +394,11 @@ class PrivateNamePreviewPayload(_message.Message):
         *,
         ids: _abc.Iterable[_builtins.bytes] | None = ...,
     ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _Never  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
     _ClearFieldArgType: _TypeAlias = _typing.Literal["ids", b"ids"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___PrivateNamePreviewPayload: _TypeAlias = PrivateNamePreviewPayload  # noqa: Y015
 
@@ -519,229 +535,3 @@ class StatusResponse(_message.Message):
     def WhichOneof(self, oneof_group: _WhichOneofArgType_message) -> _WhichOneofReturnType_message | None: ...
 
 Global___StatusResponse: _TypeAlias = StatusResponse  # noqa: Y015
-
-@_typing.final
-class FileUploadMetadata(_message.Message):
-    """Upload large files via streaming"""
-
-    DESCRIPTOR: _descriptor.Descriptor
-
-    DEPLOYER_FIELD_NUMBER: _builtins.int
-    TIMESTAMP_FIELD_NUMBER: _builtins.int
-    SIG_FIELD_NUMBER: _builtins.int
-    SIGALGORITHM_FIELD_NUMBER: _builtins.int
-    PHLOPRICE_FIELD_NUMBER: _builtins.int
-    PHLOLIMIT_FIELD_NUMBER: _builtins.int
-    VALIDAFTERBLOCKNUMBER_FIELD_NUMBER: _builtins.int
-    SHARDID_FIELD_NUMBER: _builtins.int
-    FILENAME_FIELD_NUMBER: _builtins.int
-    FILESIZE_FIELD_NUMBER: _builtins.int
-    FILEHASH_FIELD_NUMBER: _builtins.int
-    TERM_FIELD_NUMBER: _builtins.int
-    deployer: _builtins.bytes
-    """public key (same as DeployDataProto)"""
-    timestamp: _builtins.int
-    """millisecond timestamp"""
-    sig: _builtins.bytes
-    """signature of metadata"""
-    sigAlgorithm: _builtins.str
-    """signature algorithm"""
-    phloPrice: _builtins.int
-    """phlo price for storage"""
-    phloLimit: _builtins.int
-    """phlo limit"""
-    validAfterBlockNumber: _builtins.int
-    """validity constraint"""
-    shardId: _builtins.str
-    """shard identifier"""
-    fileName: _builtins.str
-    """original filename (informational)"""
-    fileSize: _builtins.int
-    """total file size in bytes"""
-    fileHash: _builtins.str
-    """Blake2b-256 pre-computed by client (for deduplication)"""
-    term: _builtins.str
-    """Rholang term signed by client (for on-chain registration)"""
-    def __init__(
-        self,
-        *,
-        deployer: _builtins.bytes = ...,
-        timestamp: _builtins.int = ...,
-        sig: _builtins.bytes = ...,
-        sigAlgorithm: _builtins.str = ...,
-        phloPrice: _builtins.int = ...,
-        phloLimit: _builtins.int = ...,
-        validAfterBlockNumber: _builtins.int = ...,
-        shardId: _builtins.str = ...,
-        fileName: _builtins.str = ...,
-        fileSize: _builtins.int = ...,
-        fileHash: _builtins.str = ...,
-        term: _builtins.str = ...,
-    ) -> None: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["deployer", b"deployer", "fileHash", b"fileHash", "fileName", b"fileName", "fileSize", b"fileSize", "phloLimit", b"phloLimit", "phloPrice", b"phloPrice", "shardId", b"shardId", "sig", b"sig", "sigAlgorithm", b"sigAlgorithm", "term", b"term", "timestamp", b"timestamp", "validAfterBlockNumber", b"validAfterBlockNumber"]  # noqa: Y015
-    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
-
-Global___FileUploadMetadata: _TypeAlias = FileUploadMetadata  # noqa: Y015
-
-@_typing.final
-class FileUploadChunk(_message.Message):
-    """Streaming message containing either metadata or chunk data"""
-
-    DESCRIPTOR: _descriptor.Descriptor
-
-    METADATA_FIELD_NUMBER: _builtins.int
-    DATA_FIELD_NUMBER: _builtins.int
-    data: _builtins.bytes
-    """Subsequent messages (chunk data)"""
-    @_builtins.property
-    def metadata(self) -> Global___FileUploadMetadata:
-        """First message only"""
-
-    def __init__(
-        self,
-        *,
-        metadata: Global___FileUploadMetadata | None = ...,
-        data: _builtins.bytes = ...,
-    ) -> None: ...
-    _HasFieldArgType: _TypeAlias = _typing.Literal["chunk", b"chunk", "data", b"data", "metadata", b"metadata"]  # noqa: Y015
-    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["chunk", b"chunk", "data", b"data", "metadata", b"metadata"]  # noqa: Y015
-    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
-    _WhichOneofReturnType_chunk: _TypeAlias = _typing.Literal["metadata", "data"]  # noqa: Y015
-    _WhichOneofArgType_chunk: _TypeAlias = _typing.Literal["chunk", b"chunk"]  # noqa: Y015
-    def WhichOneof(self, oneof_group: _WhichOneofArgType_chunk) -> _WhichOneofReturnType_chunk | None: ...
-
-Global___FileUploadChunk: _TypeAlias = FileUploadChunk  # noqa: Y015
-
-@_typing.final
-class FileUploadResult(_message.Message):
-    """Result payload for a successful file upload"""
-
-    DESCRIPTOR: _descriptor.Descriptor
-
-    FILEHASH_FIELD_NUMBER: _builtins.int
-    DEPLOYID_FIELD_NUMBER: _builtins.int
-    STORAGEPHLOCOST_FIELD_NUMBER: _builtins.int
-    TOTALPHLOCHARGED_FIELD_NUMBER: _builtins.int
-    fileHash: _builtins.str
-    """Blake2b-256 content hash"""
-    deployId: _builtins.str
-    """signature of the synthetic deploy (tracking ID)"""
-    storagePhloCost: _builtins.int
-    """phlo charged for storage"""
-    totalPhloCharged: _builtins.int
-    """total phlo that will be deducted"""
-    def __init__(
-        self,
-        *,
-        fileHash: _builtins.str = ...,
-        deployId: _builtins.str = ...,
-        storagePhloCost: _builtins.int = ...,
-        totalPhloCharged: _builtins.int = ...,
-    ) -> None: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["deployId", b"deployId", "fileHash", b"fileHash", "storagePhloCost", b"storagePhloCost", "totalPhloCharged", b"totalPhloCharged"]  # noqa: Y015
-    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
-
-Global___FileUploadResult: _TypeAlias = FileUploadResult  # noqa: Y015
-
-@_typing.final
-class FileUploadResponse(_message.Message):
-    """Response after file upload attempt"""
-
-    DESCRIPTOR: _descriptor.Descriptor
-
-    ERROR_FIELD_NUMBER: _builtins.int
-    RESULT_FIELD_NUMBER: _builtins.int
-    @_builtins.property
-    def error(self) -> _ServiceError_pb2.ServiceError: ...
-    @_builtins.property
-    def result(self) -> Global___FileUploadResult: ...
-    def __init__(
-        self,
-        *,
-        error: _ServiceError_pb2.ServiceError | None = ...,
-        result: Global___FileUploadResult | None = ...,
-    ) -> None: ...
-    _HasFieldArgType: _TypeAlias = _typing.Literal["error", b"error", "message", b"message", "result", b"result"]  # noqa: Y015
-    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["error", b"error", "message", b"message", "result", b"result"]  # noqa: Y015
-    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
-    _WhichOneofReturnType_message: _TypeAlias = _typing.Literal["error", "result"]  # noqa: Y015
-    _WhichOneofArgType_message: _TypeAlias = _typing.Literal["message", b"message"]  # noqa: Y015
-    def WhichOneof(self, oneof_group: _WhichOneofArgType_message) -> _WhichOneofReturnType_message | None: ...
-
-Global___FileUploadResponse: _TypeAlias = FileUploadResponse  # noqa: Y015
-
-@_typing.final
-class FileDownloadRequest(_message.Message):
-    """Request to download a file by content hash"""
-
-    DESCRIPTOR: _descriptor.Descriptor
-
-    FILEHASH_FIELD_NUMBER: _builtins.int
-    OFFSET_FIELD_NUMBER: _builtins.int
-    fileHash: _builtins.str
-    """Blake2b-256 hash"""
-    offset: _builtins.int
-    """resume offset (0 = start from beginning)"""
-    def __init__(
-        self,
-        *,
-        fileHash: _builtins.str = ...,
-        offset: _builtins.int = ...,
-    ) -> None: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["fileHash", b"fileHash", "offset", b"offset"]  # noqa: Y015
-    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
-
-Global___FileDownloadRequest: _TypeAlias = FileDownloadRequest  # noqa: Y015
-
-@_typing.final
-class FileDownloadMetadata(_message.Message):
-    """First chunk of a download stream — carries file metadata"""
-
-    DESCRIPTOR: _descriptor.Descriptor
-
-    FILEHASH_FIELD_NUMBER: _builtins.int
-    FILESIZE_FIELD_NUMBER: _builtins.int
-    fileHash: _builtins.str
-    fileSize: _builtins.int
-    def __init__(
-        self,
-        *,
-        fileHash: _builtins.str = ...,
-        fileSize: _builtins.int = ...,
-    ) -> None: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["fileHash", b"fileHash", "fileSize", b"fileSize"]  # noqa: Y015
-    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
-
-Global___FileDownloadMetadata: _TypeAlias = FileDownloadMetadata  # noqa: Y015
-
-@_typing.final
-class FileDownloadChunk(_message.Message):
-    """Streaming message: either metadata (first) or binary data chunk"""
-
-    DESCRIPTOR: _descriptor.Descriptor
-
-    METADATA_FIELD_NUMBER: _builtins.int
-    DATA_FIELD_NUMBER: _builtins.int
-    data: _builtins.bytes
-    """subsequent 4MB chunks"""
-    @_builtins.property
-    def metadata(self) -> Global___FileDownloadMetadata:
-        """first message only"""
-
-    def __init__(
-        self,
-        *,
-        metadata: Global___FileDownloadMetadata | None = ...,
-        data: _builtins.bytes = ...,
-    ) -> None: ...
-    _HasFieldArgType: _TypeAlias = _typing.Literal["chunk", b"chunk", "data", b"data", "metadata", b"metadata"]  # noqa: Y015
-    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["chunk", b"chunk", "data", b"data", "metadata", b"metadata"]  # noqa: Y015
-    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
-    _WhichOneofReturnType_chunk: _TypeAlias = _typing.Literal["metadata", "data"]  # noqa: Y015
-    _WhichOneofArgType_chunk: _TypeAlias = _typing.Literal["chunk", b"chunk"]  # noqa: Y015
-    def WhichOneof(self, oneof_group: _WhichOneofArgType_chunk) -> _WhichOneofReturnType_chunk | None: ...
-
-Global___FileDownloadChunk: _TypeAlias = FileDownloadChunk  # noqa: Y015

@@ -46,7 +46,7 @@ with F1r3flyClient(READONLY_SERVER[0], 40401) as client:
 with F1r3flyClient(MAINNET_SERVER[1], 40401) as client:
 
     # normal deploy
-    deploy_id = client.deploy(key=admin_key, term=contract, phlo_price=1, phlo_limit=1000000, valid_after_block_no=100,
+    deploy_id = client.deploy(key=admin_key, term=contract, valid_after_block_no=100,
                               timestamp_millis=int(time.time() * 1000))
     # deploy with validate after block number argument
     # the difference between `deploy` and `deploy_with_vabn_filled` is that
@@ -55,7 +55,6 @@ with F1r3flyClient(MAINNET_SERVER[1], 40401) as client:
     # Strongly recommend you use this method unless you know what you are doing.
     deploy_id2 = client.deploy_with_vabn_filled(key=admin_key,
                                                 term=contract,
-                                                phlo_price=1, phlo_limit=1000000,
                                                 timestamp_millis=int(time.time() * 1000))
     # this will raise a exception
     client.exploratory_deploy(exploratory_term, last_finalize_block.blockInfo.blockHash)
