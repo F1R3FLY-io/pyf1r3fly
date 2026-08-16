@@ -63,7 +63,24 @@ def check_deploy_not_errored(block_info: BlockInfo, deploy_id: str) -> None:
 
 
 def check_deploy_succeeded(block_info: BlockInfo, deploy_id: str) -> None:
-    """Verify a deploy is in the block, not errored, and has cost > 0.
+    """Verify a deploy is in the block and completed without an error.
+
+    Args:
+        block_info: BlockInfo from ``F1r3flyClient.show_block()``.
+        deploy_id: Deploy signature hex string.
+
+    Raises:
+        DeployError: If the deploy is errored or missing.
+    """
+    check_deploy_not_errored(block_info, deploy_id)
+
+
+def check_deploy_consumed_cost(block_info: BlockInfo, deploy_id: str) -> None:
+    """Verify a successful deploy consumed a positive semantic cost.
+
+    Zero cost is valid for terms that perform no COMM reduction, so callers
+    should use this assertion only when the deployed term is expected to
+    reduce.
 
     Args:
         block_info: BlockInfo from ``F1r3flyClient.show_block()``.
@@ -72,15 +89,11 @@ def check_deploy_succeeded(block_info: BlockInfo, deploy_id: str) -> None:
     Raises:
         DeployError: If the deploy is errored, missing, or has zero cost.
     """
+    check_deploy_not_errored(block_info, deploy_id)
     deploy = find_deploy_in_block(block_info, deploy_id)
-    if deploy.errored:
-        raise DeployError(
-            f"Deploy {deploy_id[:24]} errored: {deploy.systemDeployError}"
-        )
     if deploy.cost <= 0:
         raise DeployError(
-            f"Deploy {deploy_id[:24]} has zero cost -- "
-            f"execution may have been skipped"
+            f"Deploy {deploy_id[:24]} has zero cost; expected a COMM reduction"
         )
 
 

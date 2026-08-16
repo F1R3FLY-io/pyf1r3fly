@@ -8,7 +8,7 @@ version = "0.1.0"
 description = "Interface to F1R3fly Node RPC"
 readme = "README.md"
 authors = [
-    { name = "F1R3fly Team" } # TODO: add email
+    { name = "F1R3fly Team" }
 ]
 requires-python = ">=3.10"
 dependencies = [

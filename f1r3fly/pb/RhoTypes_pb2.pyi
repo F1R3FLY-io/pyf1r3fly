@@ -15,10 +15,10 @@ import builtins as _builtins
 import sys
 import typing as _typing
 
-if sys.version_info >= (3, 10):
-    from typing import TypeAlias as _TypeAlias
+if sys.version_info >= (3, 11):
+    from typing import TypeAlias as _TypeAlias, Never as _Never
 else:
-    from typing_extensions import TypeAlias as _TypeAlias
+    from typing_extensions import TypeAlias as _TypeAlias, Never as _Never
 
 DESCRIPTOR: _descriptor.FileDescriptor
 
@@ -43,8 +43,11 @@ class Par(_message.Message):
     UNFORGEABLES_FIELD_NUMBER: _builtins.int
     BUNDLES_FIELD_NUMBER: _builtins.int
     CONNECTIVES_FIELD_NUMBER: _builtins.int
+    CONDITIONALS_FIELD_NUMBER: _builtins.int
     LOCALLYFREE_FIELD_NUMBER: _builtins.int
     CONNECTIVE_USED_FIELD_NUMBER: _builtins.int
+    COST_SIGNED_TERMS_FIELD_NUMBER: _builtins.int
+    COST_STACKS_FIELD_NUMBER: _builtins.int
     locallyFree: _builtins.bytes
     connective_used: _builtins.bool
     @_builtins.property
@@ -65,6 +68,12 @@ class Par(_message.Message):
     def bundles(self) -> _containers.RepeatedCompositeFieldContainer[Global___Bundle]: ...
     @_builtins.property
     def connectives(self) -> _containers.RepeatedCompositeFieldContainer[Global___Connective]: ...
+    @_builtins.property
+    def conditionals(self) -> _containers.RepeatedCompositeFieldContainer[Global___If]: ...
+    @_builtins.property
+    def cost_signed_terms(self) -> _containers.RepeatedCompositeFieldContainer[Global___CostSignedTerm]: ...
+    @_builtins.property
+    def cost_stacks(self) -> _containers.RepeatedCompositeFieldContainer[Global___CostStack]: ...
     def __init__(
         self,
         *,
@@ -76,13 +85,165 @@ class Par(_message.Message):
         unforgeables: _abc.Iterable[Global___GUnforgeable] | None = ...,
         bundles: _abc.Iterable[Global___Bundle] | None = ...,
         connectives: _abc.Iterable[Global___Connective] | None = ...,
+        conditionals: _abc.Iterable[Global___If] | None = ...,
         locallyFree: _builtins.bytes = ...,
         connective_used: _builtins.bool = ...,
+        cost_signed_terms: _abc.Iterable[Global___CostSignedTerm] | None = ...,
+        cost_stacks: _abc.Iterable[Global___CostStack] | None = ...,
     ) -> None: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["bundles", b"bundles", "connective_used", b"connective_used", "connectives", b"connectives", "exprs", b"exprs", "locallyFree", b"locallyFree", "matches", b"matches", "news", b"news", "receives", b"receives", "sends", b"sends", "unforgeables", b"unforgeables"]  # noqa: Y015
+    _HasFieldArgType: _TypeAlias = _Never  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["bundles", b"bundles", "conditionals", b"conditionals", "connective_used", b"connective_used", "connectives", b"connectives", "cost_signed_terms", b"cost_signed_terms", "cost_stacks", b"cost_stacks", "exprs", b"exprs", "locallyFree", b"locallyFree", "matches", b"matches", "news", b"news", "receives", b"receives", "sends", b"sends", "unforgeables", b"unforgeables"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___Par: _TypeAlias = Par  # noqa: Y015
+
+@_typing.final
+class CostSignature(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
+
+    GROUND_FIELD_NUMBER: _builtins.int
+    BOUND_LEVEL_FIELD_NUMBER: _builtins.int
+    QUOTE_FIELD_NUMBER: _builtins.int
+    COMPOUND_FIELD_NUMBER: _builtins.int
+    NAME_FIELD_NUMBER: _builtins.int
+    UNIT_FIELD_NUMBER: _builtins.int
+    ground: _builtins.bytes
+    bound_level: _builtins.int
+    unit: _builtins.bool
+    @_builtins.property
+    def quote(self) -> Global___Par: ...
+    @_builtins.property
+    def compound(self) -> Global___CostSignatureCompound: ...
+    @_builtins.property
+    def name(self) -> Global___Par: ...
+    def __init__(
+        self,
+        *,
+        ground: _builtins.bytes = ...,
+        bound_level: _builtins.int = ...,
+        quote: Global___Par | None = ...,
+        compound: Global___CostSignatureCompound | None = ...,
+        name: Global___Par | None = ...,
+        unit: _builtins.bool = ...,
+    ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _typing.Literal["bound_level", b"bound_level", "compound", b"compound", "ground", b"ground", "name", b"name", "quote", b"quote", "unit", b"unit", "value", b"value"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["bound_level", b"bound_level", "compound", b"compound", "ground", b"ground", "name", b"name", "quote", b"quote", "unit", b"unit", "value", b"value"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    _WhichOneofReturnType_value: _TypeAlias = _typing.Literal["ground", "bound_level", "quote", "compound", "name", "unit"]  # noqa: Y015
+    _WhichOneofArgType_value: _TypeAlias = _typing.Literal["value", b"value"]  # noqa: Y015
+    def WhichOneof(self, oneof_group: _WhichOneofArgType_value) -> _WhichOneofReturnType_value | None: ...
+
+Global___CostSignature: _TypeAlias = CostSignature  # noqa: Y015
+
+@_typing.final
+class CostSignatureCompound(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
+
+    ELEMENTS_FIELD_NUMBER: _builtins.int
+    @_builtins.property
+    def elements(self) -> _containers.RepeatedCompositeFieldContainer[Global___CostSignature]: ...
+    def __init__(
+        self,
+        *,
+        elements: _abc.Iterable[Global___CostSignature] | None = ...,
+    ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _Never  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["elements", b"elements"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
+
+Global___CostSignatureCompound: _TypeAlias = CostSignatureCompound  # noqa: Y015
+
+@_typing.final
+class CostSignedTerm(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
+
+    BODY_FIELD_NUMBER: _builtins.int
+    SIGNATURE_FIELD_NUMBER: _builtins.int
+    @_builtins.property
+    def body(self) -> Global___Par: ...
+    @_builtins.property
+    def signature(self) -> Global___CostSignature: ...
+    def __init__(
+        self,
+        *,
+        body: Global___Par | None = ...,
+        signature: Global___CostSignature | None = ...,
+    ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _typing.Literal["body", b"body", "signature", b"signature"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["body", b"body", "signature", b"signature"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
+
+Global___CostSignedTerm: _TypeAlias = CostSignedTerm  # noqa: Y015
+
+@_typing.final
+class CostRegion(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
+
+    INSTANCE_ID_FIELD_NUMBER: _builtins.int
+    SIGNATURE_FIELD_NUMBER: _builtins.int
+    instance_id: _builtins.bytes
+    @_builtins.property
+    def signature(self) -> Global___CostSignature: ...
+    def __init__(
+        self,
+        *,
+        instance_id: _builtins.bytes = ...,
+        signature: Global___CostSignature | None = ...,
+    ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _typing.Literal["signature", b"signature"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["instance_id", b"instance_id", "signature", b"signature"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
+
+Global___CostRegion: _TypeAlias = CostRegion  # noqa: Y015
+
+@_typing.final
+class CostAuthority(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
+
+    REGIONS_FIELD_NUMBER: _builtins.int
+    @_builtins.property
+    def regions(self) -> _containers.RepeatedCompositeFieldContainer[Global___CostRegion]: ...
+    def __init__(
+        self,
+        *,
+        regions: _abc.Iterable[Global___CostRegion] | None = ...,
+    ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _Never  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["regions", b"regions"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
+
+Global___CostAuthority: _TypeAlias = CostAuthority  # noqa: Y015
+
+@_typing.final
+class CostStack(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
+
+    CELLS_FIELD_NUMBER: _builtins.int
+    @_builtins.property
+    def cells(self) -> _containers.RepeatedCompositeFieldContainer[Global___CostSignature]: ...
+    def __init__(
+        self,
+        *,
+        cells: _abc.Iterable[Global___CostSignature] | None = ...,
+    ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _Never  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["cells", b"cells"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
+
+Global___CostStack: _TypeAlias = CostStack  # noqa: Y015
 
 @_typing.final
 class TaggedContinuation(_message.Message):
@@ -94,18 +255,33 @@ class TaggedContinuation(_message.Message):
 
     PAR_BODY_FIELD_NUMBER: _builtins.int
     SCALA_BODY_REF_FIELD_NUMBER: _builtins.int
+    GUARD_FIELD_NUMBER: _builtins.int
+    COST_AUTHORITY_FIELD_NUMBER: _builtins.int
     scala_body_ref: _builtins.int
     @_builtins.property
     def par_body(self) -> Global___ParWithRandom: ...
+    @_builtins.property
+    def guard(self) -> Global___Par:
+        """Optional `where`-clause guard, lifted from `Receive.condition` when the
+        continuation is registered with rspace. The matcher coordinator evaluates
+        it (via rho-pure-eval) against the *combined* bindings of all binds after
+        every spatial pattern has matched, so cross-channel guards see every
+        bound variable. Empty Par = no guard. See plan §7.12.
+        """
+
+    @_builtins.property
+    def cost_authority(self) -> Global___CostAuthority: ...
     def __init__(
         self,
         *,
         par_body: Global___ParWithRandom | None = ...,
         scala_body_ref: _builtins.int = ...,
+        guard: Global___Par | None = ...,
+        cost_authority: Global___CostAuthority | None = ...,
     ) -> None: ...
-    _HasFieldArgType: _TypeAlias = _typing.Literal["par_body", b"par_body", "scala_body_ref", b"scala_body_ref", "tagged_cont", b"tagged_cont"]  # noqa: Y015
+    _HasFieldArgType: _TypeAlias = _typing.Literal["cost_authority", b"cost_authority", "guard", b"guard", "par_body", b"par_body", "scala_body_ref", b"scala_body_ref", "tagged_cont", b"tagged_cont"]  # noqa: Y015
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["par_body", b"par_body", "scala_body_ref", b"scala_body_ref", "tagged_cont", b"tagged_cont"]  # noqa: Y015
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["cost_authority", b"cost_authority", "guard", b"guard", "par_body", b"par_body", "scala_body_ref", b"scala_body_ref", "tagged_cont", b"tagged_cont"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
     _WhichOneofReturnType_tagged_cont: _TypeAlias = _typing.Literal["par_body", "scala_body_ref"]  # noqa: Y015
     _WhichOneofArgType_tagged_cont: _TypeAlias = _typing.Literal["tagged_cont", b"tagged_cont"]  # noqa: Y015
@@ -137,6 +313,7 @@ class ParWithRandom(_message.Message):
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
     _ClearFieldArgType: _TypeAlias = _typing.Literal["body", b"body", "randomState", b"randomState"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___ParWithRandom: _TypeAlias = ParWithRandom  # noqa: Y015
 
@@ -155,8 +332,11 @@ class PCost(_message.Message):
         *,
         cost: _builtins.int = ...,
     ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _Never  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
     _ClearFieldArgType: _TypeAlias = _typing.Literal["cost", b"cost"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___PCost: _TypeAlias = PCost  # noqa: Y015
 
@@ -166,17 +346,28 @@ class ListParWithRandom(_message.Message):
 
     PARS_FIELD_NUMBER: _builtins.int
     RANDOMSTATE_FIELD_NUMBER: _builtins.int
+    COST_AUTHORITY_FIELD_NUMBER: _builtins.int
+    COST_STACK_FIELD_NUMBER: _builtins.int
     randomState: _builtins.bytes
     @_builtins.property
     def pars(self) -> _containers.RepeatedCompositeFieldContainer[Global___Par]: ...
+    @_builtins.property
+    def cost_authority(self) -> Global___CostAuthority: ...
+    @_builtins.property
+    def cost_stack(self) -> Global___CostStack: ...
     def __init__(
         self,
         *,
         pars: _abc.Iterable[Global___Par] | None = ...,
         randomState: _builtins.bytes = ...,
+        cost_authority: Global___CostAuthority | None = ...,
+        cost_stack: Global___CostStack | None = ...,
     ) -> None: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["pars", b"pars", "randomState", b"randomState"]  # noqa: Y015
+    _HasFieldArgType: _TypeAlias = _typing.Literal["cost_authority", b"cost_authority", "cost_stack", b"cost_stack"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["cost_authority", b"cost_authority", "cost_stack", b"cost_stack", "pars", b"pars", "randomState", b"randomState"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___ListParWithRandom: _TypeAlias = ListParWithRandom  # noqa: Y015
 
@@ -197,6 +388,11 @@ class Var(_message.Message):
         def __init__(
             self,
         ) -> None: ...
+        _HasFieldArgType: _TypeAlias = _Never  # noqa: Y015
+        def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+        _ClearFieldArgType: _TypeAlias = _Never  # noqa: Y015
+        def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+        def WhichOneof(self, oneof_group: _Never) -> None: ...
 
     BOUND_VAR_FIELD_NUMBER: _builtins.int
     FREE_VAR_FIELD_NUMBER: _builtins.int
@@ -253,6 +449,7 @@ class Bundle(_message.Message):
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
     _ClearFieldArgType: _TypeAlias = _typing.Literal["body", b"body", "readFlag", b"readFlag", "writeFlag", b"writeFlag"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___Bundle: _TypeAlias = Bundle  # noqa: Y015
 
@@ -291,6 +488,7 @@ class Send(_message.Message):
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
     _ClearFieldArgType: _TypeAlias = _typing.Literal["chan", b"chan", "connective_used", b"connective_used", "data", b"data", "locallyFree", b"locallyFree", "persistent", b"persistent"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___Send: _TypeAlias = Send  # noqa: Y015
 
@@ -302,6 +500,7 @@ class ReceiveBind(_message.Message):
     SOURCE_FIELD_NUMBER: _builtins.int
     REMAINDER_FIELD_NUMBER: _builtins.int
     FREECOUNT_FIELD_NUMBER: _builtins.int
+    COST_SIGNATURE_FIELD_NUMBER: _builtins.int
     freeCount: _builtins.int
     @_builtins.property
     def patterns(self) -> _containers.RepeatedCompositeFieldContainer[Global___Par]: ...
@@ -309,6 +508,8 @@ class ReceiveBind(_message.Message):
     def source(self) -> Global___Par: ...
     @_builtins.property
     def remainder(self) -> Global___Var: ...
+    @_builtins.property
+    def cost_signature(self) -> Global___CostSignature: ...
     def __init__(
         self,
         *,
@@ -316,11 +517,13 @@ class ReceiveBind(_message.Message):
         source: Global___Par | None = ...,
         remainder: Global___Var | None = ...,
         freeCount: _builtins.int = ...,
+        cost_signature: Global___CostSignature | None = ...,
     ) -> None: ...
-    _HasFieldArgType: _TypeAlias = _typing.Literal["remainder", b"remainder", "source", b"source"]  # noqa: Y015
+    _HasFieldArgType: _TypeAlias = _typing.Literal["cost_signature", b"cost_signature", "remainder", b"remainder", "source", b"source"]  # noqa: Y015
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["freeCount", b"freeCount", "patterns", b"patterns", "remainder", b"remainder", "source", b"source"]  # noqa: Y015
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["cost_signature", b"cost_signature", "freeCount", b"freeCount", "patterns", b"patterns", "remainder", b"remainder", "source", b"source"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___ReceiveBind: _TypeAlias = ReceiveBind  # noqa: Y015
 
@@ -347,6 +550,7 @@ class BindPattern(_message.Message):
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
     _ClearFieldArgType: _TypeAlias = _typing.Literal["freeCount", b"freeCount", "patterns", b"patterns", "remainder", b"remainder"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___BindPattern: _TypeAlias = BindPattern  # noqa: Y015
 
@@ -362,8 +566,11 @@ class ListBindPatterns(_message.Message):
         *,
         patterns: _abc.Iterable[Global___BindPattern] | None = ...,
     ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _Never  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
     _ClearFieldArgType: _TypeAlias = _typing.Literal["patterns", b"patterns"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___ListBindPatterns: _TypeAlias = ListBindPatterns  # noqa: Y015
 
@@ -386,6 +593,7 @@ class Receive(_message.Message):
     BINDCOUNT_FIELD_NUMBER: _builtins.int
     LOCALLYFREE_FIELD_NUMBER: _builtins.int
     CONNECTIVE_USED_FIELD_NUMBER: _builtins.int
+    CONDITION_FIELD_NUMBER: _builtins.int
     persistent: _builtins.bool
     peek: _builtins.bool
     bindCount: _builtins.int
@@ -395,6 +603,14 @@ class Receive(_message.Message):
     def binds(self) -> _containers.RepeatedCompositeFieldContainer[Global___ReceiveBind]: ...
     @_builtins.property
     def body(self) -> Global___Par: ...
+    @_builtins.property
+    def condition(self) -> Global___Par:
+        """Optional `where`-clause guard. When non-empty, the receive only commits
+        (consumes the matched messages) if every spatial pattern matches AND
+        the condition evaluates to GBool(true) under the bound variables. An
+        empty Par means no guard. See plan §3.3 / §3.5.
+        """
+
     def __init__(
         self,
         *,
@@ -405,11 +621,13 @@ class Receive(_message.Message):
         bindCount: _builtins.int = ...,
         locallyFree: _builtins.bytes = ...,
         connective_used: _builtins.bool = ...,
+        condition: Global___Par | None = ...,
     ) -> None: ...
-    _HasFieldArgType: _TypeAlias = _typing.Literal["body", b"body"]  # noqa: Y015
+    _HasFieldArgType: _TypeAlias = _typing.Literal["body", b"body", "condition", b"condition"]  # noqa: Y015
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["bindCount", b"bindCount", "binds", b"binds", "body", b"body", "connective_used", b"connective_used", "locallyFree", b"locallyFree", "peek", b"peek", "persistent", b"persistent"]  # noqa: Y015
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["bindCount", b"bindCount", "binds", b"binds", "body", b"body", "condition", b"condition", "connective_used", b"connective_used", "locallyFree", b"locallyFree", "peek", b"peek", "persistent", b"persistent"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___Receive: _TypeAlias = Receive  # noqa: Y015
 
@@ -442,6 +660,7 @@ class New(_message.Message):
         def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
         _ClearFieldArgType: _TypeAlias = _typing.Literal["key", b"key", "value", b"value"]  # noqa: Y015
         def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+        def WhichOneof(self, oneof_group: _Never) -> None: ...
 
     BINDCOUNT_FIELD_NUMBER: _builtins.int
     P_FIELD_NUMBER: _builtins.int
@@ -449,13 +668,17 @@ class New(_message.Message):
     INJECTIONS_FIELD_NUMBER: _builtins.int
     LOCALLYFREE_FIELD_NUMBER: _builtins.int
     bindCount: _builtins.int
-    """Includes any uris listed below. This makes it easier to substitute or walk a term."""
+    """Includes any uris listed below. This makes it easier to substitute or walk
+    a term.
+    """
     locallyFree: _builtins.bytes
     @_builtins.property
     def p(self) -> Global___Par: ...
     @_builtins.property
     def uri(self) -> _containers.RepeatedScalarFieldContainer[_builtins.str]:
-        """For normalization, uri-referenced variables come at the end, and in lexicographical order."""
+        """For normalization, uri-referenced variables come at the end, and in
+        lexicographical order.
+        """
 
     @_builtins.property
     def injections(self) -> _containers.MessageMap[_builtins.str, Global___Par]: ...
@@ -472,6 +695,7 @@ class New(_message.Message):
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
     _ClearFieldArgType: _TypeAlias = _typing.Literal["bindCount", b"bindCount", "injections", b"injections", "locallyFree", b"locallyFree", "p", b"p", "uri", b"uri"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___New: _TypeAlias = New  # noqa: Y015
 
@@ -482,22 +706,34 @@ class MatchCase(_message.Message):
     PATTERN_FIELD_NUMBER: _builtins.int
     SOURCE_FIELD_NUMBER: _builtins.int
     FREECOUNT_FIELD_NUMBER: _builtins.int
+    GUARD_FIELD_NUMBER: _builtins.int
     freeCount: _builtins.int
     @_builtins.property
     def pattern(self) -> Global___Par: ...
     @_builtins.property
     def source(self) -> Global___Par: ...
+    @_builtins.property
+    def guard(self) -> Global___Par:
+        """Optional per-case `where`-clause guard. When non-empty, the case only
+        fires if the pattern matches AND the guard evaluates to GBool(true)
+        under the pattern's bindings. Anything else (false, non-bool, error)
+        falls through to the next case. An empty Par means no guard. See plan
+        §3.4 / §3.8.
+        """
+
     def __init__(
         self,
         *,
         pattern: Global___Par | None = ...,
         source: Global___Par | None = ...,
         freeCount: _builtins.int = ...,
+        guard: Global___Par | None = ...,
     ) -> None: ...
-    _HasFieldArgType: _TypeAlias = _typing.Literal["pattern", b"pattern", "source", b"source"]  # noqa: Y015
+    _HasFieldArgType: _TypeAlias = _typing.Literal["guard", b"guard", "pattern", b"pattern", "source", b"source"]  # noqa: Y015
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["freeCount", b"freeCount", "pattern", b"pattern", "source", b"source"]  # noqa: Y015
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["freeCount", b"freeCount", "guard", b"guard", "pattern", b"pattern", "source", b"source"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___MatchCase: _TypeAlias = MatchCase  # noqa: Y015
 
@@ -527,8 +763,50 @@ class Match(_message.Message):
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
     _ClearFieldArgType: _TypeAlias = _typing.Literal["cases", b"cases", "connective_used", b"connective_used", "locallyFree", b"locallyFree", "target", b"target"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___Match: _TypeAlias = Match  # noqa: Y015
+
+@_typing.final
+class If(_message.Message):
+    """First-class conditional. Reduction evaluates `condition`'s expression slot;
+    fires `if_true` when it reduces to GBool(true), `if_false` when it reduces
+    to GBool(false), and raises InterpreterError::IfConditionTypeError
+    otherwise. Side effects in `condition` (sends/news/receives) are inert
+    because the evaluator only walks par.exprs.
+    """
+
+    DESCRIPTOR: _descriptor.Descriptor
+
+    CONDITION_FIELD_NUMBER: _builtins.int
+    IF_TRUE_FIELD_NUMBER: _builtins.int
+    IF_FALSE_FIELD_NUMBER: _builtins.int
+    LOCALLYFREE_FIELD_NUMBER: _builtins.int
+    CONNECTIVE_USED_FIELD_NUMBER: _builtins.int
+    locallyFree: _builtins.bytes
+    connective_used: _builtins.bool
+    @_builtins.property
+    def condition(self) -> Global___Par: ...
+    @_builtins.property
+    def if_true(self) -> Global___Par: ...
+    @_builtins.property
+    def if_false(self) -> Global___Par: ...
+    def __init__(
+        self,
+        *,
+        condition: Global___Par | None = ...,
+        if_true: Global___Par | None = ...,
+        if_false: Global___Par | None = ...,
+        locallyFree: _builtins.bytes = ...,
+        connective_used: _builtins.bool = ...,
+    ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _typing.Literal["condition", b"condition", "if_false", b"if_false", "if_true", b"if_true"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["condition", b"condition", "connective_used", b"connective_used", "if_false", b"if_false", "if_true", b"if_true", "locallyFree", b"locallyFree"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
+
+Global___If: _TypeAlias = If  # noqa: Y015
 
 @_typing.final
 class Expr(_message.Message):
@@ -563,16 +841,31 @@ class Expr(_message.Message):
     E_SET_BODY_FIELD_NUMBER: _builtins.int
     E_MAP_BODY_FIELD_NUMBER: _builtins.int
     E_METHOD_BODY_FIELD_NUMBER: _builtins.int
+    E_PATHMAP_BODY_FIELD_NUMBER: _builtins.int
+    E_ZIPPER_BODY_FIELD_NUMBER: _builtins.int
     E_MATCHES_BODY_FIELD_NUMBER: _builtins.int
     E_PERCENT_PERCENT_BODY_FIELD_NUMBER: _builtins.int
     E_PLUS_PLUS_BODY_FIELD_NUMBER: _builtins.int
     E_MINUS_MINUS_BODY_FIELD_NUMBER: _builtins.int
     E_MOD_BODY_FIELD_NUMBER: _builtins.int
+    G_DOUBLE_FIELD_NUMBER: _builtins.int
+    G_BIG_INT_FIELD_NUMBER: _builtins.int
+    G_BIG_RAT_FIELD_NUMBER: _builtins.int
+    G_FIXED_POINT_FIELD_NUMBER: _builtins.int
     g_bool: _builtins.bool
     g_int: _builtins.int
     g_string: _builtins.str
     g_uri: _builtins.str
     g_byte_array: _builtins.bytes
+    g_double: _builtins.int
+    """Fields 32-33 reserved for future use
+
+    Extended numeric types (Rholang numeric types spec, 2025-11-13)
+    fixed64 (not protobuf double) to preserve bit-exact IEEE 754 semantics (-0.0 vs 0.0, NaN payloads)
+    IEEE 754 f64 stored as raw bits (covers f32 losslessly)
+    """
+    g_big_int: _builtins.bytes
+    """Arbitrary-precision signed integer (big-endian two's complement)"""
     @_builtins.property
     def e_not_body(self) -> Global___ENot: ...
     @_builtins.property
@@ -614,6 +907,10 @@ class Expr(_message.Message):
     @_builtins.property
     def e_method_body(self) -> Global___EMethod: ...
     @_builtins.property
+    def e_pathmap_body(self) -> Global___EPathMap: ...
+    @_builtins.property
+    def e_zipper_body(self) -> Global___EZipper: ...
+    @_builtins.property
     def e_matches_body(self) -> Global___EMatches: ...
     @_builtins.property
     def e_percent_percent_body(self) -> Global___EPercentPercent:
@@ -629,6 +926,14 @@ class Expr(_message.Message):
 
     @_builtins.property
     def e_mod_body(self) -> Global___EMod: ...
+    @_builtins.property
+    def g_big_rat(self) -> Global___GBigRational:
+        """Exact rational number"""
+
+    @_builtins.property
+    def g_fixed_point(self) -> Global___GFixedPoint:
+        """Fixed-point decimal"""
+
     def __init__(
         self,
         *,
@@ -657,21 +962,75 @@ class Expr(_message.Message):
         e_set_body: Global___ESet | None = ...,
         e_map_body: Global___EMap | None = ...,
         e_method_body: Global___EMethod | None = ...,
+        e_pathmap_body: Global___EPathMap | None = ...,
+        e_zipper_body: Global___EZipper | None = ...,
         e_matches_body: Global___EMatches | None = ...,
         e_percent_percent_body: Global___EPercentPercent | None = ...,
         e_plus_plus_body: Global___EPlusPlus | None = ...,
         e_minus_minus_body: Global___EMinusMinus | None = ...,
         e_mod_body: Global___EMod | None = ...,
+        g_double: _builtins.int = ...,
+        g_big_int: _builtins.bytes = ...,
+        g_big_rat: Global___GBigRational | None = ...,
+        g_fixed_point: Global___GFixedPoint | None = ...,
     ) -> None: ...
-    _HasFieldArgType: _TypeAlias = _typing.Literal["e_and_body", b"e_and_body", "e_div_body", b"e_div_body", "e_eq_body", b"e_eq_body", "e_gt_body", b"e_gt_body", "e_gte_body", b"e_gte_body", "e_list_body", b"e_list_body", "e_lt_body", b"e_lt_body", "e_lte_body", b"e_lte_body", "e_map_body", b"e_map_body", "e_matches_body", b"e_matches_body", "e_method_body", b"e_method_body", "e_minus_body", b"e_minus_body", "e_minus_minus_body", b"e_minus_minus_body", "e_mod_body", b"e_mod_body", "e_mult_body", b"e_mult_body", "e_neg_body", b"e_neg_body", "e_neq_body", b"e_neq_body", "e_not_body", b"e_not_body", "e_or_body", b"e_or_body", "e_percent_percent_body", b"e_percent_percent_body", "e_plus_body", b"e_plus_body", "e_plus_plus_body", b"e_plus_plus_body", "e_set_body", b"e_set_body", "e_tuple_body", b"e_tuple_body", "e_var_body", b"e_var_body", "expr_instance", b"expr_instance", "g_bool", b"g_bool", "g_byte_array", b"g_byte_array", "g_int", b"g_int", "g_string", b"g_string", "g_uri", b"g_uri"]  # noqa: Y015
+    _HasFieldArgType: _TypeAlias = _typing.Literal["e_and_body", b"e_and_body", "e_div_body", b"e_div_body", "e_eq_body", b"e_eq_body", "e_gt_body", b"e_gt_body", "e_gte_body", b"e_gte_body", "e_list_body", b"e_list_body", "e_lt_body", b"e_lt_body", "e_lte_body", b"e_lte_body", "e_map_body", b"e_map_body", "e_matches_body", b"e_matches_body", "e_method_body", b"e_method_body", "e_minus_body", b"e_minus_body", "e_minus_minus_body", b"e_minus_minus_body", "e_mod_body", b"e_mod_body", "e_mult_body", b"e_mult_body", "e_neg_body", b"e_neg_body", "e_neq_body", b"e_neq_body", "e_not_body", b"e_not_body", "e_or_body", b"e_or_body", "e_pathmap_body", b"e_pathmap_body", "e_percent_percent_body", b"e_percent_percent_body", "e_plus_body", b"e_plus_body", "e_plus_plus_body", b"e_plus_plus_body", "e_set_body", b"e_set_body", "e_tuple_body", b"e_tuple_body", "e_var_body", b"e_var_body", "e_zipper_body", b"e_zipper_body", "expr_instance", b"expr_instance", "g_big_int", b"g_big_int", "g_big_rat", b"g_big_rat", "g_bool", b"g_bool", "g_byte_array", b"g_byte_array", "g_double", b"g_double", "g_fixed_point", b"g_fixed_point", "g_int", b"g_int", "g_string", b"g_string", "g_uri", b"g_uri"]  # noqa: Y015
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["e_and_body", b"e_and_body", "e_div_body", b"e_div_body", "e_eq_body", b"e_eq_body", "e_gt_body", b"e_gt_body", "e_gte_body", b"e_gte_body", "e_list_body", b"e_list_body", "e_lt_body", b"e_lt_body", "e_lte_body", b"e_lte_body", "e_map_body", b"e_map_body", "e_matches_body", b"e_matches_body", "e_method_body", b"e_method_body", "e_minus_body", b"e_minus_body", "e_minus_minus_body", b"e_minus_minus_body", "e_mod_body", b"e_mod_body", "e_mult_body", b"e_mult_body", "e_neg_body", b"e_neg_body", "e_neq_body", b"e_neq_body", "e_not_body", b"e_not_body", "e_or_body", b"e_or_body", "e_percent_percent_body", b"e_percent_percent_body", "e_plus_body", b"e_plus_body", "e_plus_plus_body", b"e_plus_plus_body", "e_set_body", b"e_set_body", "e_tuple_body", b"e_tuple_body", "e_var_body", b"e_var_body", "expr_instance", b"expr_instance", "g_bool", b"g_bool", "g_byte_array", b"g_byte_array", "g_int", b"g_int", "g_string", b"g_string", "g_uri", b"g_uri"]  # noqa: Y015
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["e_and_body", b"e_and_body", "e_div_body", b"e_div_body", "e_eq_body", b"e_eq_body", "e_gt_body", b"e_gt_body", "e_gte_body", b"e_gte_body", "e_list_body", b"e_list_body", "e_lt_body", b"e_lt_body", "e_lte_body", b"e_lte_body", "e_map_body", b"e_map_body", "e_matches_body", b"e_matches_body", "e_method_body", b"e_method_body", "e_minus_body", b"e_minus_body", "e_minus_minus_body", b"e_minus_minus_body", "e_mod_body", b"e_mod_body", "e_mult_body", b"e_mult_body", "e_neg_body", b"e_neg_body", "e_neq_body", b"e_neq_body", "e_not_body", b"e_not_body", "e_or_body", b"e_or_body", "e_pathmap_body", b"e_pathmap_body", "e_percent_percent_body", b"e_percent_percent_body", "e_plus_body", b"e_plus_body", "e_plus_plus_body", b"e_plus_plus_body", "e_set_body", b"e_set_body", "e_tuple_body", b"e_tuple_body", "e_var_body", b"e_var_body", "e_zipper_body", b"e_zipper_body", "expr_instance", b"expr_instance", "g_big_int", b"g_big_int", "g_big_rat", b"g_big_rat", "g_bool", b"g_bool", "g_byte_array", b"g_byte_array", "g_double", b"g_double", "g_fixed_point", b"g_fixed_point", "g_int", b"g_int", "g_string", b"g_string", "g_uri", b"g_uri"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
-    _WhichOneofReturnType_expr_instance: _TypeAlias = _typing.Literal["g_bool", "g_int", "g_string", "g_uri", "g_byte_array", "e_not_body", "e_neg_body", "e_mult_body", "e_div_body", "e_plus_body", "e_minus_body", "e_lt_body", "e_lte_body", "e_gt_body", "e_gte_body", "e_eq_body", "e_neq_body", "e_and_body", "e_or_body", "e_var_body", "e_list_body", "e_tuple_body", "e_set_body", "e_map_body", "e_method_body", "e_matches_body", "e_percent_percent_body", "e_plus_plus_body", "e_minus_minus_body", "e_mod_body"]  # noqa: Y015
+    _WhichOneofReturnType_expr_instance: _TypeAlias = _typing.Literal["g_bool", "g_int", "g_string", "g_uri", "g_byte_array", "e_not_body", "e_neg_body", "e_mult_body", "e_div_body", "e_plus_body", "e_minus_body", "e_lt_body", "e_lte_body", "e_gt_body", "e_gte_body", "e_eq_body", "e_neq_body", "e_and_body", "e_or_body", "e_var_body", "e_list_body", "e_tuple_body", "e_set_body", "e_map_body", "e_method_body", "e_pathmap_body", "e_zipper_body", "e_matches_body", "e_percent_percent_body", "e_plus_plus_body", "e_minus_minus_body", "e_mod_body", "g_double", "g_big_int", "g_big_rat", "g_fixed_point"]  # noqa: Y015
     _WhichOneofArgType_expr_instance: _TypeAlias = _typing.Literal["expr_instance", b"expr_instance"]  # noqa: Y015
     def WhichOneof(self, oneof_group: _WhichOneofArgType_expr_instance) -> _WhichOneofReturnType_expr_instance | None: ...
 
 Global___Expr: _TypeAlias = Expr  # noqa: Y015
+
+@_typing.final
+class GBigRational(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
+
+    NUMERATOR_FIELD_NUMBER: _builtins.int
+    DENOMINATOR_FIELD_NUMBER: _builtins.int
+    numerator: _builtins.bytes
+    """BigInt as big-endian two's complement"""
+    denominator: _builtins.bytes
+    """BigInt as big-endian two's complement, always > 0"""
+    def __init__(
+        self,
+        *,
+        numerator: _builtins.bytes = ...,
+        denominator: _builtins.bytes = ...,
+    ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _Never  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["denominator", b"denominator", "numerator", b"numerator"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
+
+Global___GBigRational: _TypeAlias = GBigRational  # noqa: Y015
+
+@_typing.final
+class GFixedPoint(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
+
+    UNSCALED_FIELD_NUMBER: _builtins.int
+    SCALE_FIELD_NUMBER: _builtins.int
+    unscaled: _builtins.bytes
+    """BigInt as big-endian two's complement"""
+    scale: _builtins.int
+    """Number of decimal digits: actual_value = unscaled / 10^scale"""
+    def __init__(
+        self,
+        *,
+        unscaled: _builtins.bytes = ...,
+        scale: _builtins.int = ...,
+    ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _Never  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["scale", b"scale", "unscaled", b"unscaled"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
+
+Global___GFixedPoint: _TypeAlias = GFixedPoint  # noqa: Y015
 
 @_typing.final
 class EList(_message.Message):
@@ -699,6 +1058,7 @@ class EList(_message.Message):
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
     _ClearFieldArgType: _TypeAlias = _typing.Literal["connective_used", b"connective_used", "locallyFree", b"locallyFree", "ps", b"ps", "remainder", b"remainder"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___EList: _TypeAlias = EList  # noqa: Y015
 
@@ -720,8 +1080,11 @@ class ETuple(_message.Message):
         locallyFree: _builtins.bytes = ...,
         connective_used: _builtins.bool = ...,
     ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _Never  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
     _ClearFieldArgType: _TypeAlias = _typing.Literal["connective_used", b"connective_used", "locallyFree", b"locallyFree", "ps", b"ps"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___ETuple: _TypeAlias = ETuple  # noqa: Y015
 
@@ -751,6 +1114,7 @@ class ESet(_message.Message):
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
     _ClearFieldArgType: _TypeAlias = _typing.Literal["connective_used", b"connective_used", "locallyFree", b"locallyFree", "ps", b"ps", "remainder", b"remainder"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___ESet: _TypeAlias = ESet  # noqa: Y015
 
@@ -780,8 +1144,86 @@ class EMap(_message.Message):
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
     _ClearFieldArgType: _TypeAlias = _typing.Literal["connective_used", b"connective_used", "kvs", b"kvs", "locallyFree", b"locallyFree", "remainder", b"remainder"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___EMap: _TypeAlias = EMap  # noqa: Y015
+
+@_typing.final
+class EPathMap(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
+
+    PS_FIELD_NUMBER: _builtins.int
+    LOCALLYFREE_FIELD_NUMBER: _builtins.int
+    CONNECTIVE_USED_FIELD_NUMBER: _builtins.int
+    REMAINDER_FIELD_NUMBER: _builtins.int
+    locallyFree: _builtins.bytes
+    connective_used: _builtins.bool
+    @_builtins.property
+    def ps(self) -> _containers.RepeatedCompositeFieldContainer[Global___Par]: ...
+    @_builtins.property
+    def remainder(self) -> Global___Var: ...
+    def __init__(
+        self,
+        *,
+        ps: _abc.Iterable[Global___Par] | None = ...,
+        locallyFree: _builtins.bytes = ...,
+        connective_used: _builtins.bool = ...,
+        remainder: Global___Var | None = ...,
+    ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _typing.Literal["remainder", b"remainder"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["connective_used", b"connective_used", "locallyFree", b"locallyFree", "ps", b"ps", "remainder", b"remainder"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
+
+Global___EPathMap: _TypeAlias = EPathMap  # noqa: Y015
+
+@_typing.final
+class EZipper(_message.Message):
+    """*
+    Zipper for navigating and modifying PathMaps.
+    Zippers maintain a focus position within a PathMap structure,
+    allowing efficient navigation and modification operations.
+    """
+
+    DESCRIPTOR: _descriptor.Descriptor
+
+    PATHMAP_FIELD_NUMBER: _builtins.int
+    CURRENT_PATH_FIELD_NUMBER: _builtins.int
+    IS_WRITE_ZIPPER_FIELD_NUMBER: _builtins.int
+    LOCALLYFREE_FIELD_NUMBER: _builtins.int
+    CONNECTIVE_USED_FIELD_NUMBER: _builtins.int
+    is_write_zipper: _builtins.bool
+    """Whether this is a write zipper (true) or read zipper (false)"""
+    locallyFree: _builtins.bytes
+    """Metadata from the PathMap"""
+    connective_used: _builtins.bool
+    @_builtins.property
+    def pathmap(self) -> Global___EPathMap:
+        """The underlying PathMap being navigated"""
+
+    @_builtins.property
+    def current_path(self) -> _containers.RepeatedScalarFieldContainer[_builtins.bytes]:
+        """Current path position in the zipper (list of path segments as bytes)
+        Each segment is encoded as bytes representing a Par value
+        """
+
+    def __init__(
+        self,
+        *,
+        pathmap: Global___EPathMap | None = ...,
+        current_path: _abc.Iterable[_builtins.bytes] | None = ...,
+        is_write_zipper: _builtins.bool = ...,
+        locallyFree: _builtins.bytes = ...,
+        connective_used: _builtins.bool = ...,
+    ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _typing.Literal["pathmap", b"pathmap"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["connective_used", b"connective_used", "current_path", b"current_path", "is_write_zipper", b"is_write_zipper", "locallyFree", b"locallyFree", "pathmap", b"pathmap"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
+
+Global___EZipper: _TypeAlias = EZipper  # noqa: Y015
 
 @_typing.final
 class EMethod(_message.Message):
@@ -816,6 +1258,7 @@ class EMethod(_message.Message):
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
     _ClearFieldArgType: _TypeAlias = _typing.Literal["arguments", b"arguments", "connective_used", b"connective_used", "locallyFree", b"locallyFree", "methodName", b"methodName", "target", b"target"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___EMethod: _TypeAlias = EMethod  # noqa: Y015
 
@@ -839,6 +1282,7 @@ class KeyValuePair(_message.Message):
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
     _ClearFieldArgType: _TypeAlias = _typing.Literal["key", b"key", "value", b"value"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___KeyValuePair: _TypeAlias = KeyValuePair  # noqa: Y015
 
@@ -864,6 +1308,7 @@ class EVar(_message.Message):
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
     _ClearFieldArgType: _TypeAlias = _typing.Literal["v", b"v"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___EVar: _TypeAlias = EVar  # noqa: Y015
 
@@ -883,6 +1328,7 @@ class ENot(_message.Message):
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
     _ClearFieldArgType: _TypeAlias = _typing.Literal["p", b"p"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___ENot: _TypeAlias = ENot  # noqa: Y015
 
@@ -902,6 +1348,7 @@ class ENeg(_message.Message):
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
     _ClearFieldArgType: _TypeAlias = _typing.Literal["p", b"p"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___ENeg: _TypeAlias = ENeg  # noqa: Y015
 
@@ -925,6 +1372,7 @@ class EMult(_message.Message):
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
     _ClearFieldArgType: _TypeAlias = _typing.Literal["p1", b"p1", "p2", b"p2"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___EMult: _TypeAlias = EMult  # noqa: Y015
 
@@ -948,6 +1396,7 @@ class EDiv(_message.Message):
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
     _ClearFieldArgType: _TypeAlias = _typing.Literal["p1", b"p1", "p2", b"p2"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___EDiv: _TypeAlias = EDiv  # noqa: Y015
 
@@ -971,6 +1420,7 @@ class EMod(_message.Message):
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
     _ClearFieldArgType: _TypeAlias = _typing.Literal["p1", b"p1", "p2", b"p2"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___EMod: _TypeAlias = EMod  # noqa: Y015
 
@@ -994,6 +1444,7 @@ class EPlus(_message.Message):
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
     _ClearFieldArgType: _TypeAlias = _typing.Literal["p1", b"p1", "p2", b"p2"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___EPlus: _TypeAlias = EPlus  # noqa: Y015
 
@@ -1017,6 +1468,7 @@ class EMinus(_message.Message):
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
     _ClearFieldArgType: _TypeAlias = _typing.Literal["p1", b"p1", "p2", b"p2"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___EMinus: _TypeAlias = EMinus  # noqa: Y015
 
@@ -1040,6 +1492,7 @@ class ELt(_message.Message):
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
     _ClearFieldArgType: _TypeAlias = _typing.Literal["p1", b"p1", "p2", b"p2"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___ELt: _TypeAlias = ELt  # noqa: Y015
 
@@ -1063,6 +1516,7 @@ class ELte(_message.Message):
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
     _ClearFieldArgType: _TypeAlias = _typing.Literal["p1", b"p1", "p2", b"p2"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___ELte: _TypeAlias = ELte  # noqa: Y015
 
@@ -1086,6 +1540,7 @@ class EGt(_message.Message):
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
     _ClearFieldArgType: _TypeAlias = _typing.Literal["p1", b"p1", "p2", b"p2"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___EGt: _TypeAlias = EGt  # noqa: Y015
 
@@ -1109,6 +1564,7 @@ class EGte(_message.Message):
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
     _ClearFieldArgType: _TypeAlias = _typing.Literal["p1", b"p1", "p2", b"p2"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___EGte: _TypeAlias = EGte  # noqa: Y015
 
@@ -1132,6 +1588,7 @@ class EEq(_message.Message):
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
     _ClearFieldArgType: _TypeAlias = _typing.Literal["p1", b"p1", "p2", b"p2"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___EEq: _TypeAlias = EEq  # noqa: Y015
 
@@ -1155,6 +1612,7 @@ class ENeq(_message.Message):
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
     _ClearFieldArgType: _TypeAlias = _typing.Literal["p1", b"p1", "p2", b"p2"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___ENeq: _TypeAlias = ENeq  # noqa: Y015
 
@@ -1178,6 +1636,7 @@ class EAnd(_message.Message):
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
     _ClearFieldArgType: _TypeAlias = _typing.Literal["p1", b"p1", "p2", b"p2"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___EAnd: _TypeAlias = EAnd  # noqa: Y015
 
@@ -1201,6 +1660,7 @@ class EOr(_message.Message):
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
     _ClearFieldArgType: _TypeAlias = _typing.Literal["p1", b"p1", "p2", b"p2"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___EOr: _TypeAlias = EOr  # noqa: Y015
 
@@ -1224,6 +1684,7 @@ class EMatches(_message.Message):
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
     _ClearFieldArgType: _TypeAlias = _typing.Literal["pattern", b"pattern", "target", b"target"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___EMatches: _TypeAlias = EMatches  # noqa: Y015
 
@@ -1253,6 +1714,7 @@ class EPercentPercent(_message.Message):
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
     _ClearFieldArgType: _TypeAlias = _typing.Literal["p1", b"p1", "p2", b"p2"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___EPercentPercent: _TypeAlias = EPercentPercent  # noqa: Y015
 
@@ -1278,6 +1740,7 @@ class EPlusPlus(_message.Message):
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
     _ClearFieldArgType: _TypeAlias = _typing.Literal["p1", b"p1", "p2", b"p2"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___EPlusPlus: _TypeAlias = EPlusPlus  # noqa: Y015
 
@@ -1303,6 +1766,7 @@ class EMinusMinus(_message.Message):
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
     _ClearFieldArgType: _TypeAlias = _typing.Literal["p1", b"p1", "p2", b"p2"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___EMinusMinus: _TypeAlias = EMinusMinus  # noqa: Y015
 
@@ -1369,8 +1833,11 @@ class VarRef(_message.Message):
         index: _builtins.int = ...,
         depth: _builtins.int = ...,
     ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _Never  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
     _ClearFieldArgType: _TypeAlias = _typing.Literal["depth", b"depth", "index", b"index"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___VarRef: _TypeAlias = VarRef  # noqa: Y015
 
@@ -1386,8 +1853,11 @@ class ConnectiveBody(_message.Message):
         *,
         ps: _abc.Iterable[Global___Par] | None = ...,
     ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _Never  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
     _ClearFieldArgType: _TypeAlias = _typing.Literal["ps", b"ps"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___ConnectiveBody: _TypeAlias = ConnectiveBody  # noqa: Y015
 
@@ -1402,8 +1872,11 @@ class DeployId(_message.Message):
         *,
         sig: _builtins.bytes = ...,
     ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _Never  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
     _ClearFieldArgType: _TypeAlias = _typing.Literal["sig", b"sig"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___DeployId: _TypeAlias = DeployId  # noqa: Y015
 
@@ -1418,8 +1891,11 @@ class DeployerId(_message.Message):
         *,
         publicKey: _builtins.bytes = ...,
     ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _Never  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
     _ClearFieldArgType: _TypeAlias = _typing.Literal["publicKey", b"publicKey"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___DeployerId: _TypeAlias = DeployerId  # noqa: Y015
 
@@ -1473,8 +1949,11 @@ class GPrivate(_message.Message):
         *,
         id: _builtins.bytes = ...,
     ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _Never  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
     _ClearFieldArgType: _TypeAlias = _typing.Literal["id", b"id"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___GPrivate: _TypeAlias = GPrivate  # noqa: Y015
 
@@ -1489,8 +1968,11 @@ class GDeployId(_message.Message):
         *,
         sig: _builtins.bytes = ...,
     ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _Never  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
     _ClearFieldArgType: _TypeAlias = _typing.Literal["sig", b"sig"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___GDeployId: _TypeAlias = GDeployId  # noqa: Y015
 
@@ -1505,8 +1987,11 @@ class GDeployerId(_message.Message):
         *,
         publicKey: _builtins.bytes = ...,
     ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _Never  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
     _ClearFieldArgType: _TypeAlias = _typing.Literal["publicKey", b"publicKey"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___GDeployerId: _TypeAlias = GDeployerId  # noqa: Y015
 
@@ -1517,5 +2002,10 @@ class GSysAuthToken(_message.Message):
     def __init__(
         self,
     ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _Never  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _Never  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___GSysAuthToken: _TypeAlias = GSysAuthToken  # noqa: Y015

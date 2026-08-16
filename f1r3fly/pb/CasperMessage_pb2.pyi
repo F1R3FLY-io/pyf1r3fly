@@ -10,7 +10,7 @@ from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
 from google.protobuf.internal import containers as _containers
 from google.protobuf.internal import enum_type_wrapper as _enum_type_wrapper
-from . import RhoTypes_pb2 as _RhoTypes_pb2
+import RhoTypes_pb2 as _RhoTypes_pb2
 import builtins as _builtins
 import sys
 import typing as _typing
@@ -47,6 +47,57 @@ class AtomKind(_AtomKind, metaclass=_AtomKindEnumTypeWrapper):
 GROUND: AtomKind.ValueType  # 0
 QUOTE: AtomKind.ValueType  # 1
 Global___AtomKind: _TypeAlias = AtomKind  # noqa: Y015
+
+class _DeployAdmissionStatusProto:
+    ValueType = _typing.NewType("ValueType", _builtins.int)
+    V: _TypeAlias = ValueType  # noqa: Y015
+
+class _DeployAdmissionStatusProtoEnumTypeWrapper(_enum_type_wrapper._EnumTypeWrapper[_DeployAdmissionStatusProto.ValueType], _builtins.type):
+    DESCRIPTOR: _descriptor.EnumDescriptor
+    DEPLOY_ADMISSION_STATUS_EXECUTED: _DeployAdmissionStatusProto.ValueType  # 0
+    DEPLOY_ADMISSION_STATUS_REJECTED: _DeployAdmissionStatusProto.ValueType  # 1
+
+class DeployAdmissionStatusProto(_DeployAdmissionStatusProto, metaclass=_DeployAdmissionStatusProtoEnumTypeWrapper): ...
+
+DEPLOY_ADMISSION_STATUS_EXECUTED: DeployAdmissionStatusProto.ValueType  # 0
+DEPLOY_ADMISSION_STATUS_REJECTED: DeployAdmissionStatusProto.ValueType  # 1
+Global___DeployAdmissionStatusProto: _TypeAlias = DeployAdmissionStatusProto  # noqa: Y015
+
+class _CostAuthorityDemandKindProto:
+    ValueType = _typing.NewType("ValueType", _builtins.int)
+    V: _TypeAlias = ValueType  # noqa: Y015
+
+class _CostAuthorityDemandKindProtoEnumTypeWrapper(_enum_type_wrapper._EnumTypeWrapper[_CostAuthorityDemandKindProto.ValueType], _builtins.type):
+    DESCRIPTOR: _descriptor.EnumDescriptor
+    COST_AUTHORITY_DEMAND_KIND_EXACT: _CostAuthorityDemandKindProto.ValueType  # 0
+    COST_AUTHORITY_DEMAND_KIND_FINITE_UPPER_BOUND: _CostAuthorityDemandKindProto.ValueType  # 1
+    COST_AUTHORITY_DEMAND_KIND_UNPROVABLE: _CostAuthorityDemandKindProto.ValueType  # 2
+
+class CostAuthorityDemandKindProto(_CostAuthorityDemandKindProto, metaclass=_CostAuthorityDemandKindProtoEnumTypeWrapper): ...
+
+COST_AUTHORITY_DEMAND_KIND_EXACT: CostAuthorityDemandKindProto.ValueType  # 0
+COST_AUTHORITY_DEMAND_KIND_FINITE_UPPER_BOUND: CostAuthorityDemandKindProto.ValueType  # 1
+COST_AUTHORITY_DEMAND_KIND_UNPROVABLE: CostAuthorityDemandKindProto.ValueType  # 2
+Global___CostAuthorityDemandKindProto: _TypeAlias = CostAuthorityDemandKindProto  # noqa: Y015
+
+class _RejectedDeployReasonProto:
+    ValueType = _typing.NewType("ValueType", _builtins.int)
+    V: _TypeAlias = ValueType  # noqa: Y015
+
+class _RejectedDeployReasonProtoEnumTypeWrapper(_enum_type_wrapper._EnumTypeWrapper[_RejectedDeployReasonProto.ValueType], _builtins.type):
+    DESCRIPTOR: _descriptor.EnumDescriptor
+    REJECTED_DEPLOY_REASON_UNSPECIFIED: _RejectedDeployReasonProto.ValueType  # 0
+    REJECTED_DEPLOY_REASON_MERGE_CONFLICT: _RejectedDeployReasonProto.ValueType  # 1
+    REJECTED_DEPLOY_REASON_DUPLICATE_OCCURRENCE: _RejectedDeployReasonProto.ValueType  # 2
+    REJECTED_DEPLOY_REASON_COLLATERAL_CHAIN_DROP: _RejectedDeployReasonProto.ValueType  # 3
+
+class RejectedDeployReasonProto(_RejectedDeployReasonProto, metaclass=_RejectedDeployReasonProtoEnumTypeWrapper): ...
+
+REJECTED_DEPLOY_REASON_UNSPECIFIED: RejectedDeployReasonProto.ValueType  # 0
+REJECTED_DEPLOY_REASON_MERGE_CONFLICT: RejectedDeployReasonProto.ValueType  # 1
+REJECTED_DEPLOY_REASON_DUPLICATE_OCCURRENCE: RejectedDeployReasonProto.ValueType  # 2
+REJECTED_DEPLOY_REASON_COLLATERAL_CHAIN_DROP: RejectedDeployReasonProto.ValueType  # 3
+Global___RejectedDeployReasonProto: _TypeAlias = RejectedDeployReasonProto  # noqa: Y015
 
 @_typing.final
 class HasBlockRequestProto(_message.Message):
@@ -493,6 +544,7 @@ class DeployDataProto(_message.Message):
     COSIGNERS_FIELD_NUMBER: _builtins.int
     COSIGNER_THRESHOLD_FIELD_NUMBER: _builtins.int
     SIG_ALGEBRA_FIELD_NUMBER: _builtins.int
+    AUTHORITYPRESENTATIONS_FIELD_NUMBER: _builtins.int
     deployer: _builtins.bytes
     """public key"""
     term: _builtins.str
@@ -533,6 +585,8 @@ class DeployDataProto(_message.Message):
         operational semantics.
         """
 
+    @_builtins.property
+    def authorityPresentations(self) -> _containers.RepeatedCompositeFieldContainer[_RhoTypes_pb2.CostSignature]: ...
     def __init__(
         self,
         *,
@@ -548,10 +602,11 @@ class DeployDataProto(_message.Message):
         cosigners: _abc.Iterable[Global___CompoundSigner] | None = ...,
         cosigner_threshold: _builtins.int = ...,
         sig_algebra: Global___SigCompound | None = ...,
+        authorityPresentations: _abc.Iterable[_RhoTypes_pb2.CostSignature] | None = ...,
     ) -> None: ...
     _HasFieldArgType: _TypeAlias = _typing.Literal["_sig_algebra", b"_sig_algebra", "sig_algebra", b"sig_algebra"]  # noqa: Y015
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["_sig_algebra", b"_sig_algebra", "cosigner_threshold", b"cosigner_threshold", "cosigners", b"cosigners", "deployer", b"deployer", "expirationTimestamp", b"expirationTimestamp", "language", b"language", "shardId", b"shardId", "sig", b"sig", "sigAlgorithm", b"sigAlgorithm", "sig_algebra", b"sig_algebra", "term", b"term", "timestamp", b"timestamp", "validAfterBlockNumber", b"validAfterBlockNumber"]  # noqa: Y015
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["_sig_algebra", b"_sig_algebra", "authorityPresentations", b"authorityPresentations", "cosigner_threshold", b"cosigner_threshold", "cosigners", b"cosigners", "deployer", b"deployer", "expirationTimestamp", b"expirationTimestamp", "language", b"language", "shardId", b"shardId", "sig", b"sig", "sigAlgorithm", b"sigAlgorithm", "sig_algebra", b"sig_algebra", "term", b"term", "timestamp", b"timestamp", "validAfterBlockNumber", b"validAfterBlockNumber"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
     _WhichOneofReturnType__sig_algebra: _TypeAlias = _typing.Literal["sig_algebra"]  # noqa: Y015
     _WhichOneofArgType__sig_algebra: _TypeAlias = _typing.Literal["_sig_algebra", b"_sig_algebra"]  # noqa: Y015
@@ -853,9 +908,17 @@ class ProcessedDeployProto(_message.Message):
     DEPLOYLOG_FIELD_NUMBER: _builtins.int
     ERRORED_FIELD_NUMBER: _builtins.int
     SYSTEMDEPLOYERROR_FIELD_NUMBER: _builtins.int
+    PRESTATEHASH_FIELD_NUMBER: _builtins.int
+    POSTSTATEHASH_FIELD_NUMBER: _builtins.int
+    AUTHORITYFUNDINGCERTIFICATE_FIELD_NUMBER: _builtins.int
+    AUTHORITYCOSTWITNESS_FIELD_NUMBER: _builtins.int
+    ADMISSIONSTATUS_FIELD_NUMBER: _builtins.int
     errored: _builtins.bool
     """true if deploy encountered a user error"""
     systemDeployError: _builtins.str
+    preStateHash: _builtins.bytes
+    postStateHash: _builtins.bytes
+    admissionStatus: Global___DeployAdmissionStatusProto.ValueType
     @_builtins.property
     def deploy(self) -> Global___DeployDataProto: ...
     @_builtins.property
@@ -864,6 +927,10 @@ class ProcessedDeployProto(_message.Message):
     def deployLog(self) -> _containers.RepeatedCompositeFieldContainer[Global___EventProto]:
         """the new terms and comm. rule reductions from this deploy"""
 
+    @_builtins.property
+    def authorityFundingCertificate(self) -> Global___CostAuthorityFundingCertificateProto: ...
+    @_builtins.property
+    def authorityCostWitness(self) -> Global___CostAuthorityWitnessProto: ...
     def __init__(
         self,
         *,
@@ -872,14 +939,247 @@ class ProcessedDeployProto(_message.Message):
         deployLog: _abc.Iterable[Global___EventProto] | None = ...,
         errored: _builtins.bool = ...,
         systemDeployError: _builtins.str = ...,
+        preStateHash: _builtins.bytes = ...,
+        postStateHash: _builtins.bytes = ...,
+        authorityFundingCertificate: Global___CostAuthorityFundingCertificateProto | None = ...,
+        authorityCostWitness: Global___CostAuthorityWitnessProto | None = ...,
+        admissionStatus: Global___DeployAdmissionStatusProto.ValueType = ...,
     ) -> None: ...
-    _HasFieldArgType: _TypeAlias = _typing.Literal["cost", b"cost", "deploy", b"deploy"]  # noqa: Y015
+    _HasFieldArgType: _TypeAlias = _typing.Literal["authorityCostWitness", b"authorityCostWitness", "authorityFundingCertificate", b"authorityFundingCertificate", "cost", b"cost", "deploy", b"deploy"]  # noqa: Y015
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["cost", b"cost", "deploy", b"deploy", "deployLog", b"deployLog", "errored", b"errored", "systemDeployError", b"systemDeployError"]  # noqa: Y015
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["admissionStatus", b"admissionStatus", "authorityCostWitness", b"authorityCostWitness", "authorityFundingCertificate", b"authorityFundingCertificate", "cost", b"cost", "deploy", b"deploy", "deployLog", b"deployLog", "errored", b"errored", "postStateHash", b"postStateHash", "preStateHash", b"preStateHash", "systemDeployError", b"systemDeployError"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
     def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___ProcessedDeployProto: _TypeAlias = ProcessedDeployProto  # noqa: Y015
+
+@_typing.final
+class CostAuthorityResourceProto(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
+
+    KEY_FIELD_NUMBER: _builtins.int
+    AMOUNT_FIELD_NUMBER: _builtins.int
+    key: _builtins.bytes
+    amount: _builtins.int
+    def __init__(
+        self,
+        *,
+        key: _builtins.bytes = ...,
+        amount: _builtins.int = ...,
+    ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _Never  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["amount", b"amount", "key", b"key"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
+
+Global___CostAuthorityResourceProto: _TypeAlias = CostAuthorityResourceProto  # noqa: Y015
+
+@_typing.final
+class CostAuthorityFundingCertificateProto(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
+
+    PROTOCOLVERSION_FIELD_NUMBER: _builtins.int
+    PROGRAMHASH_FIELD_NUMBER: _builtins.int
+    PRESTATEROOT_FIELD_NUMBER: _builtins.int
+    RESERVATIONID_FIELD_NUMBER: _builtins.int
+    DEMANDKIND_FIELD_NUMBER: _builtins.int
+    DEMAND_FIELD_NUMBER: _builtins.int
+    PROOF_FIELD_NUMBER: _builtins.int
+    UNPROVABLEREASON_FIELD_NUMBER: _builtins.int
+    ALLOCATION_FIELD_NUMBER: _builtins.int
+    STACKRESERVATIONS_FIELD_NUMBER: _builtins.int
+    FEEALLOCATION_FIELD_NUMBER: _builtins.int
+    FEERECIPIENT_FIELD_NUMBER: _builtins.int
+    protocolVersion: _builtins.int
+    programHash: _builtins.bytes
+    preStateRoot: _builtins.bytes
+    reservationId: _builtins.bytes
+    demandKind: Global___CostAuthorityDemandKindProto.ValueType
+    proof: _builtins.bytes
+    unprovableReason: _builtins.int
+    feeRecipient: _builtins.bytes
+    @_builtins.property
+    def demand(self) -> _containers.RepeatedCompositeFieldContainer[Global___CostAuthorityResourceProto]: ...
+    @_builtins.property
+    def allocation(self) -> _containers.RepeatedCompositeFieldContainer[Global___CostAuthorityResourceProto]: ...
+    @_builtins.property
+    def stackReservations(self) -> _containers.RepeatedCompositeFieldContainer[Global___CostAuthorityStackReservationProto]: ...
+    @_builtins.property
+    def feeAllocation(self) -> _containers.RepeatedCompositeFieldContainer[Global___CostAuthorityResourceProto]: ...
+    def __init__(
+        self,
+        *,
+        protocolVersion: _builtins.int = ...,
+        programHash: _builtins.bytes = ...,
+        preStateRoot: _builtins.bytes = ...,
+        reservationId: _builtins.bytes = ...,
+        demandKind: Global___CostAuthorityDemandKindProto.ValueType = ...,
+        demand: _abc.Iterable[Global___CostAuthorityResourceProto] | None = ...,
+        proof: _builtins.bytes = ...,
+        unprovableReason: _builtins.int = ...,
+        allocation: _abc.Iterable[Global___CostAuthorityResourceProto] | None = ...,
+        stackReservations: _abc.Iterable[Global___CostAuthorityStackReservationProto] | None = ...,
+        feeAllocation: _abc.Iterable[Global___CostAuthorityResourceProto] | None = ...,
+        feeRecipient: _builtins.bytes = ...,
+    ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _Never  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["allocation", b"allocation", "demand", b"demand", "demandKind", b"demandKind", "feeAllocation", b"feeAllocation", "feeRecipient", b"feeRecipient", "preStateRoot", b"preStateRoot", "programHash", b"programHash", "proof", b"proof", "protocolVersion", b"protocolVersion", "reservationId", b"reservationId", "stackReservations", b"stackReservations", "unprovableReason", b"unprovableReason"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
+
+Global___CostAuthorityFundingCertificateProto: _TypeAlias = CostAuthorityFundingCertificateProto  # noqa: Y015
+
+@_typing.final
+class CostAuthorityStackReservationProto(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
+
+    STACKID_FIELD_NUMBER: _builtins.int
+    POPCOUNT_FIELD_NUMBER: _builtins.int
+    stackId: _builtins.bytes
+    popCount: _builtins.int
+    def __init__(
+        self,
+        *,
+        stackId: _builtins.bytes = ...,
+        popCount: _builtins.int = ...,
+    ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _Never  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["popCount", b"popCount", "stackId", b"stackId"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
+
+Global___CostAuthorityStackReservationProto: _TypeAlias = CostAuthorityStackReservationProto  # noqa: Y015
+
+@_typing.final
+class CostAuthorityEventProto(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
+
+    EVENTID_FIELD_NUMBER: _builtins.int
+    DEBIT_FIELD_NUMBER: _builtins.int
+    AUTHORITY_FIELD_NUMBER: _builtins.int
+    eventId: _builtins.bytes
+    @_builtins.property
+    def debit(self) -> _containers.RepeatedCompositeFieldContainer[Global___CostAuthorityResourceProto]: ...
+    @_builtins.property
+    def authority(self) -> _RhoTypes_pb2.CostAuthority: ...
+    def __init__(
+        self,
+        *,
+        eventId: _builtins.bytes = ...,
+        debit: _abc.Iterable[Global___CostAuthorityResourceProto] | None = ...,
+        authority: _RhoTypes_pb2.CostAuthority | None = ...,
+    ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _typing.Literal["authority", b"authority"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["authority", b"authority", "debit", b"debit", "eventId", b"eventId"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
+
+Global___CostAuthorityEventProto: _TypeAlias = CostAuthorityEventProto  # noqa: Y015
+
+@_typing.final
+class CostAuthorityPhysicalEventDrawProto(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
+
+    EVENTID_FIELD_NUMBER: _builtins.int
+    BALANCES_FIELD_NUMBER: _builtins.int
+    STACKIDS_FIELD_NUMBER: _builtins.int
+    eventId: _builtins.bytes
+    @_builtins.property
+    def balances(self) -> _containers.RepeatedCompositeFieldContainer[Global___CostAuthorityResourceProto]: ...
+    @_builtins.property
+    def stackIds(self) -> _containers.RepeatedScalarFieldContainer[_builtins.bytes]: ...
+    def __init__(
+        self,
+        *,
+        eventId: _builtins.bytes = ...,
+        balances: _abc.Iterable[Global___CostAuthorityResourceProto] | None = ...,
+        stackIds: _abc.Iterable[_builtins.bytes] | None = ...,
+    ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _Never  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["balances", b"balances", "eventId", b"eventId", "stackIds", b"stackIds"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
+
+Global___CostAuthorityPhysicalEventDrawProto: _TypeAlias = CostAuthorityPhysicalEventDrawProto  # noqa: Y015
+
+@_typing.final
+class CostAuthorityBornStackProto(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
+
+    STACKID_FIELD_NUMBER: _builtins.int
+    PRODUCEHASH_FIELD_NUMBER: _builtins.int
+    CELLS_FIELD_NUMBER: _builtins.int
+    stackId: _builtins.bytes
+    produceHash: _builtins.bytes
+    @_builtins.property
+    def cells(self) -> _containers.RepeatedCompositeFieldContainer[_RhoTypes_pb2.CostSignature]: ...
+    def __init__(
+        self,
+        *,
+        stackId: _builtins.bytes = ...,
+        produceHash: _builtins.bytes = ...,
+        cells: _abc.Iterable[_RhoTypes_pb2.CostSignature] | None = ...,
+    ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _Never  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["cells", b"cells", "produceHash", b"produceHash", "stackId", b"stackId"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
+
+Global___CostAuthorityBornStackProto: _TypeAlias = CostAuthorityBornStackProto  # noqa: Y015
+
+@_typing.final
+class CostAuthorityWitnessProto(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
+
+    PROTOCOLVERSION_FIELD_NUMBER: _builtins.int
+    CERTIFICATEID_FIELD_NUMBER: _builtins.int
+    PRESTATEROOT_FIELD_NUMBER: _builtins.int
+    POSTSTATEROOT_FIELD_NUMBER: _builtins.int
+    EVENTS_FIELD_NUMBER: _builtins.int
+    REALIZED_FIELD_NUMBER: _builtins.int
+    SETTLEMENT_FIELD_NUMBER: _builtins.int
+    PHYSICALDRAWS_FIELD_NUMBER: _builtins.int
+    BORNSTACKS_FIELD_NUMBER: _builtins.int
+    protocolVersion: _builtins.int
+    certificateId: _builtins.bytes
+    preStateRoot: _builtins.bytes
+    postStateRoot: _builtins.bytes
+    @_builtins.property
+    def events(self) -> _containers.RepeatedCompositeFieldContainer[Global___CostAuthorityEventProto]: ...
+    @_builtins.property
+    def realized(self) -> _containers.RepeatedCompositeFieldContainer[Global___CostAuthorityResourceProto]: ...
+    @_builtins.property
+    def settlement(self) -> _containers.RepeatedCompositeFieldContainer[Global___CostAuthorityResourceProto]: ...
+    @_builtins.property
+    def physicalDraws(self) -> _containers.RepeatedCompositeFieldContainer[Global___CostAuthorityPhysicalEventDrawProto]: ...
+    @_builtins.property
+    def bornStacks(self) -> _containers.RepeatedCompositeFieldContainer[Global___CostAuthorityBornStackProto]: ...
+    def __init__(
+        self,
+        *,
+        protocolVersion: _builtins.int = ...,
+        certificateId: _builtins.bytes = ...,
+        preStateRoot: _builtins.bytes = ...,
+        postStateRoot: _builtins.bytes = ...,
+        events: _abc.Iterable[Global___CostAuthorityEventProto] | None = ...,
+        realized: _abc.Iterable[Global___CostAuthorityResourceProto] | None = ...,
+        settlement: _abc.Iterable[Global___CostAuthorityResourceProto] | None = ...,
+        physicalDraws: _abc.Iterable[Global___CostAuthorityPhysicalEventDrawProto] | None = ...,
+        bornStacks: _abc.Iterable[Global___CostAuthorityBornStackProto] | None = ...,
+    ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _Never  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["bornStacks", b"bornStacks", "certificateId", b"certificateId", "events", b"events", "physicalDraws", b"physicalDraws", "postStateRoot", b"postStateRoot", "preStateRoot", b"preStateRoot", "protocolVersion", b"protocolVersion", "realized", b"realized", "settlement", b"settlement"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
+
+Global___CostAuthorityWitnessProto: _TypeAlias = CostAuthorityWitnessProto  # noqa: Y015
 
 @_typing.final
 class SlashSystemDeployDataProto(_message.Message):
@@ -1029,7 +1329,11 @@ class ProcessedSystemDeployProto(_message.Message):
     SYSTEMDEPLOY_FIELD_NUMBER: _builtins.int
     DEPLOYLOG_FIELD_NUMBER: _builtins.int
     ERRORMSG_FIELD_NUMBER: _builtins.int
+    PRESTATEHASH_FIELD_NUMBER: _builtins.int
+    POSTSTATEHASH_FIELD_NUMBER: _builtins.int
     errorMsg: _builtins.str
+    preStateHash: _builtins.bytes
+    postStateHash: _builtins.bytes
     @_builtins.property
     def systemDeploy(self) -> Global___SystemDeployDataProto: ...
     @_builtins.property
@@ -1040,10 +1344,12 @@ class ProcessedSystemDeployProto(_message.Message):
         systemDeploy: Global___SystemDeployDataProto | None = ...,
         deployLog: _abc.Iterable[Global___EventProto] | None = ...,
         errorMsg: _builtins.str = ...,
+        preStateHash: _builtins.bytes = ...,
+        postStateHash: _builtins.bytes = ...,
     ) -> None: ...
     _HasFieldArgType: _TypeAlias = _typing.Literal["systemDeploy", b"systemDeploy"]  # noqa: Y015
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["deployLog", b"deployLog", "errorMsg", b"errorMsg", "systemDeploy", b"systemDeploy"]  # noqa: Y015
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["deployLog", b"deployLog", "errorMsg", b"errorMsg", "postStateHash", b"postStateHash", "preStateHash", b"preStateHash", "systemDeploy", b"systemDeploy"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
     def WhichOneof(self, oneof_group: _Never) -> None: ...
 
@@ -1089,15 +1395,21 @@ class RejectedDeployProto(_message.Message):
     DESCRIPTOR: _descriptor.Descriptor
 
     SIG_FIELD_NUMBER: _builtins.int
+    SOURCEBLOCKHASH_FIELD_NUMBER: _builtins.int
+    REASON_FIELD_NUMBER: _builtins.int
     sig: _builtins.bytes
+    sourceBlockHash: _builtins.bytes
+    reason: Global___RejectedDeployReasonProto.ValueType
     def __init__(
         self,
         *,
         sig: _builtins.bytes = ...,
+        sourceBlockHash: _builtins.bytes = ...,
+        reason: Global___RejectedDeployReasonProto.ValueType = ...,
     ) -> None: ...
     _HasFieldArgType: _TypeAlias = _Never  # noqa: Y015
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["sig", b"sig"]  # noqa: Y015
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["reason", b"reason", "sig", b"sig", "sourceBlockHash", b"sourceBlockHash"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
     def WhichOneof(self, oneof_group: _Never) -> None: ...
 

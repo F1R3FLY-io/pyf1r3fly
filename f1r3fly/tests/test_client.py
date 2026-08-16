@@ -4,6 +4,7 @@ from typing import Generator, Tuple, Union
 
 import grpc
 import pytest
+from ecdsa.keys import BadSignatureError
 
 from f1r3fly.client import F1r3flyClient
 from f1r3fly.crypto import PrivateKey
@@ -24,6 +25,7 @@ from f1r3fly.pb.ProposeServiceV1_pb2 import ProposeResponse
 from f1r3fly.pb.ProposeServiceV1_pb2_grpc import (
     ProposeServiceServicer, add_ProposeServiceServicer_to_server,
 )
+from f1r3fly.pb.RhoTypes_pb2 import CostSignature
 from f1r3fly.util import (
     _gen_deploy_sig_content, blake2b_256_hex, create_deploy_data,
     verify_deploy_data,
@@ -46,6 +48,65 @@ def test_d3_deploy_signature_preimage_golden_vector() -> None:
         "c2ac266875edd634b52a2c7272ea7e1e"
         "06d5a33a1864ad90a471d56aa89b45df"
     )
+
+
+def test_authority_presentations_are_canonical_and_signed() -> None:
+    first = CostSignature(ground=b"a")
+    second = CostSignature(ground=b"b")
+    data = create_deploy_data(
+        key,
+        "Nil",
+        valid_after_block_no=0,
+        timestamp_millis=0,
+        shard_id="root",
+        authority_presentations=[second, first],
+    )
+
+    assert list(data.authorityPresentations) == [first, second]
+    assert _gen_deploy_sig_content(data).hex() == (
+        "12034e696c5a04726f6f749201030a01619201030a0162"
+    )
+    assert verify_deploy_data(key.get_public_key(), data.sig, data)
+
+    changed = DeployDataProto()
+    changed.CopyFrom(data)
+    changed.authorityPresentations.append(CostSignature(ground=b"c"))
+    with pytest.raises(BadSignatureError):
+        verify_deploy_data(key.get_public_key(), data.sig, changed)
+
+
+def test_authority_presentations_reject_duplicates_and_unresolved_names() -> None:
+    duplicate = CostSignature(ground=b"a")
+    with pytest.raises(ValueError, match="strictly ordered and unique"):
+        create_deploy_data(
+            key,
+            "Nil",
+            authority_presentations=[duplicate, duplicate],
+        )
+
+    with pytest.raises(ValueError, match="unresolved bound signature"):
+        create_deploy_data(
+            key,
+            "Nil",
+            authority_presentations=[CostSignature(bound_level=0)],
+        )
+
+    nested = CostSignature()
+    nested.compound.elements.add(ground=b"a")
+    nested.compound.elements.add().compound.elements.add(ground=b"b")
+    with pytest.raises(ValueError, match="malformed compound signature"):
+        create_deploy_data(
+            key,
+            "Nil",
+            authority_presentations=[nested],
+        )
+
+    with pytest.raises(ValueError, match="non-canonical unit signature"):
+        create_deploy_data(
+            key,
+            "Nil",
+            authority_presentations=[CostSignature(unit=False)],
+        )
 
 
 @contextmanager

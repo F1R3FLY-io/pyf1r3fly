@@ -10,8 +10,8 @@ from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
 from google.protobuf.internal import containers as _containers
 from google.protobuf.internal import enum_type_wrapper as _enum_type_wrapper
-from . import CasperMessage_pb2 as _CasperMessage_pb2
-from . import RhoTypes_pb2 as _RhoTypes_pb2
+import CasperMessage_pb2 as _CasperMessage_pb2
+import RhoTypes_pb2 as _RhoTypes_pb2
 import builtins as _builtins
 import sys
 import typing as _typing
@@ -638,15 +638,21 @@ class RejectedDeployInfo(_message.Message):
     DESCRIPTOR: _descriptor.Descriptor
 
     SIG_FIELD_NUMBER: _builtins.int
+    SOURCEBLOCKHASH_FIELD_NUMBER: _builtins.int
+    REASON_FIELD_NUMBER: _builtins.int
     sig: _builtins.str
+    sourceBlockHash: _builtins.str
+    reason: _builtins.str
     def __init__(
         self,
         *,
         sig: _builtins.str = ...,
+        sourceBlockHash: _builtins.str = ...,
+        reason: _builtins.str = ...,
     ) -> None: ...
     _HasFieldArgType: _TypeAlias = _Never  # noqa: Y015
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["sig", b"sig"]  # noqa: Y015
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["reason", b"reason", "sig", b"sig", "sourceBlockHash", b"sourceBlockHash"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
     def WhichOneof(self, oneof_group: _Never) -> None: ...
 

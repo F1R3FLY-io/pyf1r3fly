@@ -182,6 +182,7 @@ message DeployDataProto {
   // See `rholang/src/rust/interpreter/accounting/mod.rs::Sig` for the
   // operational semantics.
   optional SigCompound sig_algebra = 17;
+  repeated rhoapi.CostSignature authorityPresentations = 18;
 }
 
 // One cosigner in a multi-signature deploy. Sorted ascending by `pk` bytes
@@ -301,6 +302,77 @@ message ProcessedDeployProto {
     // itself remains available at runtime via RuntimeBudget diagnostics.
     reserved 7, 8;
     reserved "costTraceDigest", "costTraceEventCount";
+    bytes preStateHash             = 9;
+    bytes postStateHash            = 10;
+    CostAuthorityFundingCertificateProto authorityFundingCertificate = 11;
+    CostAuthorityWitnessProto authorityCostWitness = 12;
+    DeployAdmissionStatusProto admissionStatus = 13;
+}
+
+enum DeployAdmissionStatusProto {
+    DEPLOY_ADMISSION_STATUS_EXECUTED = 0;
+    DEPLOY_ADMISSION_STATUS_REJECTED = 1;
+}
+
+message CostAuthorityResourceProto {
+  bytes key = 1;
+  uint64 amount = 2;
+}
+
+enum CostAuthorityDemandKindProto {
+  COST_AUTHORITY_DEMAND_KIND_EXACT = 0;
+  COST_AUTHORITY_DEMAND_KIND_FINITE_UPPER_BOUND = 1;
+  COST_AUTHORITY_DEMAND_KIND_UNPROVABLE = 2;
+}
+
+message CostAuthorityFundingCertificateProto {
+  uint32 protocolVersion = 1;
+  bytes programHash = 2;
+  bytes preStateRoot = 3;
+  bytes reservationId = 4;
+  CostAuthorityDemandKindProto demandKind = 5;
+  repeated CostAuthorityResourceProto demand = 6;
+  bytes proof = 7;
+  uint32 unprovableReason = 8;
+  repeated CostAuthorityResourceProto allocation = 9;
+  repeated CostAuthorityStackReservationProto stackReservations = 10;
+  repeated CostAuthorityResourceProto feeAllocation = 11;
+  bytes feeRecipient = 12;
+}
+
+message CostAuthorityStackReservationProto {
+  bytes stackId = 1;
+  uint64 popCount = 2;
+}
+
+message CostAuthorityEventProto {
+  bytes eventId = 1;
+  repeated CostAuthorityResourceProto debit = 2;
+  rhoapi.CostAuthority authority = 3;
+}
+
+message CostAuthorityPhysicalEventDrawProto {
+  bytes eventId = 1;
+  repeated CostAuthorityResourceProto balances = 2;
+  repeated bytes stackIds = 3;
+}
+
+message CostAuthorityBornStackProto {
+  bytes stackId = 1;
+  bytes produceHash = 2;
+  repeated rhoapi.CostSignature cells = 3;
+}
+
+message CostAuthorityWitnessProto {
+  uint32 protocolVersion = 1;
+  bytes certificateId = 2;
+  bytes preStateRoot = 3;
+  bytes postStateRoot = 4;
+  repeated CostAuthorityEventProto events = 5;
+  repeated CostAuthorityResourceProto realized = 6;
+  repeated CostAuthorityResourceProto settlement = 7;
+  repeated CostAuthorityPhysicalEventDrawProto physicalDraws = 8;
+  repeated CostAuthorityBornStackProto bornStacks = 9;
 }
 
 message SlashSystemDeployDataProto {
@@ -347,6 +419,8 @@ message ProcessedSystemDeployProto {
     SystemDeployDataProto systemDeploy = 1 [(scalapb.field).no_box = true];
     repeated EventProto deployLog      = 2;
     string errorMsg                    = 3;
+    bytes preStateHash                 = 4;
+    bytes postStateHash                = 5;
 }
 
 message BodyProto {
@@ -359,6 +433,15 @@ message BodyProto {
 
 message RejectedDeployProto{
   bytes sig = 1;
+  bytes sourceBlockHash = 2;
+  RejectedDeployReasonProto reason = 3;
+}
+
+enum RejectedDeployReasonProto {
+  REJECTED_DEPLOY_REASON_UNSPECIFIED = 0;
+  REJECTED_DEPLOY_REASON_MERGE_CONFLICT = 1;
+  REJECTED_DEPLOY_REASON_DUPLICATE_OCCURRENCE = 2;
+  REJECTED_DEPLOY_REASON_COLLATERAL_CHAIN_DROP = 3;
 }
 
 message JustificationProto {
@@ -374,6 +457,8 @@ message RChainStateProto {
   //(which will be part of the tuplespace in the real implementation).
   repeated BondProto bonds = 3;
   int64 blockNumber        = 4;
+  reserved 5;
+  reserved "genesisSupply";
 }
 
 message EventProto {

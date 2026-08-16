@@ -9,6 +9,7 @@ deploy, find_deploy, last_finalized_block, get_data_at_deploy_id (with block has
 and exploratory_deploy.
 """
 
+import os
 import time
 
 import pytest
@@ -19,12 +20,19 @@ from f1r3fly.util import create_deploy_data
 
 VALIDATOR1_GRPC = 40411
 READONLY_GRPC = 40451
-PRIVATE_KEY = PrivateKey.from_hex(
-    "357cdc4201a5650830e0bc5a03299a30038d9934ba4c7ab73ec164ad82471ff9"
-)
+PRIVATE_KEY_ENV = "PYF1R3FLY_TEST_PRIVATE_KEY"
+
+
+def _private_key() -> PrivateKey:
+    value = os.environ.get(PRIVATE_KEY_ENV)
+    if value is None:
+        raise RuntimeError(f"{PRIVATE_KEY_ENV} is required for live-node tests")
+    return PrivateKey.from_hex(value)
 
 
 def _is_node_available() -> bool:
+    if PRIVATE_KEY_ENV not in os.environ:
+        return False
     try:
         with F1r3flyClient("localhost", VALIDATOR1_GRPC) as client:
             client.last_finalized_block()
@@ -35,7 +43,10 @@ def _is_node_available() -> bool:
 
 skip_no_node = pytest.mark.skipif(
     not _is_node_available(),
-    reason="No running node on localhost:40411",
+    reason=(
+        "No running node on localhost:40411 or "
+        f"{PRIVATE_KEY_ENV} is not configured"
+    ),
 )
 
 
@@ -48,7 +59,7 @@ def _deploy_and_finalize(code: str) -> tuple:
         lfb = client.last_finalized_block()
         vabn = max(0, lfb.blockInfo.blockNumber - 1)
         deploy_data = create_deploy_data(
-            PRIVATE_KEY, code, vabn, int(time.time() * 1000), "root",
+            _private_key(), code, vabn, int(time.time() * 1000), "root",
         )
         deploy_id = client.send_deploy(deploy_data)
 

@@ -26,7 +26,7 @@ from .pb.DeployServiceV1_pb2_grpc import DeployServiceStub
 from .pb.ProposeServiceCommon_pb2 import ProposeQuery
 from .pb.ProposeServiceV1_pb2 import ProposeResponse
 from .pb.ProposeServiceV1_pb2_grpc import ProposeServiceStub
-from .pb.RhoTypes_pb2 import Expr, GDeployId, GUnforgeable, Par
+from .pb.RhoTypes_pb2 import CostSignature, Expr, GDeployId, GUnforgeable, Par
 from .report import DeployWithTransaction, Report, Transaction
 from .util import create_deploy_data
 
@@ -106,6 +106,7 @@ class F1r3flyClient:
             timestamp_millis: int = -1,
             shard_id: str = '',
             expiration_timestamp: int = 0,
+            authority_presentations: Iterable[CostSignature] = (),
     ) -> str:
         latest_blocks = self.show_blocks(1)
         # when the genesis block is not ready, it would be empty in show_blocks
@@ -120,6 +121,7 @@ class F1r3flyClient:
             timestamp_millis,
             shard_id,
             expiration_timestamp,
+            authority_presentations,
         )
 
     def exploratory_deploy(self, term: str, blockHash: str, usePreStateHash: bool = False) -> List[Par]:
@@ -153,6 +155,7 @@ class F1r3flyClient:
             timestamp_millis: int = -1,
             shard_id: str = '',
             expiration_timestamp: int = 0,
+            authority_presentations: Iterable[CostSignature] = (),
     ) -> str:
         deploy_data = create_deploy_data(
             key,
@@ -161,6 +164,7 @@ class F1r3flyClient:
             timestamp_millis,
             shard_id,
             expiration_timestamp,
+            authority_presentations,
         )
         return self.send_deploy(deploy_data)
 

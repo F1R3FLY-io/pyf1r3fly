@@ -23,10 +23,10 @@ _sym_db = _symbol_database.Default()
 
 
 from . import CasperMessage_pb2 as CasperMessage__pb2
-from . import DeployServiceCommon_pb2 as DeployServiceCommon__pb2
-from . import RhoTypes_pb2 as RhoTypes__pb2
 from . import ServiceError_pb2 as ServiceError__pb2
+from . import DeployServiceCommon_pb2 as DeployServiceCommon__pb2
 from .scalapb import scalapb_pb2 as scalapb_dot_scalapb__pb2
+from . import RhoTypes_pb2 as RhoTypes__pb2
 from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
 
 

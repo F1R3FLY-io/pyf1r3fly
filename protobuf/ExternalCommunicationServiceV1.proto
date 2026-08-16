@@ -1,4 +1,5 @@
 syntax = "proto3";
+
 package casper.v1;
 
 import "ServiceError.proto";
@@ -28,4 +29,3 @@ message UpdateNotificationResponse {
     string result                      = 2;
   }
 }
-

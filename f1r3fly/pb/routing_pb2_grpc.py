@@ -5,7 +5,7 @@ import warnings
 
 from . import routing_pb2 as routing__pb2
 
-GRPC_GENERATED_VERSION = '1.78.0'
+GRPC_GENERATED_VERSION = '1.83.0'
 GRPC_VERSION = grpc.__version__
 _version_not_supported = False
 
@@ -25,7 +25,7 @@ if _version_not_supported:
     )
 
 
-class TransportLayerStub(object):
+class TransportLayerStub:
     """Missing associated documentation comment in .proto file."""
 
     def __init__(self, channel):
@@ -46,7 +46,7 @@ class TransportLayerStub(object):
                 _registered_method=True)
 
 
-class TransportLayerServicer(object):
+class TransportLayerServicer:
     """Missing associated documentation comment in .proto file."""
 
     def Send(self, request, context):
@@ -82,7 +82,7 @@ def add_TransportLayerServicer_to_server(servicer, server):
 
 
  # This class is part of an EXPERIMENTAL API.
-class TransportLayer(object):
+class TransportLayer:
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod

@@ -9,9 +9,9 @@ from collections import abc as _abc
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
 from google.protobuf.internal import containers as _containers
-from . import DeployServiceCommon_pb2 as _DeployServiceCommon_pb2
-from . import RhoTypes_pb2 as _RhoTypes_pb2
-from . import ServiceError_pb2 as _ServiceError_pb2
+import DeployServiceCommon_pb2 as _DeployServiceCommon_pb2
+import RhoTypes_pb2 as _RhoTypes_pb2
+import ServiceError_pb2 as _ServiceError_pb2
 import builtins as _builtins
 import sys
 import typing as _typing

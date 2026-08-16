@@ -5,21 +5,22 @@ src_dir=protobuf
 out_dir=f1r3fly/pb
 stub_dir=f1r3fly/pb
 
-mkdir -p $out_dir
-python3 -m grpc_tools.protoc \
-	-I $src_dir \
-	--python_out=$out_dir \
-	--grpc_python_out=$out_dir \
-	--mypy_out=$stub_dir \
-	$(find $src_dir -name '*.proto')
+mkdir -p "$out_dir"
+find "$src_dir" -name '*.proto' -exec \
+	python3 -m grpc_tools.protoc \
+	-I "$src_dir" \
+	--python_out="$out_dir" \
+	--grpc_python_out="$out_dir" \
+	--mypy_out="$stub_dir" {} +
 
 # https://github.com/protocolbuffers/protobuf/issues/1491#issuecomment-438138293
 # Fix imports in .py files
-for f in $(find $out_dir -name '*.py'); do
-	sed -i '' -E -e 's/^import (.*)_pb2/from . import \1_pb2/' -e 's/^from scalapb/from .scalapb/' "$f"
-done
+find "$out_dir" -name '*.py' -exec \
+	sed -i.bak -E -e 's/^import (.*)_pb2/from . import \1_pb2/' \
+	-e 's/^from scalapb/from .scalapb/' {} +
+find "$out_dir" -name '*.py.bak' -delete
 
-# Fix imports in .pyi files  
-for f in $(find $out_dir -name '*.pyi'); do
-	sed -i '' -E -e 's/^from ([a-zA-Z_]*_pb2)/from .\1/' "$f"
-done
+# Fix imports in .pyi files
+find "$out_dir" -name '*.pyi' -exec \
+	sed -i.bak -E -e 's/^from ([a-zA-Z_]*_pb2)/from .\1/' {} +
+find "$out_dir" -name '*.pyi.bak' -delete

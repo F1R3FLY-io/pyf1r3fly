@@ -19,13 +19,18 @@ See `pyproject.toml` for information about 3rd party library dependencies.
 | `crypto.py` | `PrivateKey`, `PublicKey` -- SECP256k1 key handling, vault address derivation |
 | `par.py` | `par_as_string`, `par_as_int`, `par_as_map`, etc. -- type-safe extraction from Rholang Par protobuf messages |
 | `polling.py` | `poll_until`, `deploy_and_read`, `wait_for_finalized`, `wait_for_deploy_finalized`, `deploy_with_fallback` -- polling and deploy workflow utilities |
-| `deploy.py` | `check_deploy_succeeded`, `check_deploy_errored`, `find_deploy_in_block` -- deploy result inspection |
+| `deploy.py` | `check_deploy_succeeded`, `check_deploy_consumed_cost`, `check_deploy_errored`, `find_deploy_in_block` -- deploy result and semantic-cost inspection |
+| `cost_accounting.py` | Typed authority presentations and evidence, gateway-authenticated wallet-funded lollipop slots, the conserving two-sided Exchange, and bounded capability-registry workflows |
 | `contracts.py` | `registry_lookup`, `registry_query` -- read-only queries against on-chain contracts via exploratory deploy |
 | `vault.py` | `VaultAPI(client, shard_id='root')` -- token transfers and balance queries. Methods: `get_balance` (exploratory deploy, readonly only on Rust node), `deploy_get_balance` (real deploy via `DEPLOY_GET_BALANCE_RHO_TPL`, works on validators), `transfer`, `transfer_ensure`, `read_transfer_result`. All deploy methods use the constructor's `shard_id`. |
 | `system_contracts.py` | `query_token_metadata` -- queries for genesis-deployed system contracts |
 | `pos.py` | `PosAPI` -- Proof-of-Stake operations: `bond`, `withdraw`, `reveal_random`, `pos_vault_transfer`; reads `get_bonds`, `get_rewards`, `get_withdrawers`, `get_coop_vault`, `get_epoch_length` |
 | `websocket.py` | `connect_ws`, `wait_for_events`, `validate_block_event` -- WebSocket `/ws/events` client with event type constants and connection retry |
 | `util.py` | `create_deploy_data`, `sign_deploy_data` -- deploy proto construction and signing |
+
+See [Cost-accounted Rholang client workflows](docs/cost-accounting.md) for the
+complete wallet-to-slot-to-gateway lifecycle, authority-evidence validation,
+terminal deploy tracking, security boundaries, and schema compatibility rules.
 
 ## Quick Start
 

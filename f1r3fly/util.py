@@ -1,8 +1,49 @@
 import hashlib
 import time
+from typing import Iterable, List
 
 from .crypto import PrivateKey, PublicKey
 from .pb.CasperMessage_pb2 import DeployDataProto
+from .pb.RhoTypes_pb2 import CostSignature
+
+
+def ordered_authority_presentations(
+        presentations: Iterable[CostSignature],
+) -> List[CostSignature]:
+    def validate(signature: CostSignature) -> None:
+        value = signature.WhichOneof("value")
+        if value is None:
+            raise ValueError("authority presentation is missing its signature")
+        if value == "bound_level":
+            raise ValueError(
+                "authority presentation contains an unresolved bound signature"
+            )
+        if value == "unit" and not signature.unit:
+            raise ValueError(
+                "authority presentation contains a non-canonical unit signature"
+            )
+        if value == "compound":
+            if len(signature.compound.elements) < 2:
+                raise ValueError(
+                    "authority presentation contains a malformed compound signature"
+                )
+            for element in signature.compound.elements:
+                validate(element)
+
+    ordered = []
+    for presentation in presentations:
+        clone = CostSignature()
+        clone.CopyFrom(presentation)
+        validate(clone)
+        ordered.append(clone)
+
+    ordered.sort(key=lambda item: item.SerializeToString(deterministic=True))
+    for left, right in zip(ordered, ordered[1:]):
+        if left == right:
+            raise ValueError(
+                "authority presentations must be strictly ordered and unique"
+            )
+    return ordered
 
 
 def _gen_deploy_sig_content(data: DeployDataProto) -> bytes:
@@ -12,6 +53,9 @@ def _gen_deploy_sig_content(data: DeployDataProto) -> bytes:
     signed_data.validAfterBlockNumber = data.validAfterBlockNumber
     signed_data.shardId = data.shardId
     signed_data.expirationTimestamp = data.expirationTimestamp
+    signed_data.authorityPresentations.extend(
+        ordered_authority_presentations(data.authorityPresentations)
+    )
     return signed_data.SerializeToString()
 
 
@@ -61,6 +105,7 @@ def create_deploy_data(
         timestamp_millis: int = -1,
         shard_id: str = '',
         expiration_timestamp: int = 0,
+        authority_presentations: Iterable[CostSignature] = (),
 ) -> DeployDataProto:
     if timestamp_millis < 0:
         timestamp_millis = int(time.time() * 1000)
@@ -72,7 +117,9 @@ def create_deploy_data(
         shardId=shard_id,
         expirationTimestamp=expiration_timestamp,
         sigAlgorithm='secp256k1',
+        authorityPresentations=ordered_authority_presentations(
+            authority_presentations
+        ),
     )
     data.sig = sign_deploy_data(key, data)
     return data
-
