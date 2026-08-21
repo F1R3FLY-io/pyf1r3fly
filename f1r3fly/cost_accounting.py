@@ -7,18 +7,25 @@ import hashlib
 import json
 from collections.abc import Iterable
 
+from ecdsa.errors import MalformedPointError
+
 from .client import F1r3flyClient
-from .crypto import PrivateKey
+from .crypto import PrivateKey, PublicKey
 from .par import par_as_bool, par_as_bytes, par_as_int, par_as_tuple
 from .pb.CasperMessage_pb2 import (
+    COST_AUTHORITY_BYTE_EVENT_KIND_COMM,
+    COST_AUTHORITY_BYTE_EVENT_KIND_CONSUME_INTRODUCTION,
+    COST_AUTHORITY_BYTE_EVENT_KIND_PRODUCE_INTRODUCTION,
     COST_AUTHORITY_DEMAND_KIND_EXACT,
     COST_AUTHORITY_DEMAND_KIND_FINITE_UPPER_BOUND,
     COST_AUTHORITY_DEMAND_KIND_UNPROVABLE, DEPLOY_ADMISSION_STATUS_EXECUTED,
-    CostAuthorityBornStackProto, CostAuthorityEventProto,
-    CostAuthorityFundingCertificateProto, CostAuthorityPhysicalEventDrawProto,
-    CostAuthorityResourceProto, CostAuthorityStackReservationProto,
-    CostAuthorityWitnessProto, ProcessedDeployProto,
+    CostAuthorityBornStackProto, CostAuthorityByteEventProto,
+    CostAuthorityEventProto, CostAuthorityFundingCertificateProto,
+    CostAuthorityPhysicalEventDrawProto, CostAuthorityResourceProto,
+    CostAuthorityStackReservationProto, CostAuthorityWitnessProto,
+    ProcessedDeployProto,
 )
+from .pb.DeployServiceCommon_pb2 import DeployInfo
 from .pb.RhoTypes_pb2 import CostAuthority, CostSignature, Par
 from .polling import deploy_and_read
 from .vault import VaultAPI
@@ -54,38 +61,67 @@ class FundingSlotGrant:
     slot_address_channel: str
     completion_channel: str
     gateway_public_key: bytes
+    outer_address_channel: str | None = None
 
     def __post_init__(self) -> None:
-        _rho_string(self.trigger_channel)
-        _rho_string(self.slot_address_channel)
-        _rho_string(self.completion_channel)
+        channels = (
+            self.trigger_channel,
+            self.slot_address_channel,
+            self.completion_channel,
+            self.resolved_outer_address_channel,
+        )
+        for channel in channels:
+            _rho_string(channel)
+        if len(set(channels)) != len(channels):
+            raise ValueError("funding-slot public channels must be distinct")
         if len(self.gateway_public_key) != 65 or self.gateway_public_key[0] != 4:
             raise ValueError(
                 "gateway_public_key must be a 65-byte uncompressed secp256k1 key"
             )
+        try:
+            gateway = PublicKey.from_bytes(self.gateway_public_key)
+        except MalformedPointError as error:
+            raise ValueError(
+                "gateway_public_key must encode a valid secp256k1 point"
+            ) from error
+        if gateway.to_bytes() != self.gateway_public_key:
+            raise ValueError(
+                "gateway_public_key must use canonical uncompressed encoding"
+            )
+
+    @property
+    def resolved_outer_address_channel(self) -> str:
+        return self.outer_address_channel or f"{self.slot_address_channel}-outer"
 
     def install_term(self, continuation_body: str) -> str:
         trigger = _rho_string(self.trigger_channel)
+        outer_address = _rho_string(self.resolved_outer_address_channel)
         slot_address = _rho_string(self.slot_address_channel)
         completion = _rho_string(self.completion_channel)
         body = _nonempty_source(continuation_body, "continuation_body")
         gateway_public_key = _rho_bytes(self.gateway_public_key)
-        return f"""new entry, slot, slotAddressCh,
+        return f"""new entry, slot, entryAddressCh, slotAddressCh,
     VaultAddress(`rho:vault:address`),
     DeployerIdOps(`rho:system:deployerId:ops`) in {{
   for (@request, deployerId <= @{trigger}) {{
     new publicKeyCh in {{
       DeployerIdOps!("pubKeyBytes", *deployerId, *publicKeyCh) |
       for (@publicKey <- publicKeyCh) {{
-        if (publicKey == {gateway_public_key}) {{ entry!(request) }}
+        if (publicKey == {gateway_public_key}) {{
+          {{% for (@accepted <- entry) {{
+            {body} |
+            @{completion}!(accepted)
+          }} %}}[ entry -o slot ] |
+          entry!(request)
+        }}
       }}
     }}
   }} |
-  {{% for (@request <- entry) {{
-    {body} |
-    @{completion}!(request)
-  }} %}}[ entry -o slot ] |
   entry :: () |
+  VaultAddress!("fromUnforgeable", *entry, *entryAddressCh) |
+  for (@entryAddress <- entryAddressCh) {{
+    @{outer_address}!!(entryAddress)
+  }} |
   VaultAddress!(\"fromUnforgeable\", *slot, *slotAddressCh) |
   for (@slotAddress <- slotAddressCh) {{
     @{slot_address}!!(slotAddress)
@@ -134,18 +170,52 @@ class FundingSlotAPI:
             raise TypeError("funding-slot address channel did not contain a string")
         return value
 
+    def outer_address(
+        self,
+        grant: FundingSlotGrant,
+        block_hash: str = "",
+    ) -> str:
+        value = self.client.read_channel(
+            grant.resolved_outer_address_channel,
+            block_hash,
+        )
+        if not isinstance(value, str):
+            raise TypeError("outer funding address channel did not contain a string")
+        return value
+
+    def addresses(
+        self,
+        grant: FundingSlotGrant,
+        block_hash: str = "",
+    ) -> tuple[str, str]:
+        return (
+            self.outer_address(grant, block_hash),
+            self.slot_address(grant, block_hash),
+        )
+
     def fund(
         self,
         grant: FundingSlotGrant,
         source_vault: str,
-        amount: int,
+        outer_amount: int,
+        continuation_amount: int,
         key: PrivateKey,
         block_hash: str = "",
+        resolved_addresses: tuple[str, str] | None = None,
     ) -> str:
-        return self.fund_address(
-            self.slot_address(grant, block_hash),
+        if outer_amount <= 0 or continuation_amount <= 0:
+            raise ValueError("funding amounts must be positive")
+        outer_address, slot_address = (
+            resolved_addresses
+            if resolved_addresses is not None
+            else self.addresses(grant, block_hash)
+        )
+        return self.vault.transfer_batch_ensure(
             source_vault,
-            amount,
+            (
+                (outer_address, outer_amount),
+                (slot_address, continuation_amount),
+            ),
             key,
         )
 
@@ -342,12 +412,23 @@ class CapabilityAPI:
         )
 
 
-AUTHORITY_ACCOUNTING_PROTOCOL_VERSION = 7
-_CERTIFICATE_DOMAIN = b"f1r3node:authority-funding-certificate:v7"
+AUTHORITY_ACCOUNTING_PROTOCOL_VERSION = 8
+BYTE_COST_SCHEDULE_VERSION = 1
+BYTE_COST_SCHEDULE_DIGEST = bytes.fromhex(
+    "20f7da72457c462469ffb9e9d476e203b1395cada72bf102d8af484c32a4840c"
+)
+_CERTIFICATE_DOMAIN = b"f1r3node:authority-funding-certificate:v8"
 _STACK_TRANSFER_EVENT_DOMAIN = (
     b"f1r3node:cost-accounted-rho:stack-transfer-event:v1"
 )
 _MAX_U64 = (1 << 64) - 1
+_BYTE_EVENT_KINDS = frozenset(
+    (
+        COST_AUTHORITY_BYTE_EVENT_KIND_PRODUCE_INTRODUCTION,
+        COST_AUTHORITY_BYTE_EVENT_KIND_CONSUME_INTRODUCTION,
+        COST_AUTHORITY_BYTE_EVENT_KIND_COMM,
+    )
+)
 
 
 def _digest(value: bytes, label: str) -> bytes:
@@ -471,6 +552,10 @@ class CostAuthorityFundingCertificate:
     stack_reservations: tuple[CostAuthorityStackReservation, ...]
     fee_allocation: tuple[CostAuthorityResource, ...]
     fee_recipient: bytes
+    byte_cost_schedule_version: int
+    byte_cost_schedule_digest: bytes
+    byte_cost_bound: int
+    byte_allocation: tuple[CostAuthorityResource, ...]
 
     @classmethod
     def from_proto(
@@ -479,6 +564,14 @@ class CostAuthorityFundingCertificate:
     ) -> CostAuthorityFundingCertificate:
         if value.protocolVersion != AUTHORITY_ACCOUNTING_PROTOCOL_VERSION:
             raise ValueError("unsupported cost-authority protocol version")
+        if value.byteCostScheduleVersion != BYTE_COST_SCHEDULE_VERSION:
+            raise ValueError("unsupported byte-cost schedule version")
+        byte_cost_schedule_digest = _digest(
+            value.byteCostScheduleDigest,
+            "byte-cost schedule digest",
+        )
+        if byte_cost_schedule_digest != BYTE_COST_SCHEDULE_DIGEST:
+            raise ValueError("unsupported byte-cost schedule digest")
         demand_kind = value.demandKind
         demand = _resources(value.demand, "cost-authority demand")
         proof = bytes(value.proof)
@@ -508,6 +601,19 @@ class CostAuthorityFundingCertificate:
             raise ValueError(
                 "authority stack reservations must be strictly identity-ordered"
             )
+        allocation = _resources(
+            value.allocation,
+            "cost-authority allocation",
+        )
+        fee_allocation = _resources(
+            value.feeAllocation,
+            "cost-authority fee allocation",
+        )
+        byte_allocation = _resources(
+            value.byteAllocation,
+            "byte-cost allocation",
+        )
+        _sum_resources((allocation, byte_allocation, fee_allocation))
         return cls(
             protocol_version=value.protocolVersion,
             program_hash=_digest(value.programHash, "authority program hash"),
@@ -523,16 +629,14 @@ class CostAuthorityFundingCertificate:
             demand=demand,
             proof=proof,
             unprovable_reason=reason,
-            allocation=_resources(
-                value.allocation,
-                "cost-authority allocation",
-            ),
+            allocation=allocation,
             stack_reservations=reservations,
-            fee_allocation=_resources(
-                value.feeAllocation,
-                "cost-authority fee allocation",
-            ),
+            fee_allocation=fee_allocation,
             fee_recipient=bytes(value.feeRecipient),
+            byte_cost_schedule_version=value.byteCostScheduleVersion,
+            byte_cost_schedule_digest=byte_cost_schedule_digest,
+            byte_cost_bound=value.byteCostBound,
+            byte_allocation=byte_allocation,
         )
 
     def certificate_id(self) -> bytes:
@@ -558,6 +662,10 @@ class CostAuthorityFundingCertificate:
         _write_resources(output, self.fee_allocation)
         _write_u64(output, len(self.fee_recipient))
         output.extend(self.fee_recipient)
+        output.extend(self.byte_cost_schedule_version.to_bytes(4, "little"))
+        output.extend(self.byte_cost_schedule_digest)
+        _write_u64(output, self.byte_cost_bound)
+        _write_resources(output, self.byte_allocation)
         return hashlib.blake2b(output, digest_size=32).digest()
 
 
@@ -606,6 +714,46 @@ class CostAuthorityEvent:
             debit=_resources(value.debit, "authority event debit"),
             authority=_authority_regions(value.authority),
         )
+
+
+@dataclasses.dataclass(frozen=True)
+class CostAuthorityByteEvent:
+    event_id: bytes
+    kind: int
+    authority: tuple[CostAuthorityRegion, ...]
+    authority_encoding: bytes
+    amount: int
+
+    @classmethod
+    def from_proto(
+        cls,
+        value: CostAuthorityByteEventProto,
+    ) -> CostAuthorityByteEvent:
+        if value.kind not in _BYTE_EVENT_KINDS:
+            raise ValueError("byte-accounting event kind is not recognized")
+        if not value.HasField("authority"):
+            raise ValueError(
+                "authority byte event is missing its wrapper authority"
+            )
+        if value.amount <= 0:
+            raise ValueError("authority byte-event amount must be positive")
+        return cls(
+            event_id=_digest(value.eventId, "authority byte-event identity"),
+            kind=value.kind,
+            authority=_authority_regions(value.authority),
+            authority_encoding=value.authority.SerializeToString(
+                deterministic=True
+            ),
+            amount=value.amount,
+        )
+
+    def canonical_key(self) -> bytes:
+        output = bytearray(self.event_id)
+        output.append(self.kind)
+        _write_u64(output, len(self.authority_encoding))
+        output.extend(self.authority_encoding)
+        _write_u64(output, self.amount)
+        return bytes(output)
 
 
 @dataclasses.dataclass(frozen=True)
@@ -679,6 +827,11 @@ class CostAuthorityWitness:
     settlement: tuple[CostAuthorityResource, ...]
     physical_draws: tuple[CostAuthorityPhysicalEventDraw, ...]
     born_stacks: tuple[CostAuthorityBornStack, ...]
+    byte_cost_schedule_version: int
+    byte_cost_schedule_digest: bytes
+    byte_events: tuple[CostAuthorityByteEvent, ...]
+    byte_cost: int
+    byte_settlement: tuple[CostAuthorityResource, ...]
 
     @classmethod
     def from_proto(
@@ -687,6 +840,14 @@ class CostAuthorityWitness:
     ) -> CostAuthorityWitness:
         if value.protocolVersion != AUTHORITY_ACCOUNTING_PROTOCOL_VERSION:
             raise ValueError("unsupported cost-authority protocol version")
+        if value.byteCostScheduleVersion != BYTE_COST_SCHEDULE_VERSION:
+            raise ValueError("unsupported byte-cost witness schedule version")
+        byte_cost_schedule_digest = _digest(
+            value.byteCostScheduleDigest,
+            "byte-cost witness schedule digest",
+        )
+        if byte_cost_schedule_digest != BYTE_COST_SCHEDULE_DIGEST:
+            raise ValueError("unsupported byte-cost witness schedule digest")
         events = tuple(
             CostAuthorityEvent.from_proto(event) for event in value.events
         )
@@ -697,6 +858,29 @@ class CostAuthorityWitness:
             realized
         ):
             raise ValueError("realized authority does not equal event debits")
+
+        byte_events = tuple(
+            CostAuthorityByteEvent.from_proto(event)
+            for event in value.byteEvents
+        )
+        if any(
+            left.canonical_key() > right.canonical_key()
+            for left, right in zip(byte_events, byte_events[1:])
+        ):
+            raise ValueError("byte-accounting events must be canonically ordered")
+        byte_identities: dict[bytes, tuple[int, bytes, int]] = {}
+        byte_cost = 0
+        for event in byte_events:
+            identity = (event.kind, event.authority_encoding, event.amount)
+            existing = byte_identities.get(event.event_id)
+            if existing is not None and existing != identity:
+                raise ValueError("byte-accounting event identity conflicts")
+            byte_identities[event.event_id] = identity
+            byte_cost += event.amount
+            if byte_cost > _MAX_U64:
+                raise ValueError("byte-accounting event sum overflows uint64")
+        if byte_cost != value.byteCost:
+            raise ValueError("byte cost does not equal byte-accounting events")
 
         draws = tuple(
             CostAuthorityPhysicalEventDraw.from_proto(draw)
@@ -760,6 +944,14 @@ class CostAuthorityWitness:
             settlement=settlement,
             physical_draws=draws,
             born_stacks=born_stacks,
+            byte_cost_schedule_version=value.byteCostScheduleVersion,
+            byte_cost_schedule_digest=byte_cost_schedule_digest,
+            byte_events=byte_events,
+            byte_cost=value.byteCost,
+            byte_settlement=_resources(
+                value.byteSettlement,
+                "byte-cost settlement",
+            ),
         )
 
 
@@ -793,6 +985,22 @@ class CostAuthorityEvidence:
         return _resource_map(self.witness.settlement)
 
     @property
+    def byte_allocation(self) -> dict[bytes, int]:
+        return _resource_map(self.certificate.byte_allocation)
+
+    @property
+    def byte_settlement(self) -> dict[bytes, int]:
+        return _resource_map(self.witness.byte_settlement)
+
+    @property
+    def byte_cost(self) -> int:
+        return self.witness.byte_cost
+
+    @property
+    def byte_cost_bound(self) -> int:
+        return self.certificate.byte_cost_bound
+
+    @property
     def stack_reservations(self) -> tuple[tuple[bytes, int], ...]:
         return tuple(
             (reservation.stack_id, reservation.pop_count)
@@ -810,7 +1018,7 @@ class CostAuthorityEvidence:
     @classmethod
     def from_processed_deploy(
         cls,
-        deploy: ProcessedDeployProto,
+        deploy: ProcessedDeployProto | DeployInfo,
     ) -> CostAuthorityEvidence:
         if deploy.admissionStatus != DEPLOY_ADMISSION_STATUS_EXECUTED:
             raise ValueError("rejected deploy has no executable authority evidence")
@@ -824,6 +1032,20 @@ class CostAuthorityEvidence:
         witness = CostAuthorityWitness.from_proto(deploy.authorityCostWitness)
         if certificate.protocol_version != witness.protocol_version:
             raise ValueError("certificate and witness protocol versions disagree")
+        if (
+            certificate.byte_cost_schedule_version
+            != witness.byte_cost_schedule_version
+            or certificate.byte_cost_schedule_digest
+            != witness.byte_cost_schedule_digest
+        ):
+            raise ValueError("certificate and witness byte-cost schedules disagree")
+        if witness.byte_cost > certificate.byte_cost_bound:
+            raise ValueError("byte cost exceeds certified bound")
+        if not _dominates(
+            certificate.byte_allocation,
+            witness.byte_settlement,
+        ):
+            raise ValueError("byte settlement exceeds certified allocation")
         if certificate.certificate_id() != witness.certificate_id:
             raise ValueError("witness does not bind the funding certificate")
         if certificate.pre_state_root != witness.pre_state_root:

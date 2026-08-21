@@ -507,6 +507,11 @@ class DeployInfo(_message.Message):
     SYSTEMDEPLOYERROR_FIELD_NUMBER: _builtins.int
     TRANSFERS_FIELD_NUMBER: _builtins.int
     TRANSFERSAVAILABLE_FIELD_NUMBER: _builtins.int
+    AUTHORITYFUNDINGCERTIFICATE_FIELD_NUMBER: _builtins.int
+    AUTHORITYCOSTWITNESS_FIELD_NUMBER: _builtins.int
+    PRESTATEHASH_FIELD_NUMBER: _builtins.int
+    POSTSTATEHASH_FIELD_NUMBER: _builtins.int
+    ADMISSIONSTATUS_FIELD_NUMBER: _builtins.int
     deployer: _builtins.str
     term: _builtins.str
     timestamp: _builtins.int
@@ -518,8 +523,15 @@ class DeployInfo(_message.Message):
     systemDeployError: _builtins.str
     transfersAvailable: _builtins.bool
     """true when transfers were extracted (readonly), false on validators"""
+    preStateHash: _builtins.bytes
+    postStateHash: _builtins.bytes
+    admissionStatus: _CasperMessage_pb2.DeployAdmissionStatusProto.ValueType
     @_builtins.property
     def transfers(self) -> _containers.RepeatedCompositeFieldContainer[Global___TransferInfo]: ...
+    @_builtins.property
+    def authorityFundingCertificate(self) -> _CasperMessage_pb2.CostAuthorityFundingCertificateProto: ...
+    @_builtins.property
+    def authorityCostWitness(self) -> _CasperMessage_pb2.CostAuthorityWitnessProto: ...
     def __init__(
         self,
         *,
@@ -534,10 +546,15 @@ class DeployInfo(_message.Message):
         systemDeployError: _builtins.str = ...,
         transfers: _abc.Iterable[Global___TransferInfo] | None = ...,
         transfersAvailable: _builtins.bool = ...,
+        authorityFundingCertificate: _CasperMessage_pb2.CostAuthorityFundingCertificateProto | None = ...,
+        authorityCostWitness: _CasperMessage_pb2.CostAuthorityWitnessProto | None = ...,
+        preStateHash: _builtins.bytes = ...,
+        postStateHash: _builtins.bytes = ...,
+        admissionStatus: _CasperMessage_pb2.DeployAdmissionStatusProto.ValueType = ...,
     ) -> None: ...
-    _HasFieldArgType: _TypeAlias = _Never  # noqa: Y015
+    _HasFieldArgType: _TypeAlias = _typing.Literal["authorityCostWitness", b"authorityCostWitness", "authorityFundingCertificate", b"authorityFundingCertificate"]  # noqa: Y015
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["cost", b"cost", "deployer", b"deployer", "errored", b"errored", "sig", b"sig", "sigAlgorithm", b"sigAlgorithm", "systemDeployError", b"systemDeployError", "term", b"term", "timestamp", b"timestamp", "transfers", b"transfers", "transfersAvailable", b"transfersAvailable", "validAfterBlockNumber", b"validAfterBlockNumber"]  # noqa: Y015
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["admissionStatus", b"admissionStatus", "authorityCostWitness", b"authorityCostWitness", "authorityFundingCertificate", b"authorityFundingCertificate", "cost", b"cost", "deployer", b"deployer", "errored", b"errored", "postStateHash", b"postStateHash", "preStateHash", b"preStateHash", "sig", b"sig", "sigAlgorithm", b"sigAlgorithm", "systemDeployError", b"systemDeployError", "term", b"term", "timestamp", b"timestamp", "transfers", b"transfers", "transfersAvailable", b"transfersAvailable", "validAfterBlockNumber", b"validAfterBlockNumber"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
     def WhichOneof(self, oneof_group: _Never) -> None: ...
 

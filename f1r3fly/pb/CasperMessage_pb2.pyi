@@ -80,6 +80,23 @@ COST_AUTHORITY_DEMAND_KIND_FINITE_UPPER_BOUND: CostAuthorityDemandKindProto.Valu
 COST_AUTHORITY_DEMAND_KIND_UNPROVABLE: CostAuthorityDemandKindProto.ValueType  # 2
 Global___CostAuthorityDemandKindProto: _TypeAlias = CostAuthorityDemandKindProto  # noqa: Y015
 
+class _CostAuthorityByteEventKindProto:
+    ValueType = _typing.NewType("ValueType", _builtins.int)
+    V: _TypeAlias = ValueType  # noqa: Y015
+
+class _CostAuthorityByteEventKindProtoEnumTypeWrapper(_enum_type_wrapper._EnumTypeWrapper[_CostAuthorityByteEventKindProto.ValueType], _builtins.type):
+    DESCRIPTOR: _descriptor.EnumDescriptor
+    COST_AUTHORITY_BYTE_EVENT_KIND_PRODUCE_INTRODUCTION: _CostAuthorityByteEventKindProto.ValueType  # 0
+    COST_AUTHORITY_BYTE_EVENT_KIND_CONSUME_INTRODUCTION: _CostAuthorityByteEventKindProto.ValueType  # 1
+    COST_AUTHORITY_BYTE_EVENT_KIND_COMM: _CostAuthorityByteEventKindProto.ValueType  # 2
+
+class CostAuthorityByteEventKindProto(_CostAuthorityByteEventKindProto, metaclass=_CostAuthorityByteEventKindProtoEnumTypeWrapper): ...
+
+COST_AUTHORITY_BYTE_EVENT_KIND_PRODUCE_INTRODUCTION: CostAuthorityByteEventKindProto.ValueType  # 0
+COST_AUTHORITY_BYTE_EVENT_KIND_CONSUME_INTRODUCTION: CostAuthorityByteEventKindProto.ValueType  # 1
+COST_AUTHORITY_BYTE_EVENT_KIND_COMM: CostAuthorityByteEventKindProto.ValueType  # 2
+Global___CostAuthorityByteEventKindProto: _TypeAlias = CostAuthorityByteEventKindProto  # noqa: Y015
+
 class _RejectedDeployReasonProto:
     ValueType = _typing.NewType("ValueType", _builtins.int)
     V: _TypeAlias = ValueType  # noqa: Y015
@@ -438,6 +455,9 @@ class BlockMetadataInternal(_message.Message):
     DIRECTLYFINALIZED_FIELD_NUMBER: _builtins.int
     FINALIZED_FIELD_NUMBER: _builtins.int
     FAULTTOLERANCEVALUE_FIELD_NUMBER: _builtins.int
+    SUCCESSFULSTATEEFFECTINDICES_FIELD_NUMBER: _builtins.int
+    REJECTEDSTATEEFFECTS_FIELD_NUMBER: _builtins.int
+    PROTOCOLVERSION_FIELD_NUMBER: _builtins.int
     blockHash: _builtins.bytes
     sender: _builtins.bytes
     blockNum: _builtins.int
@@ -450,12 +470,17 @@ class BlockMetadataInternal(_message.Message):
     """whether the block is finalized"""
     faultToleranceValue: _builtins.float
     """cached normalized FT at finalization time"""
+    protocolVersion: _builtins.int
     @_builtins.property
     def parents(self) -> _containers.RepeatedScalarFieldContainer[_builtins.bytes]: ...
     @_builtins.property
     def justifications(self) -> _containers.RepeatedCompositeFieldContainer[Global___JustificationProto]: ...
     @_builtins.property
     def bonds(self) -> _containers.RepeatedCompositeFieldContainer[Global___BondProto]: ...
+    @_builtins.property
+    def successfulStateEffectIndices(self) -> _containers.RepeatedScalarFieldContainer[_builtins.int]: ...
+    @_builtins.property
+    def rejectedStateEffects(self) -> _containers.RepeatedCompositeFieldContainer[Global___StateEffectIdProto]: ...
     def __init__(
         self,
         *,
@@ -470,10 +495,13 @@ class BlockMetadataInternal(_message.Message):
         directlyFinalized: _builtins.bool = ...,
         finalized: _builtins.bool = ...,
         faultToleranceValue: _builtins.float = ...,
+        successfulStateEffectIndices: _abc.Iterable[_builtins.int] | None = ...,
+        rejectedStateEffects: _abc.Iterable[Global___StateEffectIdProto] | None = ...,
+        protocolVersion: _builtins.int = ...,
     ) -> None: ...
     _HasFieldArgType: _TypeAlias = _Never  # noqa: Y015
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["blockHash", b"blockHash", "blockNum", b"blockNum", "bonds", b"bonds", "directlyFinalized", b"directlyFinalized", "faultToleranceValue", b"faultToleranceValue", "finalized", b"finalized", "invalid", b"invalid", "justifications", b"justifications", "parents", b"parents", "sender", b"sender", "seqNum", b"seqNum"]  # noqa: Y015
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["blockHash", b"blockHash", "blockNum", b"blockNum", "bonds", b"bonds", "directlyFinalized", b"directlyFinalized", "faultToleranceValue", b"faultToleranceValue", "finalized", b"finalized", "invalid", b"invalid", "justifications", b"justifications", "parents", b"parents", "protocolVersion", b"protocolVersion", "rejectedStateEffects", b"rejectedStateEffects", "sender", b"sender", "seqNum", b"seqNum", "successfulStateEffectIndices", b"successfulStateEffectIndices"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
     def WhichOneof(self, oneof_group: _Never) -> None: ...
 
@@ -991,6 +1019,10 @@ class CostAuthorityFundingCertificateProto(_message.Message):
     STACKRESERVATIONS_FIELD_NUMBER: _builtins.int
     FEEALLOCATION_FIELD_NUMBER: _builtins.int
     FEERECIPIENT_FIELD_NUMBER: _builtins.int
+    BYTECOSTSCHEDULEVERSION_FIELD_NUMBER: _builtins.int
+    BYTECOSTSCHEDULEDIGEST_FIELD_NUMBER: _builtins.int
+    BYTECOSTBOUND_FIELD_NUMBER: _builtins.int
+    BYTEALLOCATION_FIELD_NUMBER: _builtins.int
     protocolVersion: _builtins.int
     programHash: _builtins.bytes
     preStateRoot: _builtins.bytes
@@ -999,6 +1031,9 @@ class CostAuthorityFundingCertificateProto(_message.Message):
     proof: _builtins.bytes
     unprovableReason: _builtins.int
     feeRecipient: _builtins.bytes
+    byteCostScheduleVersion: _builtins.int
+    byteCostScheduleDigest: _builtins.bytes
+    byteCostBound: _builtins.int
     @_builtins.property
     def demand(self) -> _containers.RepeatedCompositeFieldContainer[Global___CostAuthorityResourceProto]: ...
     @_builtins.property
@@ -1007,6 +1042,8 @@ class CostAuthorityFundingCertificateProto(_message.Message):
     def stackReservations(self) -> _containers.RepeatedCompositeFieldContainer[Global___CostAuthorityStackReservationProto]: ...
     @_builtins.property
     def feeAllocation(self) -> _containers.RepeatedCompositeFieldContainer[Global___CostAuthorityResourceProto]: ...
+    @_builtins.property
+    def byteAllocation(self) -> _containers.RepeatedCompositeFieldContainer[Global___CostAuthorityResourceProto]: ...
     def __init__(
         self,
         *,
@@ -1022,10 +1059,14 @@ class CostAuthorityFundingCertificateProto(_message.Message):
         stackReservations: _abc.Iterable[Global___CostAuthorityStackReservationProto] | None = ...,
         feeAllocation: _abc.Iterable[Global___CostAuthorityResourceProto] | None = ...,
         feeRecipient: _builtins.bytes = ...,
+        byteCostScheduleVersion: _builtins.int = ...,
+        byteCostScheduleDigest: _builtins.bytes = ...,
+        byteCostBound: _builtins.int = ...,
+        byteAllocation: _abc.Iterable[Global___CostAuthorityResourceProto] | None = ...,
     ) -> None: ...
     _HasFieldArgType: _TypeAlias = _Never  # noqa: Y015
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["allocation", b"allocation", "demand", b"demand", "demandKind", b"demandKind", "feeAllocation", b"feeAllocation", "feeRecipient", b"feeRecipient", "preStateRoot", b"preStateRoot", "programHash", b"programHash", "proof", b"proof", "protocolVersion", b"protocolVersion", "reservationId", b"reservationId", "stackReservations", b"stackReservations", "unprovableReason", b"unprovableReason"]  # noqa: Y015
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["allocation", b"allocation", "byteAllocation", b"byteAllocation", "byteCostBound", b"byteCostBound", "byteCostScheduleDigest", b"byteCostScheduleDigest", "byteCostScheduleVersion", b"byteCostScheduleVersion", "demand", b"demand", "demandKind", b"demandKind", "feeAllocation", b"feeAllocation", "feeRecipient", b"feeRecipient", "preStateRoot", b"preStateRoot", "programHash", b"programHash", "proof", b"proof", "protocolVersion", b"protocolVersion", "reservationId", b"reservationId", "stackReservations", b"stackReservations", "unprovableReason", b"unprovableReason"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
     def WhichOneof(self, oneof_group: _Never) -> None: ...
 
@@ -1079,6 +1120,35 @@ class CostAuthorityEventProto(_message.Message):
     def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___CostAuthorityEventProto: _TypeAlias = CostAuthorityEventProto  # noqa: Y015
+
+@_typing.final
+class CostAuthorityByteEventProto(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
+
+    EVENTID_FIELD_NUMBER: _builtins.int
+    KIND_FIELD_NUMBER: _builtins.int
+    AUTHORITY_FIELD_NUMBER: _builtins.int
+    AMOUNT_FIELD_NUMBER: _builtins.int
+    eventId: _builtins.bytes
+    kind: Global___CostAuthorityByteEventKindProto.ValueType
+    amount: _builtins.int
+    @_builtins.property
+    def authority(self) -> _RhoTypes_pb2.CostAuthority: ...
+    def __init__(
+        self,
+        *,
+        eventId: _builtins.bytes = ...,
+        kind: Global___CostAuthorityByteEventKindProto.ValueType = ...,
+        authority: _RhoTypes_pb2.CostAuthority | None = ...,
+        amount: _builtins.int = ...,
+    ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _typing.Literal["authority", b"authority"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["amount", b"amount", "authority", b"authority", "eventId", b"eventId", "kind", b"kind"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
+
+Global___CostAuthorityByteEventProto: _TypeAlias = CostAuthorityByteEventProto  # noqa: Y015
 
 @_typing.final
 class CostAuthorityPhysicalEventDrawProto(_message.Message):
@@ -1146,10 +1216,18 @@ class CostAuthorityWitnessProto(_message.Message):
     SETTLEMENT_FIELD_NUMBER: _builtins.int
     PHYSICALDRAWS_FIELD_NUMBER: _builtins.int
     BORNSTACKS_FIELD_NUMBER: _builtins.int
+    BYTECOSTSCHEDULEVERSION_FIELD_NUMBER: _builtins.int
+    BYTECOSTSCHEDULEDIGEST_FIELD_NUMBER: _builtins.int
+    BYTECOST_FIELD_NUMBER: _builtins.int
+    BYTESETTLEMENT_FIELD_NUMBER: _builtins.int
+    BYTEEVENTS_FIELD_NUMBER: _builtins.int
     protocolVersion: _builtins.int
     certificateId: _builtins.bytes
     preStateRoot: _builtins.bytes
     postStateRoot: _builtins.bytes
+    byteCostScheduleVersion: _builtins.int
+    byteCostScheduleDigest: _builtins.bytes
+    byteCost: _builtins.int
     @_builtins.property
     def events(self) -> _containers.RepeatedCompositeFieldContainer[Global___CostAuthorityEventProto]: ...
     @_builtins.property
@@ -1160,6 +1238,10 @@ class CostAuthorityWitnessProto(_message.Message):
     def physicalDraws(self) -> _containers.RepeatedCompositeFieldContainer[Global___CostAuthorityPhysicalEventDrawProto]: ...
     @_builtins.property
     def bornStacks(self) -> _containers.RepeatedCompositeFieldContainer[Global___CostAuthorityBornStackProto]: ...
+    @_builtins.property
+    def byteSettlement(self) -> _containers.RepeatedCompositeFieldContainer[Global___CostAuthorityResourceProto]: ...
+    @_builtins.property
+    def byteEvents(self) -> _containers.RepeatedCompositeFieldContainer[Global___CostAuthorityByteEventProto]: ...
     def __init__(
         self,
         *,
@@ -1172,10 +1254,15 @@ class CostAuthorityWitnessProto(_message.Message):
         settlement: _abc.Iterable[Global___CostAuthorityResourceProto] | None = ...,
         physicalDraws: _abc.Iterable[Global___CostAuthorityPhysicalEventDrawProto] | None = ...,
         bornStacks: _abc.Iterable[Global___CostAuthorityBornStackProto] | None = ...,
+        byteCostScheduleVersion: _builtins.int = ...,
+        byteCostScheduleDigest: _builtins.bytes = ...,
+        byteCost: _builtins.int = ...,
+        byteSettlement: _abc.Iterable[Global___CostAuthorityResourceProto] | None = ...,
+        byteEvents: _abc.Iterable[Global___CostAuthorityByteEventProto] | None = ...,
     ) -> None: ...
     _HasFieldArgType: _TypeAlias = _Never  # noqa: Y015
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["bornStacks", b"bornStacks", "certificateId", b"certificateId", "events", b"events", "physicalDraws", b"physicalDraws", "postStateRoot", b"postStateRoot", "preStateRoot", b"preStateRoot", "protocolVersion", b"protocolVersion", "realized", b"realized", "settlement", b"settlement"]  # noqa: Y015
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["bornStacks", b"bornStacks", "byteCost", b"byteCost", "byteCostScheduleDigest", b"byteCostScheduleDigest", "byteCostScheduleVersion", b"byteCostScheduleVersion", "byteEvents", b"byteEvents", "byteSettlement", b"byteSettlement", "certificateId", b"certificateId", "events", b"events", "physicalDraws", b"physicalDraws", "postStateRoot", b"postStateRoot", "preStateRoot", b"preStateRoot", "protocolVersion", b"protocolVersion", "realized", b"realized", "settlement", b"settlement"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
     def WhichOneof(self, oneof_group: _Never) -> None: ...
 
@@ -1364,6 +1451,7 @@ class BodyProto(_message.Message):
     SYSTEMDEPLOYS_FIELD_NUMBER: _builtins.int
     EXTRABYTES_FIELD_NUMBER: _builtins.int
     REJECTEDDEPLOYS_FIELD_NUMBER: _builtins.int
+    REJECTEDSTATEEFFECTS_FIELD_NUMBER: _builtins.int
     extraBytes: _builtins.bytes
     @_builtins.property
     def state(self) -> Global___RChainStateProto: ...
@@ -1373,6 +1461,8 @@ class BodyProto(_message.Message):
     def systemDeploys(self) -> _containers.RepeatedCompositeFieldContainer[Global___ProcessedSystemDeployProto]: ...
     @_builtins.property
     def rejectedDeploys(self) -> _containers.RepeatedCompositeFieldContainer[Global___RejectedDeployProto]: ...
+    @_builtins.property
+    def rejectedStateEffects(self) -> _containers.RepeatedCompositeFieldContainer[Global___StateEffectIdProto]: ...
     def __init__(
         self,
         *,
@@ -1381,14 +1471,37 @@ class BodyProto(_message.Message):
         systemDeploys: _abc.Iterable[Global___ProcessedSystemDeployProto] | None = ...,
         extraBytes: _builtins.bytes = ...,
         rejectedDeploys: _abc.Iterable[Global___RejectedDeployProto] | None = ...,
+        rejectedStateEffects: _abc.Iterable[Global___StateEffectIdProto] | None = ...,
     ) -> None: ...
     _HasFieldArgType: _TypeAlias = _typing.Literal["state", b"state"]  # noqa: Y015
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["deploys", b"deploys", "extraBytes", b"extraBytes", "rejectedDeploys", b"rejectedDeploys", "state", b"state", "systemDeploys", b"systemDeploys"]  # noqa: Y015
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["deploys", b"deploys", "extraBytes", b"extraBytes", "rejectedDeploys", b"rejectedDeploys", "rejectedStateEffects", b"rejectedStateEffects", "state", b"state", "systemDeploys", b"systemDeploys"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
     def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___BodyProto: _TypeAlias = BodyProto  # noqa: Y015
+
+@_typing.final
+class StateEffectIdProto(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
+
+    SOURCEBLOCKHASH_FIELD_NUMBER: _builtins.int
+    EXECUTIONINDEX_FIELD_NUMBER: _builtins.int
+    sourceBlockHash: _builtins.bytes
+    executionIndex: _builtins.int
+    def __init__(
+        self,
+        *,
+        sourceBlockHash: _builtins.bytes = ...,
+        executionIndex: _builtins.int = ...,
+    ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _Never  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["executionIndex", b"executionIndex", "sourceBlockHash", b"sourceBlockHash"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
+
+Global___StateEffectIdProto: _TypeAlias = StateEffectIdProto  # noqa: Y015
 
 @_typing.final
 class RejectedDeployProto(_message.Message):
@@ -1768,8 +1881,8 @@ class MergeableEntryResponseProto(_message.Message):
     SERIALIZED_ENTRY_FIELD_NUMBER: _builtins.int
     block_hash: _builtins.bytes
     serialized_entry: _builtins.bytes
-    """bincode of Vec<DeployMergeableData>. Empty bytes = peer has the block but
-    no entry for it.
+    """Deprecated compatibility field. Honest peers send empty bytes and receivers
+    ignore nonempty bytes because mergeable evidence is not block-authenticated.
     """
     def __init__(
         self,

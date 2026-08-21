@@ -1,11 +1,15 @@
 import dataclasses
+import json
 import string
 import time
+from collections.abc import Iterable
 from typing import Mapping
 
 from .client import F1r3flyClient
 from .crypto import PrivateKey
 from .par import par_as_bool, par_as_string, par_as_tuple
+
+MAX_VAULT_AMOUNT = (1 << 63) - 1
 
 CREATE_VAULT_RHO_TPL = """
 new rl(`rho:registry:lookup`), SystemVaultCh in {
@@ -71,6 +75,22 @@ new deployId(`rho:system:deployId`), rl(`rho:registry:lookup`), SystemVaultCh, v
     @SystemVault!("deployerAuthKey", *deployerId, *authKeyCh) |
     for (@(true, vault) <- vaultCh; key <- authKeyCh; @(true, toVault) <- toVaultCh) {
       @vault!("transfer", "$to", $amount, *key, *resultCh) |
+      for (@result <- resultCh) {
+        deployId!(result)
+      }
+    }
+  }
+}
+"""
+
+TRANSFER_BATCH_ENSURE_RHO_TPL = """
+new deployId(`rho:system:deployId`), rl(`rho:registry:lookup`), SystemVaultCh, vaultCh, deployerId(`rho:system:deployerId`), authKeyCh, resultCh in {
+  rl!(`rho:vault:system`, *SystemVaultCh) |
+  for (@(_, SystemVault) <- SystemVaultCh) {
+    @SystemVault!("findOrCreate", $from, *vaultCh) |
+    @SystemVault!("deployerAuthKey", *deployerId, *authKeyCh) |
+    for (@(true, vault) <- vaultCh; key <- authKeyCh) {
+      @vault!("transferBatch", $transfers, *key, *resultCh) |
       for (@result <- resultCh) {
         deployId!(result)
       }
@@ -166,6 +186,42 @@ class VaultAPI:
                 'to': to_addr,
                 'amount': str(amount),
             }
+        )
+        timestamp_mill = int(time.time() * 1000)
+        return self.client.deploy_with_vabn_filled(
+            key, contract, timestamp_mill, self.shard_id,
+        )
+
+    def transfer_batch_ensure(
+        self,
+        from_addr: str,
+        transfers: Iterable[tuple[str, int]],
+        key: PrivateKey,
+    ) -> str:
+        prepared = tuple(transfers)
+        if not from_addr:
+            raise ValueError("from_addr must not be empty")
+        if not prepared:
+            raise ValueError("transfers must not be empty")
+        addresses = [address for address, _ in prepared]
+        if any(not address for address in addresses):
+            raise ValueError("transfer addresses must not be empty")
+        if len(set(addresses)) != len(addresses):
+            raise ValueError("transfer addresses must be distinct")
+        if any(amount <= 0 or amount > MAX_VAULT_AMOUNT for _, amount in prepared):
+            raise ValueError("transfer amounts must be positive signed 64-bit values")
+        total = sum(amount for _, amount in prepared)
+        if total > MAX_VAULT_AMOUNT:
+            raise ValueError("transfer total exceeds the signed 64-bit vault bound")
+        rendered = ", ".join(
+            f"({json.dumps(address)}, {amount})" for address, amount in prepared
+        )
+        contract = render_contract_template(
+            TRANSFER_BATCH_ENSURE_RHO_TPL,
+            {
+                "from": json.dumps(from_addr),
+                "transfers": f"[{rendered}]",
+            },
         )
         timestamp_mill = int(time.time() * 1000)
         return self.client.deploy_with_vabn_filled(
