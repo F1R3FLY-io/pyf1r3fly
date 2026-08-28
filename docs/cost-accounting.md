@@ -230,11 +230,24 @@ and `Expired` as distinct terminal states and reports the rejection count.
 ```python
 from f1r3fly.polling import wait_for_deploy_finalized
 
-status = wait_for_deploy_finalized(client, trigger_id, timeout=120)
+status = wait_for_deploy_finalized(
+    client,
+    trigger_id,
+    timeout=45,
+    absolute_timeout=135,
+)
 ```
 
 Applications must not execute an off-chain side effect merely because
 `find_deploy` returned an inclusion block. Wait for the canonical deploy state.
+With `absolute_timeout`, `timeout` becomes a no-progress budget renewed only by
+a strict finalized-block height increase. The absolute budget never renews,
+and progress for unrelated blocks never substitutes for the target deploy's
+exact terminal status. A finalized-height regression or same-height hash
+revision raises `FinalizedHistoryError` instead of silently extending the wait.
+A terminal response received at or after either deadline is reported in timeout
+diagnostics but cannot turn the expired wait into success or rejection.
+Durations must be positive and finite, with `absolute_timeout >= timeout`.
 
 ## Reading cost-authority evidence
 

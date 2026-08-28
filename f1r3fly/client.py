@@ -192,9 +192,10 @@ class F1r3flyClient:
         self._check_response(response)
         return response.blockInfo
 
-    def last_finalized_block(self) -> BlockInfo:
+    def last_finalized_block(self, timeout: float | None = None) -> BlockInfo:
         last_finalized_query = LastFinalizedBlockQuery()
-        response = self._deploy_stub.lastFinalizedBlock(last_finalized_query, timeout=self.timeout)
+        rpc_timeout = self.timeout if timeout is None else timeout
+        response = self._deploy_stub.lastFinalizedBlock(last_finalized_query, timeout=rpc_timeout)
         self._check_response(response)
         return response.blockInfo
 
@@ -204,7 +205,11 @@ class F1r3flyClient:
         self._check_response(response)
         return response.isFinalized
 
-    def deploy_finalization_status(self, deploy_sig_hex: str) -> DeployFinalizationStatusInfo:
+    def deploy_finalization_status(
+        self,
+        deploy_sig_hex: str,
+        timeout: float | None = None,
+    ) -> DeployFinalizationStatusInfo:
         """Query canonical-state finalization status for a deploy by its signature.
 
         Prefer this over ``is_finalized(block_hash)`` for deploy tracking.
@@ -222,7 +227,8 @@ class F1r3flyClient:
             never been included.
         """
         query = DeployFinalizationStatusQuery(deploySig=bytes.fromhex(deploy_sig_hex))
-        response = self._deploy_stub.deployFinalizationStatus(query, timeout=self.timeout)
+        rpc_timeout = self.timeout if timeout is None else timeout
+        response = self._deploy_stub.deployFinalizationStatus(query, timeout=rpc_timeout)
         self._check_response(response)
         return response.status
 

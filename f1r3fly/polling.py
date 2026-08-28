@@ -14,12 +14,14 @@ Example::
         pars, block_hash, block_number = deploy_and_read(
             client, 'new x in { x!(42) }', my_key,
             inclusion_timeout=30, finalization_timeout=60,
+            finalization_absolute_timeout=180,
         )
         value = par_as_int(pars[0])
 """
 from __future__ import annotations
 
 import logging
+import math
 import time
 from typing import TYPE_CHECKING, Callable, List, Optional, TypeVar
 
@@ -33,6 +35,17 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 T = TypeVar("T")
+
+
+def _require_positive_finite_duration(name: str, value: float) -> None:
+    if isinstance(value, bool):
+        raise TypeError(f"{name} must be a numeric duration, not bool")
+    try:
+        numeric = float(value)
+    except (OverflowError, TypeError, ValueError) as exc:
+        raise ValueError(f"{name} must be a positive finite duration") from exc
+    if not math.isfinite(numeric) or numeric <= 0:
+        raise ValueError(f"{name} must be a positive finite duration")
 
 
 def poll_until(
@@ -123,6 +136,8 @@ def wait_for_deploy_finalized(
     deploy_id: str,
     timeout: int,
     interval: float = 3.0,
+    *,
+    absolute_timeout: int | None = None,
 ) -> DeployFinalizationStatusInfo:
     """Poll deploy_finalization_status until the deploy reaches Finalized.
 
@@ -135,8 +150,13 @@ def wait_for_deploy_finalized(
     Args:
         client: F1r3flyClient instance.
         deploy_id: Deploy signature hex string.
-        timeout: Maximum seconds to wait.
+        timeout: Maximum seconds without a strict LFB-height advance when
+            ``absolute_timeout`` is set; otherwise the fixed total timeout.
         interval: Seconds between polls.
+        absolute_timeout: Optional non-renewable total timeout. When set, a
+            strict increase in the observed LFB block number renews the stall
+            budget, while same-height hash changes do not. Success still
+            requires the target deploy's exact Finalized status.
 
     Returns:
         DeployFinalizationStatusInfo with state=DEPLOY_STATE_FINALIZED.
@@ -145,21 +165,93 @@ def wait_for_deploy_finalized(
         DeployError: If the deploy reaches terminal DEPLOY_STATE_FAILED
             (explicit Rholang failure) or DEPLOY_STATE_EXPIRED (past
             deployLifespan without successful inclusion).
-        TimeoutError: If the deploy stays in Pending past ``timeout``.
+        FinalizedHistoryError: If the observed LFB regresses or changes hash at
+            the same height.
+        TimeoutError: If the observation exhausts the fixed timeout, the
+            progress stall budget, or the absolute timeout.
+        ValueError: If a duration is non-positive or non-finite, or if the
+            absolute timeout is shorter than the stall timeout.
+        TypeError: If a boolean is supplied as a duration.
     """
     from .pb.DeployServiceCommon_pb2 import (
         DEPLOY_STATE_EXPIRED, DEPLOY_STATE_FAILED, DEPLOY_STATE_FINALIZED,
     )
-    deadline = time.time() + timeout
-    attempts = 0
-    last_err: Optional[Exception] = None
-    last_info = None
+    _require_positive_finite_duration("timeout", timeout)
+    _require_positive_finite_duration("interval", interval)
+    if absolute_timeout is not None:
+        _require_positive_finite_duration("absolute_timeout", absolute_timeout)
+    if absolute_timeout is not None and absolute_timeout < timeout:
+        raise ValueError("absolute_timeout must be greater than or equal to timeout")
 
-    while time.time() < deadline:
+    started_at = time.monotonic()
+    stall_deadline = started_at + timeout
+    absolute_deadline = started_at + (
+        absolute_timeout if absolute_timeout is not None else timeout
+    )
+    attempts = 0
+    last_status_err: Exception | None = None
+    last_lfb_err: Exception | None = None
+    last_info = None
+    last_lfb_number: int | None = None
+    last_lfb_hash = ""
+    progress_count = 0
+    timeout_reason = "fixed"
+    late_observation = ""
+
+    def _remaining_budget(now: float) -> float:
+        deadlines = [absolute_deadline]
+        if absolute_timeout is not None:
+            deadlines.append(stall_deadline)
+        return min(deadlines) - now
+
+    def _rpc_timeout(now: float) -> float:
+        remaining = max(0.0, _remaining_budget(now))
+        try:
+            configured = float(getattr(client, "timeout", remaining))
+        except (OverflowError, TypeError, ValueError):
+            configured = remaining
+        if not math.isfinite(configured) or configured <= 0:
+            configured = remaining
+        return min(configured, remaining)
+
+    def _state_name(info: DeployFinalizationStatusInfo | None) -> str:
+        if info is None:
+            return "Unknown"
+        return {
+            DEPLOY_STATE_FINALIZED: "Finalized",
+            DEPLOY_STATE_FAILED: "Failed",
+            DEPLOY_STATE_EXPIRED: "Expired",
+        }.get(info.state, "Pending")
+
+    while True:
+        now = time.monotonic()
+        if now >= absolute_deadline:
+            timeout_reason = "absolute" if absolute_timeout is not None else "fixed"
+            break
+        if absolute_timeout is not None and now >= stall_deadline:
+            timeout_reason = "stalled"
+            break
+
         attempts += 1
         try:
-            info = client.deploy_finalization_status(deploy_id)
+            status_rpc_timeout = _rpc_timeout(time.monotonic())
+            if status_rpc_timeout <= 0:
+                continue
+            info = client.deploy_finalization_status(
+                deploy_id,
+                timeout=status_rpc_timeout,
+            )
             last_info = info
+            last_status_err = None
+            observed_at = time.monotonic()
+            if observed_at >= absolute_deadline or (
+                absolute_timeout is not None and observed_at >= stall_deadline
+            ):
+                timeout_reason = (
+                    "absolute" if observed_at >= absolute_deadline else "stalled"
+                )
+                late_observation = f"status {_state_name(info)} observed after deadline"
+                break
             if info.state == DEPLOY_STATE_FINALIZED:
                 return info
             if info.state == DEPLOY_STATE_FAILED:
@@ -174,18 +266,82 @@ def wait_for_deploy_finalized(
                 )
         except DeployError:
             raise
-        except Exception as e:
-            last_err = e
-        time.sleep(interval)
+        except Exception as e:  # noqa: BLE001
+            last_status_err = e
+
+        if absolute_timeout is not None:
+            try:
+                lfb_rpc_timeout = _rpc_timeout(time.monotonic())
+                if lfb_rpc_timeout <= 0:
+                    continue
+                lfb = client.last_finalized_block(
+                    timeout=lfb_rpc_timeout
+                ).blockInfo
+                last_lfb_err = None
+                observed_at = time.monotonic()
+                lfb_number = int(lfb.blockNumber)
+                lfb_hash = str(lfb.blockHash)
+                if observed_at >= absolute_deadline or observed_at >= stall_deadline:
+                    timeout_reason = (
+                        "absolute" if observed_at >= absolute_deadline else "stalled"
+                    )
+                    break
+                if last_lfb_number is None:
+                    last_lfb_number = lfb_number
+                    last_lfb_hash = lfb_hash
+                elif lfb_number > last_lfb_number:
+                    last_lfb_number = lfb_number
+                    last_lfb_hash = lfb_hash
+                    stall_deadline = observed_at + timeout
+                    progress_count += 1
+                elif lfb_number < last_lfb_number:
+                    raise FinalizedHistoryError(
+                        f"Finalized history regressed while waiting for deploy "
+                        f"{deploy_id[:24]}: LFB #{last_lfb_number} "
+                        f"{last_lfb_hash[:16]} -> #{lfb_number} {lfb_hash[:16]}"
+                    )
+                elif lfb_hash != last_lfb_hash:
+                    raise FinalizedHistoryError(
+                        f"Finalized history revised at equal height while waiting "
+                        f"for deploy {deploy_id[:24]}: LFB #{lfb_number} "
+                        f"{last_lfb_hash[:16]} -> {lfb_hash[:16]}"
+                    )
+            except FinalizedHistoryError:
+                raise
+            except Exception as e:  # noqa: BLE001
+                last_lfb_err = e
+
+        remaining = min(absolute_deadline, stall_deadline) - time.monotonic()
+        if remaining <= 0:
+            continue
+        time.sleep(min(interval, remaining))
 
     status_detail = (
-        f" (last state: Pending, rejection_count={last_info.rejectionCount})"
-        if last_info is not None else ""
+        f" (last state: {_state_name(last_info)}, "
+        f"rejection_count={last_info.rejectionCount})"
+        if last_info is not None
+        else ""
     )
-    err_detail = f" (last error: {last_err})" if last_err else ""
+    error_parts = []
+    if last_status_err is not None:
+        error_parts.append(f"status error: {last_status_err}")
+    if last_lfb_err is not None:
+        error_parts.append(f"LFB error: {last_lfb_err}")
+    err_detail = f" (last errors: {'; '.join(error_parts)})" if error_parts else ""
+    late_detail = f" ({late_observation})" if late_observation else ""
+    elapsed = time.monotonic() - started_at
+    elapsed_detail = (
+        f"{elapsed:.1f}s" if absolute_timeout is not None else f"{timeout}s"
+    )
+    progress_detail = ""
+    if absolute_timeout is not None:
+        progress_detail = (
+            f" (reason={timeout_reason}, progress_count={progress_count}, "
+            f"last_lfb_number={last_lfb_number}, last_lfb_hash={last_lfb_hash[:16]})"
+        )
     raise TimeoutError(
-        f"deploy {deploy_id[:24]} finalization: timed out after {timeout}s "
-        f"({attempts} attempts){status_detail}{err_detail}"
+        f"deploy {deploy_id[:24]} finalization: timed out after {elapsed_detail} "
+        f"({attempts} attempts){progress_detail}{status_detail}{late_detail}{err_detail}"
     )
 
 
@@ -196,6 +352,7 @@ def deploy_and_read(
     inclusion_timeout: int,
     finalization_timeout: int,
     shard_id: str = "root",
+    finalization_absolute_timeout: int | None = None,
 ) -> tuple:
     """Deploy Rholang code, wait for canonical-state finalization, read deployId channel.
 
@@ -217,6 +374,9 @@ def deploy_and_read(
         inclusion_timeout: Seconds to wait for first block inclusion.
         finalization_timeout: Seconds to wait for canonical-state finalization.
         shard_id: Target shard identifier.
+        finalization_absolute_timeout: Optional total finalization bound. When
+            set, ``finalization_timeout`` is the no-progress bound renewed only
+            by strict LFB-height advances.
 
     Returns:
         Tuple of ``(par_list, block_hash, block_number)`` where ``block_hash``
@@ -241,7 +401,12 @@ def deploy_and_read(
         "Deploy included in block #%d (%s)", info.blockNumber, info.blockHash[:16]
     )
 
-    status = wait_for_deploy_finalized(client, deploy_id, finalization_timeout)
+    status = wait_for_deploy_finalized(
+        client,
+        deploy_id,
+        finalization_timeout,
+        absolute_timeout=finalization_absolute_timeout,
+    )
 
     if status.latestBlockHash:
         canonical_block_hash = status.latestBlockHash.hex()
@@ -336,3 +501,7 @@ def deploy_with_fallback(
 
 class DeployError(Exception):
     """Raised when a deploy fails validation after inclusion."""
+
+
+class FinalizedHistoryError(DeployError):
+    """Raised when one node revises or regresses its published finalized history."""

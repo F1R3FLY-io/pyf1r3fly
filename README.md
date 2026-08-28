@@ -50,9 +50,18 @@ with F1r3flyClient("localhost", 40401) as client:
         key,
         inclusion_timeout=30,
         finalization_timeout=60,
+        finalization_absolute_timeout=180,
     )
     value = par_as_int(pars[0])  # 42
 ```
+
+When `finalization_absolute_timeout` is supplied, `finalization_timeout` is a
+no-progress budget. A strict increase in the node's finalized-block height
+renews that budget, while the absolute timeout remains a non-renewable upper
+bound. The call succeeds only when the target deploy itself reports
+`Finalized`; finalized progress elsewhere in the DAG is not target success.
+All supplied durations must be positive and finite, and the absolute timeout
+must be at least the no-progress timeout.
 
 ## Examples
 
