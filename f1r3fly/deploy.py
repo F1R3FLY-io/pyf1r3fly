@@ -23,11 +23,11 @@ class DeployError(Exception):
 
 
 def find_deploy_in_block(block_info: BlockInfo, deploy_id: str) -> DeployInfo:
-    """Find a deploy by signature in a block's deploy list.
+    """Find a deploy by protocol-v6 ID in a block's deploy list.
 
     Args:
         block_info: BlockInfo from ``F1r3flyClient.show_block()``.
-        deploy_id: Deploy signature hex string.
+        deploy_id: Hex-encoded 32-byte deploy ID.
 
     Returns:
         The matching deploy entry.
@@ -36,12 +36,12 @@ def find_deploy_in_block(block_info: BlockInfo, deploy_id: str) -> DeployInfo:
         DeployError: If the deploy is not found in the block.
     """
     for d in block_info.deploys:
-        if d.sig == deploy_id:
+        if d.deployId.hex() == deploy_id:
             return d
-    sigs = [d.sig[:16] for d in block_info.deploys]
+    deploy_ids = [d.deployId.hex()[:16] for d in block_info.deploys]
     raise DeployError(
         f"Deploy {deploy_id[:24]} not found in block. "
-        f"Block has {len(block_info.deploys)} deploys: {sigs}"
+        f"Block has {len(block_info.deploys)} deploys: {deploy_ids}"
     )
 
 
@@ -50,7 +50,7 @@ def check_deploy_not_errored(block_info: BlockInfo, deploy_id: str) -> None:
 
     Args:
         block_info: BlockInfo from ``F1r3flyClient.show_block()``.
-        deploy_id: Deploy signature hex string.
+        deploy_id: Hex-encoded 32-byte deploy ID.
 
     Raises:
         DeployError: If the deploy is errored or not found.
@@ -63,24 +63,37 @@ def check_deploy_not_errored(block_info: BlockInfo, deploy_id: str) -> None:
 
 
 def check_deploy_succeeded(block_info: BlockInfo, deploy_id: str) -> None:
-    """Verify a deploy is in the block, not errored, and has cost > 0.
+    """Verify a deploy is in the block and completed without an error.
 
     Args:
         block_info: BlockInfo from ``F1r3flyClient.show_block()``.
-        deploy_id: Deploy signature hex string.
+        deploy_id: Hex-encoded 32-byte deploy ID.
+
+    Raises:
+        DeployError: If the deploy is errored or missing.
+    """
+    check_deploy_not_errored(block_info, deploy_id)
+
+
+def check_deploy_consumed_cost(block_info: BlockInfo, deploy_id: str) -> None:
+    """Verify a successful deploy consumed a positive semantic cost.
+
+    Zero cost is valid for terms that perform no COMM reduction, so callers
+    should use this assertion only when the deployed term is expected to
+    reduce.
+
+    Args:
+        block_info: BlockInfo from ``F1r3flyClient.show_block()``.
+        deploy_id: Hex-encoded 32-byte deploy ID.
 
     Raises:
         DeployError: If the deploy is errored, missing, or has zero cost.
     """
+    check_deploy_not_errored(block_info, deploy_id)
     deploy = find_deploy_in_block(block_info, deploy_id)
-    if deploy.errored:
-        raise DeployError(
-            f"Deploy {deploy_id[:24]} errored: {deploy.systemDeployError}"
-        )
     if deploy.cost <= 0:
         raise DeployError(
-            f"Deploy {deploy_id[:24]} has zero cost -- "
-            f"execution may have been skipped"
+            f"Deploy {deploy_id[:24]} has zero cost; expected a COMM reduction"
         )
 
 
@@ -93,7 +106,7 @@ def check_deploy_errored(
 
     Args:
         block_info: BlockInfo from ``F1r3flyClient.show_block()``.
-        deploy_id: Deploy signature hex string.
+        deploy_id: Hex-encoded 32-byte deploy ID.
         error_contains: If set, verify the error message contains this substring.
 
     Raises:

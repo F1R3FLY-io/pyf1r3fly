@@ -1,11 +1,15 @@
 import dataclasses
+import json
 import string
 import time
+from collections.abc import Iterable
 from typing import Mapping
 
 from .client import F1r3flyClient
 from .crypto import PrivateKey
 from .par import par_as_bool, par_as_string, par_as_tuple
+
+MAX_VAULT_AMOUNT = (1 << 63) - 1
 
 CREATE_VAULT_RHO_TPL = """
 new rl(`rho:registry:lookup`), SystemVaultCh in {
@@ -79,9 +83,21 @@ new deployId(`rho:system:deployId`), rl(`rho:registry:lookup`), SystemVaultCh, v
 }
 """
 
-TRANSFER_PHLO_LIMIT = 1000000
-TRANSFER_PHLO_PRICE = 1
-
+TRANSFER_BATCH_ENSURE_RHO_TPL = """
+new deployId(`rho:system:deployId`), rl(`rho:registry:lookup`), SystemVaultCh, vaultCh, deployerId(`rho:system:deployerId`), authKeyCh, resultCh in {
+  rl!(`rho:vault:system`, *SystemVaultCh) |
+  for (@(_, SystemVault) <- SystemVaultCh) {
+    @SystemVault!("findOrCreate", $from, *vaultCh) |
+    @SystemVault!("deployerAuthKey", *deployerId, *authKeyCh) |
+    for (@(true, vault) <- vaultCh; key <- authKeyCh) {
+      @vault!("transferBatch", $transfers, *key, *resultCh) |
+      for (@result <- resultCh) {
+        deployId!(result)
+      }
+    }
+  }
+}
+"""
 
 @dataclasses.dataclass
 class TransferResult:
@@ -116,8 +132,6 @@ class VaultAPI:
         private_key: PrivateKey,
         inclusion_timeout: int,
         finalization_timeout: int,
-        phlo_price: int = TRANSFER_PHLO_PRICE,
-        phlo_limit: int = TRANSFER_PHLO_LIMIT,
     ) -> int:
         """Query vault balance via a real deploy (works on any node).
 
@@ -134,14 +148,11 @@ class VaultAPI:
         pars, _, _ = deploy_and_read(
             self.client, contract, private_key,
             inclusion_timeout, finalization_timeout,
-            phlo_limit=phlo_limit, phlo_price=phlo_price,
             shard_id=self.shard_id,
         )
         return par_as_int(pars[0])
 
-    def transfer(self, from_addr: str, to_addr: str, amount: int, key: PrivateKey,
-                 phlo_price: int = TRANSFER_PHLO_PRICE,
-                 phlo_limit: int = TRANSFER_PHLO_LIMIT) -> str:
+    def transfer(self, from_addr: str, to_addr: str, amount: int, key: PrivateKey) -> str:
         """Transfer tokens from one vault to another. Returns the deploy ID.
 
         The recipient vault must already exist. If it may not exist, use
@@ -160,12 +171,10 @@ class VaultAPI:
         )
         timestamp_mill = int(time.time() * 1000)
         return self.client.deploy_with_vabn_filled(
-            key, contract, phlo_price, phlo_limit, timestamp_mill, self.shard_id,
+            key, contract, timestamp_mill, self.shard_id,
         )
 
-    def transfer_ensure(self, from_addr: str, to_addr: str, amount: int, key: PrivateKey,
-                        phlo_price: int = TRANSFER_PHLO_PRICE,
-                        phlo_limit: int = TRANSFER_PHLO_LIMIT) -> str:
+    def transfer_ensure(self, from_addr: str, to_addr: str, amount: int, key: PrivateKey) -> str:
         """Transfer tokens, creating the recipient vault if needed. Returns the deploy ID.
 
         The transfer result is written to the deployId channel. After
@@ -180,7 +189,43 @@ class VaultAPI:
         )
         timestamp_mill = int(time.time() * 1000)
         return self.client.deploy_with_vabn_filled(
-            key, contract, phlo_price, phlo_limit, timestamp_mill, self.shard_id,
+            key, contract, timestamp_mill, self.shard_id,
+        )
+
+    def transfer_batch_ensure(
+        self,
+        from_addr: str,
+        transfers: Iterable[tuple[str, int]],
+        key: PrivateKey,
+    ) -> str:
+        prepared = tuple(transfers)
+        if not from_addr:
+            raise ValueError("from_addr must not be empty")
+        if not prepared:
+            raise ValueError("transfers must not be empty")
+        addresses = [address for address, _ in prepared]
+        if any(not address for address in addresses):
+            raise ValueError("transfer addresses must not be empty")
+        if len(set(addresses)) != len(addresses):
+            raise ValueError("transfer addresses must be distinct")
+        if any(amount <= 0 or amount > MAX_VAULT_AMOUNT for _, amount in prepared):
+            raise ValueError("transfer amounts must be positive signed 64-bit values")
+        total = sum(amount for _, amount in prepared)
+        if total > MAX_VAULT_AMOUNT:
+            raise ValueError("transfer total exceeds the signed 64-bit vault bound")
+        rendered = ", ".join(
+            f"({json.dumps(address)}, {amount})" for address, amount in prepared
+        )
+        contract = render_contract_template(
+            TRANSFER_BATCH_ENSURE_RHO_TPL,
+            {
+                "from": json.dumps(from_addr),
+                "transfers": f"[{rendered}]",
+            },
+        )
+        timestamp_mill = int(time.time() * 1000)
+        return self.client.deploy_with_vabn_filled(
+            key, contract, timestamp_mill, self.shard_id,
         )
 
     def read_transfer_result(self, deploy_id: str, block_hash: str = "") -> TransferResult:
@@ -201,14 +246,12 @@ class VaultAPI:
         except (ValueError, IndexError):
             return TransferResult(deploy_id=deploy_id, success=False, reason=f"unexpected data: {par}")
 
-    def create_vault(self, addr: str, key: PrivateKey,
-                     phlo_price: int = TRANSFER_PHLO_PRICE,
-                     phlo_limit: int = TRANSFER_PHLO_LIMIT) -> str:
+    def create_vault(self, addr: str, key: PrivateKey) -> str:
         contract = render_contract_template(
             CREATE_VAULT_RHO_TPL,
             {'addr': addr},
         )
         timestamp_mill = int(time.time() * 1000)
         return self.client.deploy_with_vabn_filled(
-            key, contract, phlo_price, phlo_limit, timestamp_mill, self.shard_id,
+            key, contract, timestamp_mill, self.shard_id,
         )

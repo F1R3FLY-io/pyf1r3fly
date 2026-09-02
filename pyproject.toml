@@ -8,12 +8,12 @@ version = "0.1.0"
 description = "Interface to F1R3fly Node RPC"
 readme = "README.md"
 authors = [
-    { name = "F1R3fly Team" } # TODO: add email
+    { name = "F1R3fly Team" }
 ]
 requires-python = ">=3.10"
 dependencies = [
-    "grpcio>=1.60.0",
-    "protobuf>=4.25.0",
+    "grpcio>=1.83.0",
+    "protobuf>=7.35.1",
     "ecdsa>=0.18.0",
     "python-bitcoinlib>=0.12.0",
     "cryptography>=41.0.0",
@@ -31,7 +31,7 @@ pyf1r3fly = "f1r3fly.__main__:cli"
 
 [project.optional-dependencies]
 dev = [
-    "grpcio-tools>=1.60.0",
+    "grpcio-tools>=1.83.0",
     "mypy>=1.7.0",
     "typing-extensions>=4.8.0",
     "mypy-protobuf>=3.5.0",

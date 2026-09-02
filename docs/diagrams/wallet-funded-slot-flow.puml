@@ -1,0 +1,62 @@
+@startuml
+title Wallet-funded, gateway-executed linear continuation
+
+skinparam backgroundColor #FFFFFF
+skinparam sequence {
+  ArrowColor #37474F
+  LifeLineBorderColor #455A64
+  LifeLineBackgroundColor #ECEFF1
+  ParticipantBorderColor #263238
+  ParticipantFontColor #102027
+  ParticipantBackgroundColor #E3F2FD
+  ActorBorderColor #1B5E20
+  ActorBackgroundColor #C8E6C9
+  DatabaseBorderColor #6A1B9A
+  DatabaseBackgroundColor #F3E5F5
+  CollectionsBorderColor #E65100
+  CollectionsBackgroundColor #FFF3E0
+}
+
+actor "Administrator" as Admin #BBDEFB
+actor "User wallet owner" as User #C8E6C9
+participant "pyf1r3fly\nFundingSlotAPI" as Client #B3E5FC
+participant "Independent\nvalidator" as Node #D1C4E9
+database "SystemVault\ncanonical custody" as Vault #E1BEE7
+collections "RSpace\nslot + continuation" as RSpace #FFE0B2
+actor "Authorized gateway" as Gateway #FFECB3
+
+Admin -> Client : install(grant, continuation)
+Client -> Node : signed installation deploy
+Node -> RSpace : create unforgeable slot\nand persistent lollipop continuation
+Node -> Vault : derive public slot address
+Node --> Client : finalized installation
+
+User -> Client : fund(slot address, amount)
+Client -> Vault : authenticated wallet transfer
+Vault -> Vault : debit wallet; credit slot\n(no mint, no copy)
+Vault --> User : transfer result
+
+Gateway -> Client : trigger(request)
+Client -> Node : gateway-signed trigger deploy
+Node -> RSpace : authenticate gateway; reveal entry capability
+RSpace -> Node : continuation with located payer slot
+Node -> Vault : certify finite maximum + fee
+
+alt insufficient authenticated custody
+  Vault --> Node : reject before user-state mutation
+  Node --> Gateway : terminal Rejected status
+else sufficient authenticated custody
+  Node -> RSpace : execute continuation atomically
+  Node -> Vault : settle realized cost; transfer fee;\nleave unused maximum in slot
+  Node --> Gateway : terminal Finalized status + evidence
+end
+
+Client -> Client : verify protocol, roots, certificate ID,\nevent totals, draws, and bounds
+
+legend right
+  |= Color |= Trust boundary |
+  |<#E1BEE7>| Public-address custody |
+  |<#FFE0B2>| Unforgeable capability state |
+  |<#D1C4E9>| Consensus validation and replay |
+endlegend
+@enduml

@@ -6,7 +6,7 @@ import warnings
 from . import ExternalCommunicationServiceCommon_pb2 as ExternalCommunicationServiceCommon__pb2
 from . import ExternalCommunicationServiceV1_pb2 as ExternalCommunicationServiceV1__pb2
 
-GRPC_GENERATED_VERSION = '1.78.0'
+GRPC_GENERATED_VERSION = '1.83.0'
 GRPC_VERSION = grpc.__version__
 _version_not_supported = False
 
@@ -26,7 +26,7 @@ if _version_not_supported:
     )
 
 
-class ExternalCommunicationServiceStub(object):
+class ExternalCommunicationServiceStub:
     """Missing associated documentation comment in .proto file."""
 
     def __init__(self, channel):
@@ -42,7 +42,7 @@ class ExternalCommunicationServiceStub(object):
                 _registered_method=True)
 
 
-class ExternalCommunicationServiceServicer(object):
+class ExternalCommunicationServiceServicer:
     """Missing associated documentation comment in .proto file."""
 
     def sendNotification(self, request, context):
@@ -67,7 +67,7 @@ def add_ExternalCommunicationServiceServicer_to_server(servicer, server):
 
 
  # This class is part of an EXPERIMENTAL API.
-class ExternalCommunicationService(object):
+class ExternalCommunicationService:
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod

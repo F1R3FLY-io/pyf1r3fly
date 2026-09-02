@@ -12,8 +12,6 @@ class DeployInfo:
     timestamp: int
     sig: str
     sigAlgorithm: str
-    phloPrice: int
-    phloLimit: int
     validAfterBlockNumber: int
     cost: int
     errored: bool

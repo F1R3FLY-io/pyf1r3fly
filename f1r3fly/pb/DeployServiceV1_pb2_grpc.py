@@ -8,7 +8,7 @@ from . import DeployServiceCommon_pb2 as DeployServiceCommon__pb2
 from . import DeployServiceV1_pb2 as DeployServiceV1__pb2
 from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
 
-GRPC_GENERATED_VERSION = '1.78.0'
+GRPC_GENERATED_VERSION = '1.83.0'
 GRPC_VERSION = grpc.__version__
 _version_not_supported = False
 
@@ -28,12 +28,12 @@ if _version_not_supported:
     )
 
 
-class DeployServiceStub(object):
+class DeployServiceStub:
     """Use `doDeploy` to queue deployments of Rholang code and then
     `ProposeServiceV2.propose` to make a new block with the results of running them
     all.
 
-    To get results back, use `listenForDataAtName`.
+    To get results back, use `getDataAtName`.
     """
 
     def __init__(self, channel):
@@ -132,24 +132,19 @@ class DeployServiceStub(object):
                 request_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
                 response_deserializer=DeployServiceV1__pb2.StatusResponse.FromString,
                 _registered_method=True)
-        self.uploadFile = channel.stream_unary(
-                '/casper.v1.DeployService/uploadFile',
-                request_serializer=DeployServiceV1__pb2.FileUploadChunk.SerializeToString,
-                response_deserializer=DeployServiceV1__pb2.FileUploadResponse.FromString,
-                _registered_method=True)
-        self.downloadFile = channel.unary_stream(
-                '/casper.v1.DeployService/downloadFile',
-                request_serializer=DeployServiceV1__pb2.FileDownloadRequest.SerializeToString,
-                response_deserializer=DeployServiceV1__pb2.FileDownloadChunk.FromString,
+        self.getPendingDeploys = channel.unary_unary(
+                '/casper.v1.DeployService/getPendingDeploys',
+                request_serializer=DeployServiceCommon__pb2.PendingDeploysQuery.SerializeToString,
+                response_deserializer=DeployServiceV1__pb2.PendingDeploysResponse.FromString,
                 _registered_method=True)
 
 
-class DeployServiceServicer(object):
+class DeployServiceServicer:
     """Use `doDeploy` to queue deployments of Rholang code and then
     `ProposeServiceV2.propose` to make a new block with the results of running them
     all.
 
-    To get results back, use `listenForDataAtName`.
+    To get results back, use `getDataAtName`.
     """
 
     def doDeploy(self, request, context):
@@ -208,7 +203,9 @@ class DeployServiceServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def findDeploy(self, request, context):
-        """Find block containing a deploy.
+        """Find block containing a deploy. The response's blockInfo.isFinalized is
+        block-level; for deploy effect-finality use finalizationState or
+        deployFinalizationStatus.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -280,15 +277,10 @@ class DeployServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def uploadFile(self, request_iterator, context):
-        """Upload large files via streaming
-        """
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def downloadFile(self, request, context):
-        """Stream file bytes by content hash. Observer-only — rejected on validator nodes.
+    def getPendingDeploys(self, request, context):
+        """Bulk list of pending deploys (deploy_storage + rejected-recovery buffer),
+        optionally filtered by deployer public key. Empty response on read-only
+        nodes (Casper not initialised).
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -387,15 +379,10 @@ def add_DeployServiceServicer_to_server(servicer, server):
                     request_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                     response_serializer=DeployServiceV1__pb2.StatusResponse.SerializeToString,
             ),
-            'uploadFile': grpc.stream_unary_rpc_method_handler(
-                    servicer.uploadFile,
-                    request_deserializer=DeployServiceV1__pb2.FileUploadChunk.FromString,
-                    response_serializer=DeployServiceV1__pb2.FileUploadResponse.SerializeToString,
-            ),
-            'downloadFile': grpc.unary_stream_rpc_method_handler(
-                    servicer.downloadFile,
-                    request_deserializer=DeployServiceV1__pb2.FileDownloadRequest.FromString,
-                    response_serializer=DeployServiceV1__pb2.FileDownloadChunk.SerializeToString,
+            'getPendingDeploys': grpc.unary_unary_rpc_method_handler(
+                    servicer.getPendingDeploys,
+                    request_deserializer=DeployServiceCommon__pb2.PendingDeploysQuery.FromString,
+                    response_serializer=DeployServiceV1__pb2.PendingDeploysResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -405,12 +392,12 @@ def add_DeployServiceServicer_to_server(servicer, server):
 
 
  # This class is part of an EXPERIMENTAL API.
-class DeployService(object):
+class DeployService:
     """Use `doDeploy` to queue deployments of Rholang code and then
     `ProposeServiceV2.propose` to make a new block with the results of running them
     all.
 
-    To get results back, use `listenForDataAtName`.
+    To get results back, use `getDataAtName`.
     """
 
     @staticmethod
@@ -900,7 +887,7 @@ class DeployService(object):
             _registered_method=True)
 
     @staticmethod
-    def uploadFile(request_iterator,
+    def getPendingDeploys(request,
             target,
             options=(),
             channel_credentials=None,
@@ -910,39 +897,12 @@ class DeployService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.stream_unary(
-            request_iterator,
-            target,
-            '/casper.v1.DeployService/uploadFile',
-            DeployServiceV1__pb2.FileUploadChunk.SerializeToString,
-            DeployServiceV1__pb2.FileUploadResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
-
-    @staticmethod
-    def downloadFile(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_stream(
+        return grpc.experimental.unary_unary(
             request,
             target,
-            '/casper.v1.DeployService/downloadFile',
-            DeployServiceV1__pb2.FileDownloadRequest.SerializeToString,
-            DeployServiceV1__pb2.FileDownloadChunk.FromString,
+            '/casper.v1.DeployService/getPendingDeploys',
+            DeployServiceCommon__pb2.PendingDeploysQuery.SerializeToString,
+            DeployServiceV1__pb2.PendingDeploysResponse.FromString,
             options,
             channel_credentials,
             insecure,

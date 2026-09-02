@@ -89,8 +89,6 @@ def deploy_query_token_metadata(
     private_key: PrivateKey,
     inclusion_timeout: int,
     finalization_timeout: int,
-    phlo_limit: int = 100_000,
-    phlo_price: int = 1,
     shard_id: str = "root",
 ) -> TokenMetadata:
     """Query all native token metadata via a real deploy.
@@ -112,7 +110,6 @@ def deploy_query_token_metadata(
     pars, _, _ = deploy_and_read(
         client, _DEPLOY_QUERY_ALL, private_key,
         inclusion_timeout, finalization_timeout,
-        phlo_limit=phlo_limit, phlo_price=phlo_price,
         shard_id=shard_id,
     )
     elements = par_as_tuple(pars[0])
