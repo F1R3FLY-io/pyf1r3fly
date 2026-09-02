@@ -132,6 +132,11 @@ class DeployServiceStub:
                 request_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
                 response_deserializer=DeployServiceV1__pb2.StatusResponse.FromString,
                 _registered_method=True)
+        self.getPendingDeploys = channel.unary_unary(
+                '/casper.v1.DeployService/getPendingDeploys',
+                request_serializer=DeployServiceCommon__pb2.PendingDeploysQuery.SerializeToString,
+                response_deserializer=DeployServiceV1__pb2.PendingDeploysResponse.FromString,
+                _registered_method=True)
 
 
 class DeployServiceServicer:
@@ -272,6 +277,15 @@ class DeployServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def getPendingDeploys(self, request, context):
+        """Bulk list of pending deploys (deploy_storage + rejected-recovery buffer),
+        optionally filtered by deployer public key. Empty response on read-only
+        nodes (Casper not initialised).
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_DeployServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -364,6 +378,11 @@ def add_DeployServiceServicer_to_server(servicer, server):
                     servicer.status,
                     request_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                     response_serializer=DeployServiceV1__pb2.StatusResponse.SerializeToString,
+            ),
+            'getPendingDeploys': grpc.unary_unary_rpc_method_handler(
+                    servicer.getPendingDeploys,
+                    request_deserializer=DeployServiceCommon__pb2.PendingDeploysQuery.FromString,
+                    response_serializer=DeployServiceV1__pb2.PendingDeploysResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -857,6 +876,33 @@ class DeployService:
             '/casper.v1.DeployService/status',
             google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             DeployServiceV1__pb2.StatusResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def getPendingDeploys(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/casper.v1.DeployService/getPendingDeploys',
+            DeployServiceCommon__pb2.PendingDeploysQuery.SerializeToString,
+            DeployServiceV1__pb2.PendingDeploysResponse.FromString,
             options,
             channel_credentials,
             insecure,

@@ -1912,6 +1912,8 @@ class GUnforgeable(_message.Message):
     G_DEPLOY_ID_BODY_FIELD_NUMBER: _builtins.int
     G_DEPLOYER_ID_BODY_FIELD_NUMBER: _builtins.int
     G_SYS_AUTH_TOKEN_BODY_FIELD_NUMBER: _builtins.int
+    G_AUTHORITY_ID_BODY_FIELD_NUMBER: _builtins.int
+    G_PRINCIPAL_ID_BODY_FIELD_NUMBER: _builtins.int
     @_builtins.property
     def g_private_body(self) -> Global___GPrivate: ...
     @_builtins.property
@@ -1920,6 +1922,10 @@ class GUnforgeable(_message.Message):
     def g_deployer_id_body(self) -> Global___GDeployerId: ...
     @_builtins.property
     def g_sys_auth_token_body(self) -> Global___GSysAuthToken: ...
+    @_builtins.property
+    def g_authority_id_body(self) -> Global___GAuthorityId: ...
+    @_builtins.property
+    def g_principal_id_body(self) -> Global___GPrincipalId: ...
     def __init__(
         self,
         *,
@@ -1927,12 +1933,14 @@ class GUnforgeable(_message.Message):
         g_deploy_id_body: Global___GDeployId | None = ...,
         g_deployer_id_body: Global___GDeployerId | None = ...,
         g_sys_auth_token_body: Global___GSysAuthToken | None = ...,
+        g_authority_id_body: Global___GAuthorityId | None = ...,
+        g_principal_id_body: Global___GPrincipalId | None = ...,
     ) -> None: ...
-    _HasFieldArgType: _TypeAlias = _typing.Literal["g_deploy_id_body", b"g_deploy_id_body", "g_deployer_id_body", b"g_deployer_id_body", "g_private_body", b"g_private_body", "g_sys_auth_token_body", b"g_sys_auth_token_body", "unf_instance", b"unf_instance"]  # noqa: Y015
+    _HasFieldArgType: _TypeAlias = _typing.Literal["g_authority_id_body", b"g_authority_id_body", "g_deploy_id_body", b"g_deploy_id_body", "g_deployer_id_body", b"g_deployer_id_body", "g_principal_id_body", b"g_principal_id_body", "g_private_body", b"g_private_body", "g_sys_auth_token_body", b"g_sys_auth_token_body", "unf_instance", b"unf_instance"]  # noqa: Y015
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["g_deploy_id_body", b"g_deploy_id_body", "g_deployer_id_body", b"g_deployer_id_body", "g_private_body", b"g_private_body", "g_sys_auth_token_body", b"g_sys_auth_token_body", "unf_instance", b"unf_instance"]  # noqa: Y015
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["g_authority_id_body", b"g_authority_id_body", "g_deploy_id_body", b"g_deploy_id_body", "g_deployer_id_body", b"g_deployer_id_body", "g_principal_id_body", b"g_principal_id_body", "g_private_body", b"g_private_body", "g_sys_auth_token_body", b"g_sys_auth_token_body", "unf_instance", b"unf_instance"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
-    _WhichOneofReturnType_unf_instance: _TypeAlias = _typing.Literal["g_private_body", "g_deploy_id_body", "g_deployer_id_body", "g_sys_auth_token_body"]  # noqa: Y015
+    _WhichOneofReturnType_unf_instance: _TypeAlias = _typing.Literal["g_private_body", "g_deploy_id_body", "g_deployer_id_body", "g_sys_auth_token_body", "g_authority_id_body", "g_principal_id_body"]  # noqa: Y015
     _WhichOneofArgType_unf_instance: _TypeAlias = _typing.Literal["unf_instance", b"unf_instance"]  # noqa: Y015
     def WhichOneof(self, oneof_group: _WhichOneofArgType_unf_instance) -> _WhichOneofReturnType_unf_instance | None: ...
 
@@ -2009,3 +2017,44 @@ class GSysAuthToken(_message.Message):
     def WhichOneof(self, oneof_group: _Never) -> None: ...
 
 Global___GSysAuthToken: _TypeAlias = GSysAuthToken  # noqa: Y015
+
+@_typing.final
+class GAuthorityId(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
+
+    ID_FIELD_NUMBER: _builtins.int
+    id: _builtins.bytes
+    def __init__(
+        self,
+        *,
+        id: _builtins.bytes = ...,
+    ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _Never  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["id", b"id"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
+
+Global___GAuthorityId: _TypeAlias = GAuthorityId  # noqa: Y015
+
+@_typing.final
+class GPrincipalId(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
+
+    KEYFAMILY_FIELD_NUMBER: _builtins.int
+    PUBLICKEY_FIELD_NUMBER: _builtins.int
+    keyFamily: _builtins.int
+    publicKey: _builtins.bytes
+    def __init__(
+        self,
+        *,
+        keyFamily: _builtins.int = ...,
+        publicKey: _builtins.bytes = ...,
+    ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _Never  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["keyFamily", b"keyFamily", "publicKey", b"publicKey"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    def WhichOneof(self, oneof_group: _Never) -> None: ...
+
+Global___GPrincipalId: _TypeAlias = GPrincipalId  # noqa: Y015

@@ -89,7 +89,7 @@ def wait_for_deploy_included(client: F1r3flyClient, deploy_id: str, timeout: int
 
     Args:
         client: F1r3flyClient instance.
-        deploy_id: Deploy signature hex string.
+        deploy_id: Hex-encoded 32-byte protocol-v6 deploy ID.
         timeout: Maximum seconds to wait.
 
     Returns:
@@ -149,7 +149,7 @@ def wait_for_deploy_finalized(
 
     Args:
         client: F1r3flyClient instance.
-        deploy_id: Deploy signature hex string.
+        deploy_id: Hex-encoded 32-byte protocol-v6 deploy ID.
         timeout: Maximum seconds without a strict LFB-height advance when
             ``absolute_timeout`` is set; otherwise the fixed total timeout.
         interval: Seconds between polls.
@@ -471,7 +471,7 @@ def deploy_with_fallback(
     proto = create_deploy_data(
         private_key, term, valid_after_block_no, shard_id=shard_id,
     )
-    deploy_id = proto.sig.hex()
+    deploy_id = proto.deployId.hex()
 
     for i, client in enumerate(clients):
         try:

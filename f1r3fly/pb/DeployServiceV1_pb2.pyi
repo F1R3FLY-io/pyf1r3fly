@@ -535,3 +535,31 @@ class StatusResponse(_message.Message):
     def WhichOneof(self, oneof_group: _WhichOneofArgType_message) -> _WhichOneofReturnType_message | None: ...
 
 Global___StatusResponse: _TypeAlias = StatusResponse  # noqa: Y015
+
+@_typing.final
+class PendingDeploysResponse(_message.Message):
+    """getPendingDeploys"""
+
+    DESCRIPTOR: _descriptor.Descriptor
+
+    ERROR_FIELD_NUMBER: _builtins.int
+    PAYLOAD_FIELD_NUMBER: _builtins.int
+    @_builtins.property
+    def error(self) -> _ServiceError_pb2.ServiceError: ...
+    @_builtins.property
+    def payload(self) -> _DeployServiceCommon_pb2.PendingDeploysResponsePayload: ...
+    def __init__(
+        self,
+        *,
+        error: _ServiceError_pb2.ServiceError | None = ...,
+        payload: _DeployServiceCommon_pb2.PendingDeploysResponsePayload | None = ...,
+    ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _typing.Literal["error", b"error", "message", b"message", "payload", b"payload"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["error", b"error", "message", b"message", "payload", b"payload"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    _WhichOneofReturnType_message: _TypeAlias = _typing.Literal["error", "payload"]  # noqa: Y015
+    _WhichOneofArgType_message: _TypeAlias = _typing.Literal["message", b"message"]  # noqa: Y015
+    def WhichOneof(self, oneof_group: _WhichOneofArgType_message) -> _WhichOneofReturnType_message | None: ...
+
+Global___PendingDeploysResponse: _TypeAlias = PendingDeploysResponse  # noqa: Y015

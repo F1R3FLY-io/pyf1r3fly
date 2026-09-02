@@ -26,11 +26,13 @@ See `pyproject.toml` for information about 3rd party library dependencies.
 | `system_contracts.py` | `query_token_metadata` -- queries for genesis-deployed system contracts |
 | `pos.py` | `PosAPI` -- Proof-of-Stake operations: `bond`, `withdraw`, `reveal_random`, `pos_vault_transfer`; reads `get_bonds`, `get_rewards`, `get_withdrawers`, `get_coop_vault`, `get_epoch_length` |
 | `websocket.py` | `connect_ws`, `wait_for_events`, `validate_block_event` -- WebSocket `/ws/events` client with event type constants and connection retry |
-| `util.py` | `create_deploy_data`, `sign_deploy_data` -- deploy proto construction and signing |
+| `util.py` | `create_deploy_data`, `authorize_deploy_data`, `DeploySigner` -- protocol-v6.1 envelope construction, threshold authorization, and deterministic signing |
 
 See [Cost-accounted Rholang client workflows](docs/cost-accounting.md) for the
 complete wallet-to-slot-to-gateway lifecycle, authority-evidence validation,
 terminal deploy tracking, security boundaries, and schema compatibility rules.
+See [Deploy envelope v6.1](docs/deploy-envelope-v6-1.md) for deploy identity,
+offline signing, threshold policies, canonical encoding, and migration rules.
 
 ## Quick Start
 

@@ -6,7 +6,7 @@ import click
 from f1r3fly.client import F1r3flyClient
 from f1r3fly.crypto import PrivateKey, PublicKey, generate_vault_addr_from_eth
 from f1r3fly.pb.CasperMessage_pb2 import DeployDataProto
-from f1r3fly.util import create_deploy_data
+from f1r3fly.util import assemble_single_signer_deploy_data, create_deploy_data
 
 
 @click.group()
@@ -48,7 +48,7 @@ def get_vault_addr(ctx: click.core.Context, input_type: str, input: str) -> None
 @click.option('--valid-after-block-number', type=int,
               help='valid after block number, usually used the latest block number')
 @click.option('--timestamp', type=int, help='timestamp, unit millisecond')
-@click.option('--shard-id', default='', help='target shard identifier')
+@click.option('--shard-id', default='root', help='target shard identifier')
 @click.option('--expiration-timestamp', type=int, default=0,
               help='expiration timestamp, unit millisecond')
 @click.option('--sig-algorithm', type=click.Choice(['secp256k1']),
@@ -61,12 +61,16 @@ def sign_deploy(ctx: click.core.Context, private_key: str, term: str,
         pri, term, valid_after_block_number, timestamp, shard_id,
         expiration_timestamp,
     )
-    deploy_id = signed_deploy.sig.hex()
+    signature = signed_deploy.authorizationV61.witnesses[0].signature.hex()
 
     if ctx.obj['json_output']:
-        click.echo(json.dumps({"signature": deploy_id}))
+        click.echo(json.dumps({
+            "signature": signature,
+            "deployId": signed_deploy.deployId.hex(),
+        }))
     else:
-        click.echo("The deploy signature is : {}".format(deploy_id))
+        click.echo("The deploy signature is : {}".format(signature))
+        click.echo("The deploy ID is : {}".format(signed_deploy.deployId.hex()))
 
 
 @cli.command()
@@ -76,7 +80,7 @@ def sign_deploy(ctx: click.core.Context, private_key: str, term: str,
 @click.option('--valid-after-block-number', type=int,
               help='valid after block number, usually used the latest block number')
 @click.option('--timestamp', type=int, help='timestamp, unit millisecond')
-@click.option('--shard-id', default='', help='target shard identifier')
+@click.option('--shard-id', default='root', help='target shard identifier')
 @click.option('--expiration-timestamp', type=int, default=0,
               help='expiration timestamp, unit millisecond')
 @click.option('--sig-algorithm', type=click.Choice(['secp256k1']),
@@ -88,15 +92,18 @@ def submit_deploy(ctx: click.core.Context, deployer: str, term: str,
                   valid_after_block_number: int, timestamp: int, shard_id: str,
                   expiration_timestamp: int, sig_algorithm: str, sig: str,
                   host: str, port: int) -> None:
-    deploy = DeployDataProto(
-        deployer=bytes.fromhex(deployer),
+    unsigned = DeployDataProto(
         term=term,
         validAfterBlockNumber=valid_after_block_number,
         timestamp=timestamp,
         shardId=shard_id,
         expirationTimestamp=expiration_timestamp,
-        sigAlgorithm='secp256k1',
-        sig=bytes.fromhex(sig)
+        language='rholang',
+    )
+    deploy = assemble_single_signer_deploy_data(
+        unsigned,
+        PublicKey.from_hex(deployer),
+        bytes.fromhex(sig),
     )
     with F1r3flyClient(host, port) as client:
         ret = client.send_deploy(deploy)
@@ -104,7 +111,7 @@ def submit_deploy(ctx: click.core.Context, deployer: str, term: str,
     if ctx.obj["json_output"]:
         click.echo(json.dumps({"deployID": ret}))
     else:
-        click.echo("Send {} deploy succeeded".format(sig))
+        click.echo("Send {} deploy succeeded".format(ret))
 
 @cli.command()
 @click.option('--host', default='localhost', help='Node host')

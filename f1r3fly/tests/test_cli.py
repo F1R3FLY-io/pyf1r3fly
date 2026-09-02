@@ -9,7 +9,9 @@ from f1r3fly.crypto import PrivateKey
 from f1r3fly.pb.CasperMessage_pb2 import DeployDataProto
 from f1r3fly.pb.DeployServiceV1_pb2 import DeployResponse
 from f1r3fly.pb.DeployServiceV1_pb2_grpc import DeployServiceServicer
-from f1r3fly.util import verify_deploy_data
+from f1r3fly.util import (
+    assemble_single_signer_deploy_data, create_deploy_data, verify_deploy_data,
+)
 
 from .test_client import deploy_service
 
@@ -81,15 +83,40 @@ def test_sign_deploy(key: PrivateKey, terms: str,
     assert result.exit_code == 0
     sig = json.loads(result.output)
 
-    data = DeployDataProto(
-        deployer=key.get_public_key().to_bytes(),
+    unsigned = DeployDataProto(
         term=terms,
         validAfterBlockNumber=valid_after_block_no,
         timestamp=timestamp_millis,
         shardId='root',
-        sigAlgorithm='secp256k1',
+        language='rholang',
     )
-    assert verify_deploy_data(key.get_public_key(), bytes.fromhex(sig['signature']), data)
+    data = assemble_single_signer_deploy_data(
+        unsigned,
+        key.get_public_key(),
+        bytes.fromhex(sig['signature']),
+    )
+    assert data.deployId.hex() == sig['deployId']
+    assert verify_deploy_data(
+        key.get_public_key(),
+        bytes.fromhex(sig['signature']),
+        data,
+    )
+
+
+def test_sign_deploy_text_output_distinguishes_signature_and_id() -> None:
+    private_key = PrivateKey.from_hex("01" * 32)
+    runner = CliRunner()
+    result = runner.invoke(cli, [
+        'sign-deploy',
+        '--private-key', private_key.to_hex(),
+        '--term', 'Nil',
+        '--valid-after-block-number', '1',
+        '--timestamp', '1',
+    ])
+
+    assert result.exit_code == 0
+    assert "The deploy signature is : " in result.output
+    assert "The deploy ID is : " in result.output
 
 
 @pytest.mark.parametrize("key,terms,valid_after_block_no,timestamp_millis", [
@@ -101,9 +128,17 @@ def test_submit_deploy(key: PrivateKey, terms: str,
                        valid_after_block_no: int, timestamp_millis: int):
     class DummyDeploySerivce(DeployServiceServicer):
         def doDeploy(self, request: DeployDataProto, context: grpc.ServicerContext) -> DeployResponse:
-            return DeployResponse(result=request.sig.hex())
+            return DeployResponse(result=request.deployId.hex())
 
     with deploy_service(DummyDeploySerivce()) as (server, port):
+        signed = create_deploy_data(
+            key,
+            terms,
+            valid_after_block_no,
+            timestamp_millis,
+            shard_id="root",
+        )
+        signature = signed.authorizationV61.witnesses[0].signature.hex()
         runner = CliRunner()
         result = runner.invoke(cli, ["--json-output", 'submit-deploy', '--deployer', key.get_public_key().to_hex(),
                                      '--term', terms,
@@ -111,10 +146,10 @@ def test_submit_deploy(key: PrivateKey, terms: str,
                                      "--timestamp", timestamp_millis,
                                      "--shard-id", "root",
                                      "--sig-algorithm", "secp256k1",
-                                     "--sig", "1111",
+                                     "--sig", signature,
                                      "--host", 'localhost',
                                      "--port", port
                                      ])
         assert result.exit_code == 0
         res = json.loads(result.output)
-        assert res['deployID'] == "1111"
+        assert res['deployID'] == signed.deployId.hex()

@@ -5,6 +5,8 @@ from typing import Any, Optional
 import bitcoin.base58
 from ecdsa import SigningKey, VerifyingKey
 from ecdsa.curves import SECP256k1
+from ecdsa.der import UnexpectedDER
+from ecdsa.keys import BadSignatureError
 from ecdsa.util import sigdecode_der, sigencode_der_canonize
 from eth_hash.auto import keccak
 from eth_keyfile import extract_key_from_keyfile
@@ -76,6 +78,21 @@ class PublicKey:
     def verify_block_hash(self, signature: bytes, block_hash: bytes) -> bool:
         return self._pub_key.verify_digest(signature, block_hash, sigdecode=sigdecode_der)
 
+    def verify_digest(self, signature: bytes, digest: bytes) -> bool:
+        return self._pub_key.verify_digest(signature, digest, sigdecode=sigdecode_der)
+
+    def verify_canonical_digest(self, signature: bytes, digest: bytes) -> bool:
+        try:
+            _, scalar = sigdecode_der(signature, SECP256k1.order)
+        except UnexpectedDER:
+            return False
+        if scalar > SECP256k1.order // 2:
+            return False
+        try:
+            return self.verify_digest(signature, digest)
+        except BadSignatureError:
+            return False
+
     def to_hex(self, lower: bool = True) -> str:
         return self.to_bytes().hex().lower() if lower else self.to_bytes().hex()
 
@@ -136,6 +153,13 @@ class PrivateKey:
 
     def sign_block_hash(self, block_hash: bytes) -> bytes:
         return self._key.sign_digest(block_hash, sigencode=sigencode_der_canonize)
+
+    def sign_digest_deterministic(self, digest: bytes) -> bytes:
+        return self._key.sign_digest_deterministic(
+            digest,
+            hashfunc=hashlib.sha256,
+            sigencode=sigencode_der_canonize,
+        )
 
     def to_bytes(self) -> bytes:
         return self._key.to_string()

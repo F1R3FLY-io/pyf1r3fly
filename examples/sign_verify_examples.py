@@ -13,6 +13,11 @@ deploy_data = create_deploy_data(
     term=contract,
     valid_after_block_no=10,
     timestamp_millis=int(time.time() * 1000),
+    shard_id="root",
 )
 
-assert verify_deploy_data(public_key, deploy_data.sig, deploy_data)
+assert verify_deploy_data(
+    public_key,
+    deploy_data.authorizationV61.witnesses[0].signature,
+    deploy_data,
+)

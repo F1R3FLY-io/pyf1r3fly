@@ -180,7 +180,8 @@ and can strand funds unless the contract installed a reusable or recovery
 branch beforehand. Deposit history never grants withdrawal authority; the
 retained unforgeable capabilities do.
 
-The gateway triggers the retained continuation with its own deploy signature:
+The gateway triggers the retained continuation under its authenticated deploy
+principal:
 
 ```python
 trigger_id = validator_slots.trigger(
@@ -196,11 +197,11 @@ debit either grant purse. If authenticated outer or continuation custody is
 insufficient, admission rejects before the continuation or any matched datum is
 consumed.
 
-## Authority presentations in deploy signatures
+## Authority presentations in deploy envelopes
 
 `F1r3flyClient.deploy` and `deploy_with_vabn_filled` accept
-`authority_presentations`. The list is cloned, deterministically serialized,
-strictly ordered, deduplicated, and included in the signed deploy preimage.
+`authority_presentations`. The list is cloned, canonically encoded, strictly
+ordered, deduplicated, and committed into the protocol-v6 deploy intent.
 Unresolved bound levels, false units, empty signatures, and malformed compound
 signatures are rejected before signing.
 

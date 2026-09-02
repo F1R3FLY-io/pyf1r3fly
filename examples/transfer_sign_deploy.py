@@ -33,7 +33,7 @@ timestamp_mill = int(time.time() * 1000)
 deploy = create_deploy_data(
     a, contract, latest_block_num, timestamp_mill, "root",
 )
-# deploy.sig is the deployId and you can use find_deploy to fetch the deployed block
+# deploy.deployId is the identifier used to fetch the containing block
 
 
 with F1r3flyClient('localhost', 40401) as client:

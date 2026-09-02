@@ -104,7 +104,7 @@ class F1r3flyClient:
             key: PrivateKey,
             term: str,
             timestamp_millis: int = -1,
-            shard_id: str = '',
+            shard_id: str = 'root',
             expiration_timestamp: int = 0,
             authority_presentations: Iterable[CostSignature] = (),
     ) -> str:
@@ -153,7 +153,7 @@ class F1r3flyClient:
             term: str,
             valid_after_block_no: int = -1,
             timestamp_millis: int = -1,
-            shard_id: str = '',
+            shard_id: str = 'root',
             expiration_timestamp: int = 0,
             authority_presentations: Iterable[CostSignature] = (),
     ) -> str:
@@ -171,8 +171,7 @@ class F1r3flyClient:
     def send_deploy(self, deploy: DeployDataProto) -> str:
         response = self._deploy_stub.doDeploy(deploy, timeout=self.timeout)
         self._check_response(response)
-        # sig of deploy data is deployId
-        return deploy.sig.hex()
+        return deploy.deployId.hex()
 
     def show_block(self, block_hash: str) -> BlockInfo:
         block_query = BlockQuery(hash=block_hash)
@@ -207,10 +206,10 @@ class F1r3flyClient:
 
     def deploy_finalization_status(
         self,
-        deploy_sig_hex: str,
+        deploy_id_hex: str,
         timeout: float | None = None,
     ) -> DeployFinalizationStatusInfo:
-        """Query canonical-state finalization status for a deploy by its signature.
+        """Query canonical-state finalization status for a protocol-v6 deploy ID.
 
         Prefer this over ``is_finalized(block_hash)`` for deploy tracking.
         ``is_finalized`` can return True for a block whose deploy effects were
@@ -223,10 +222,10 @@ class F1r3flyClient:
           - ``rejectionCount``: number of times this deploy was rejected during
             merges (monotonically increases, carries through to terminal states)
           - ``latestBlockHash``: bytes of the most recent canonical block
-            containing this deploy sig; empty/absent when the deploy has
+            containing this deploy ID; empty/absent when the deploy has
             never been included.
         """
-        query = DeployFinalizationStatusQuery(deploySig=bytes.fromhex(deploy_sig_hex))
+        query = DeployFinalizationStatusQuery(deploySig=bytes.fromhex(deploy_id_hex))
         rpc_timeout = self.timeout if timeout is None else timeout
         response = self._deploy_stub.deployFinalizationStatus(query, timeout=rpc_timeout)
         self._check_response(response)

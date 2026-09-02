@@ -4,7 +4,6 @@ from typing import Generator, Tuple, Union
 
 import grpc
 import pytest
-from ecdsa.keys import BadSignatureError
 
 from f1r3fly.client import F1r3flyClient
 from f1r3fly.crypto import PrivateKey
@@ -40,13 +39,17 @@ def test_d3_deploy_signature_preimage_golden_vector() -> None:
         timestamp=0,
         validAfterBlockNumber=0,
         shardId="root",
+        language="rholang",
         expirationTimestamp=0,
     )
     preimage = _gen_deploy_sig_content(data)
-    assert preimage.hex() == "12034e696c5a04726f6f74"
+    assert preimage.hex() == (
+        "00010100000000000000034e696c00000000000000000000000000000000"
+        "0000000000000004726f6f740000000000"
+    )
     assert blake2b_256_hex(preimage) == (
-        "c2ac266875edd634b52a2c7272ea7e1e"
-        "06d5a33a1864ad90a471d56aa89b45df"
+        "a4c9dcfc3045ef61575d8102ce4ba9fc"
+        "fad8354b69adcc90e58d89532d22e3b5"
     )
 
 
@@ -63,16 +66,20 @@ def test_authority_presentations_are_canonical_and_signed() -> None:
     )
 
     assert list(data.authorityPresentations) == [first, second]
-    assert _gen_deploy_sig_content(data).hex() == (
-        "12034e696c5a04726f6f749201030a01619201030a0162"
+    assert verify_deploy_data(
+        key.get_public_key(),
+        data.authorizationV61.witnesses[0].signature,
+        data,
     )
-    assert verify_deploy_data(key.get_public_key(), data.sig, data)
 
     changed = DeployDataProto()
     changed.CopyFrom(data)
     changed.authorityPresentations.append(CostSignature(ground=b"c"))
-    with pytest.raises(BadSignatureError):
-        verify_deploy_data(key.get_public_key(), data.sig, changed)
+    assert not verify_deploy_data(
+        key.get_public_key(),
+        data.authorizationV61.witnesses[0].signature,
+        changed,
+    )
 
 
 def test_authority_presentations_reject_duplicates_and_unresolved_names() -> None:
@@ -117,7 +124,7 @@ def deploy_service(deploy_service: Union[DeployServiceServicer, ProposeServiceSe
         add_DeployServiceServicer_to_server(deploy_service, server)
     if isinstance(deploy_service, ProposeServiceServicer):
         add_ProposeServiceServicer_to_server(deploy_service, server)
-    port = server.add_insecure_port("0.0.0.0:9766")
+    port = server.add_insecure_port("0.0.0.0:0")
     assert port != 0
     server.start()
     yield server, port
@@ -137,18 +144,30 @@ def test_client_deploy(key: PrivateKey, terms: str,
                        timestamp_millis: int) -> None:
     class DummyDeploySerivce(DeployServiceServicer):
         def doDeploy(self, request: DeployDataProto, context: grpc.ServicerContext) -> DeployResponse:
-            return DeployResponse(result=request.sig.hex())
+            return DeployResponse(result=request.deployId.hex())
 
     with deploy_service(DummyDeploySerivce()) as (server, port), \
             F1r3flyClient(TEST_HOST, port) as client:
         ret = client.deploy(
-            key, terms, valid_after_block_no, timestamp_millis,
+            key,
+            terms,
+            valid_after_block_no,
+            timestamp_millis,
+            shard_id="root",
         )
-        assert verify_deploy_data(key.get_public_key(), bytes.fromhex(ret),
-                                  create_deploy_data(
-                                      key, terms, valid_after_block_no,
-                                      timestamp_millis,
-                                  ))
+        deploy = create_deploy_data(
+            key,
+            terms,
+            valid_after_block_no,
+            timestamp_millis,
+            shard_id="root",
+        )
+        assert ret == deploy.deployId.hex()
+        assert verify_deploy_data(
+            key.get_public_key(),
+            deploy.authorizationV61.witnesses[0].signature,
+            deploy,
+        )
 
 
 def test_client_show_block() -> None:
