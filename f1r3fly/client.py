@@ -9,7 +9,7 @@ from typing import (
 import grpc
 
 from .crypto import PrivateKey, PublicKey
-from .par import par_value
+from .par import par_as_int, par_value
 from .param import Params
 from .pb.CasperMessage_pb2 import DeployDataProto
 from .pb.DeployServiceCommon_pb2 import (
@@ -524,7 +524,7 @@ def find_transfer_comm(report: SingleReport, transfer_template_unforgeable: Par)
                 transfers.append(event)
                 from_addr = event.comm.produces[0].data.pars[0].exprs[0].g_string
                 to_addr = event.comm.produces[0].data.pars[2].exprs[0].g_string
-                amount = event.comm.produces[0].data.pars[3].exprs[0].g_int
+                amount = par_as_int(event.comm.produces[0].data.pars[3])
                 ret = event.comm.produces[0].data.pars[5]
                 transactions.append(Transaction(from_addr, to_addr, amount, ret, None))
     for transaction in transactions:
