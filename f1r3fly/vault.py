@@ -5,7 +5,7 @@ from typing import Mapping
 
 from .client import F1r3flyClient
 from .crypto import PrivateKey
-from .par import par_as_bool, par_as_string, par_as_tuple
+from .par import par_as_bool, par_as_int, par_as_string, par_as_tuple
 
 CREATE_VAULT_RHO_TPL = """
 new rl(`rho:registry:lookup`), SystemVaultCh in {
@@ -108,7 +108,7 @@ class VaultAPI:
             {'addr': vault_addr},
         )
         result = self.client.exploratory_deploy(contract, block_hash)
-        return int(result[0].exprs[0].g_int)
+        return par_as_int(result[0])
 
     def deploy_get_balance(
         self,

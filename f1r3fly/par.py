@@ -24,10 +24,12 @@ def par_as_string(par: Par) -> str:
 
 
 def par_as_int(par: Par) -> int:
-    """Extract a Rholang integer from a Par protobuf message."""
+    """Extract a Rholang Int or BigInt from a Par protobuf message."""
     for expr in par.exprs:
         if expr.HasField("g_int"):
             return int(expr.g_int)
+        if expr.HasField("g_big_int"):
+            return int.from_bytes(expr.g_big_int, "big", signed=True)
     raise ValueError(f"Expected an int-bearing Par, got {par}")
 
 
@@ -94,7 +96,7 @@ def par_as_uri(par: Par) -> str:
 def par_value(par: Par) -> Any:
     """Extract the first available value from a Par, auto-detecting the type.
 
-    Tries string, int, bool, tuple, list, set, map, URI, byte array in
+    Tries string, int, BigInt, bool, tuple, list, set, map, URI, byte array in
     order. Returns the first match. Raises ValueError if no known type is
     found.
     """
@@ -103,6 +105,8 @@ def par_value(par: Par) -> Any:
             return expr.g_string
         if expr.HasField("g_int"):
             return int(expr.g_int)
+        if expr.HasField("g_big_int"):
+            return int.from_bytes(expr.g_big_int, "big", signed=True)
         if expr.HasField("g_bool"):
             return bool(expr.g_bool)
         if expr.HasField("e_tuple_body"):
