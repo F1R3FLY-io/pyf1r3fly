@@ -4,8 +4,10 @@ import pytest
 from ecdsa.keys import BadSignatureError
 
 from f1r3fly.crypto import (
-    PrivateKey, PublicKey, blake2b_32, verify_vault_address,
+    PrivateKey, PublicKey, _hash_leaf, _merkle_root, blake2b_32,
+    gen_block_hash_from_block, verify_vault_address,
 )
+from f1r3fly.pb.CasperMessage_pb2 import CLAIM_FAMILY_EJECT, BlockMessageProto
 
 
 @pytest.mark.parametrize('input_str,expected_output', [
@@ -123,3 +125,89 @@ def test_vault_address_validation():
     for i in range(20):
         key = PrivateKey.generate()
         assert verify_vault_address(key.get_public_key().get_vault_address()) is True
+
+
+def _empty_block() -> BlockMessageProto:
+    block = BlockMessageProto()
+    block.header.timestamp = 1_700_000_000_000
+    block.header.version = 1
+    block.body.state.preStateHash = bytes(32)
+    block.body.state.postStateHash = bytes(32)
+    block.sender = bytes(33)
+    block.sigAlgorithm = 'secp256k1'
+    block.shardId = 'test-shard'
+    return block
+
+
+def _leaf(byte: int) -> bytes:
+    return _hash_leaf(0x00, bytes([byte]))
+
+
+def _interior(left: bytes, right: bytes) -> bytes:
+    return blake2b_32(bytes([0x01]) + left + right).digest()
+
+
+def test_block_hash_matches_node_empty_block_golden() -> None:
+    assert gen_block_hash_from_block(_empty_block()).hex() == (
+        '249c70aa27fa8353d0373e13d6e9fc8ed4f50fc77d40bf901531fdbd4bc3884f'
+    )
+
+
+def test_merkle_root_of_no_leaves_is_zero() -> None:
+    assert _merkle_root([]) == bytes(32)
+
+
+def test_merkle_root_of_one_leaf_is_the_leaf() -> None:
+    assert _merkle_root([_leaf(1)]) == _leaf(1)
+
+
+def test_merkle_root_promotes_an_odd_last_leaf() -> None:
+    a, b, c = _leaf(1), _leaf(2), _leaf(3)
+    assert _merkle_root([a, b, c]) == _interior(_interior(a, b), c)
+
+
+def test_merkle_root_pairs_four_leaves() -> None:
+    a, b, c, d = _leaf(1), _leaf(2), _leaf(3), _leaf(4)
+    assert _merkle_root([a, b, c, d]) == _interior(_interior(a, b), _interior(c, d))
+
+
+def _with_bonds(order: list) -> BlockMessageProto:
+    block = _empty_block()
+    for validator, stake in order:
+        bond = block.body.state.bonds.add()
+        bond.validator = validator
+        bond.stake = stake
+    return block
+
+
+def test_block_hash_ignores_bond_order() -> None:
+    bonds = [(bytes([0x22]) * 33, 7), (bytes([0x11]) * 33, 5)]
+    assert gen_block_hash_from_block(_with_bonds(bonds)) == gen_block_hash_from_block(
+        _with_bonds(list(reversed(bonds)))
+    )
+
+
+def test_block_hash_ignores_rejected_deploy_and_applied_from_scope_order() -> None:
+    sigs = [bytes([0x22]) * 64, bytes([0x11]) * 64]
+    first, second = _empty_block(), _empty_block()
+    for block, order in ((first, sigs), (second, list(reversed(sigs)))):
+        for sig in order:
+            block.body.rejectedDeploys.add().sig = sig
+            block.body.appliedFromScope.append(sig)
+    assert gen_block_hash_from_block(first) == gen_block_hash_from_block(second)
+
+
+def test_block_hash_depends_on_leaky_bucket_vote_order() -> None:
+    first, second = _empty_block(), _empty_block()
+    for block, targets in ((first, (0x11, 0x22)), (second, (0x22, 0x11))):
+        for target in targets:
+            vote = block.body.leakyBucketVotes.add()
+            vote.family = CLAIM_FAMILY_EJECT
+            vote.target = bytes([target]) * 33
+    assert gen_block_hash_from_block(first) != gen_block_hash_from_block(second)
+
+
+def test_block_hash_commits_to_leaky_bucket_votes() -> None:
+    voted = _empty_block()
+    voted.body.leakyBucketVotes.add().family = CLAIM_FAMILY_EJECT
+    assert gen_block_hash_from_block(voted) != gen_block_hash_from_block(_empty_block())
