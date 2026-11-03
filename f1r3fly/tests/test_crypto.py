@@ -153,6 +153,15 @@ def test_block_hash_matches_node_empty_block_golden() -> None:
     )
 
 
+@pytest.mark.parametrize('name', ['one_deploy', 'two_deploys'])
+def test_block_hash_matches_node_blocks(name: str) -> None:
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), f'resources/blocks/{name}.bin')
+    block = BlockMessageProto()
+    with open(path, 'rb') as f:
+        block.ParseFromString(f.read())
+    assert gen_block_hash_from_block(block) == block.blockHash
+
+
 def test_merkle_root_of_no_leaves_is_zero() -> None:
     assert _merkle_root([]) == bytes(32)
 
