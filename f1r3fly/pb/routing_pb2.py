@@ -25,7 +25,7 @@ _sym_db = _symbol_database.Default()
 from .scalapb import scalapb_pb2 as scalapb_dot_scalapb__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rrouting.proto\x12\x07routing\x1a\x15scalapb/scalapb.proto\"D\n\x04Node\x12\n\n\x02id\x18\x01 \x01(\x0c\x12\x0c\n\x04host\x18\x02 \x01(\x0c\x12\x10\n\x08tcp_port\x18\x03 \x01(\r\x12\x10\n\x08udp_port\x18\x04 \x01(\r\"B\n\x06Header\x12%\n\x06sender\x18\x01 \x01(\x0b\x32\r.routing.NodeB\x06\xe2?\x03\xf0\x01\x01\x12\x11\n\tnetworkId\x18\x02 \x01(\t\"\x0b\n\tHeartbeat\"\x13\n\x11HeartbeatResponse\"\"\n\x11ProtocolHandshake\x12\r\n\x05nonce\x18\x01 \x01(\x0c\"*\n\x19ProtocolHandshakeResponse\x12\r\n\x05nonce\x18\x01 \x01(\x0c\")\n\x06Packet\x12\x0e\n\x06typeId\x18\x01 \x01(\t\x12\x0f\n\x07\x63ontent\x18\x02 \x01(\x0c\"\x0c\n\nDisconnect\"\xba\x02\n\x08Protocol\x12\'\n\x06header\x18\x01 \x01(\x0b\x32\x0f.routing.HeaderB\x06\xe2?\x03\xf0\x01\x01\x12\'\n\theartbeat\x18\x02 \x01(\x0b\x32\x12.routing.HeartbeatH\x00\x12\x38\n\x12protocol_handshake\x18\x03 \x01(\x0b\x32\x1a.routing.ProtocolHandshakeH\x00\x12I\n\x1bprotocol_handshake_response\x18\x04 \x01(\x0b\x32\".routing.ProtocolHandshakeResponseH\x00\x12!\n\x06packet\x18\x05 \x01(\x0b\x32\x0f.routing.PacketH\x00\x12)\n\ndisconnect\x18\x06 \x01(\x0b\x32\x13.routing.DisconnectH\x00\x42\t\n\x07message\"8\n\tTLRequest\x12+\n\x08protocol\x18\x01 \x01(\x0b\x32\x11.routing.ProtocolB\x06\xe2?\x03\xf0\x01\x01\"$\n\x13InternalServerError\x12\r\n\x05\x65rror\x18\x01 \x01(\x0c\".\n\x03\x41\x63k\x12\'\n\x06header\x18\x01 \x01(\x0b\x32\x0f.routing.HeaderB\x06\xe2?\x03\xf0\x01\x01\"q\n\nTLResponse\x12\x1b\n\x03\x61\x63k\x18\x01 \x01(\x0b\x32\x0c.routing.AckH\x00\x12;\n\x13internalServerError\x18\x02 \x01(\x0b\x32\x1c.routing.InternalServerErrorH\x00\x42\t\n\x07payload\"\x82\x01\n\x0b\x43hunkHeader\x12%\n\x06sender\x18\x01 \x01(\x0b\x32\r.routing.NodeB\x06\xe2?\x03\xf0\x01\x01\x12\x0e\n\x06typeId\x18\x02 \x01(\t\x12\x12\n\ncompressed\x18\x03 \x01(\x08\x12\x15\n\rcontentLength\x18\x04 \x01(\x05\x12\x11\n\tnetworkId\x18\x05 \x01(\t\" \n\tChunkData\x12\x13\n\x0b\x63ontentData\x18\x01 \x01(\x0c\"^\n\x05\x43hunk\x12&\n\x06header\x18\x01 \x01(\x0b\x32\x14.routing.ChunkHeaderH\x00\x12\"\n\x04\x64\x61ta\x18\x02 \x01(\x0b\x32\x12.routing.ChunkDataH\x00\x42\t\n\x07\x63ontent2v\n\x0eTransportLayer\x12\x31\n\x04Send\x12\x12.routing.TLRequest\x1a\x13.routing.TLResponse\"\x00\x12\x31\n\x06Stream\x12\x0e.routing.Chunk\x1a\x13.routing.TLResponse\"\x00(\x01\x42*\xe2?\'\n!coop.rchain.comm.protocol.routing\x10\x01H\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rrouting.proto\x12\x07routing\x1a\x15scalapb/scalapb.proto\"D\n\x04Node\x12\n\n\x02id\x18\x01 \x01(\x0c\x12\x0c\n\x04host\x18\x02 \x01(\x0c\x12\x10\n\x08tcp_port\x18\x03 \x01(\r\x12\x10\n\x08udp_port\x18\x04 \x01(\r\"S\n\x06Header\x12%\n\x06sender\x18\x01 \x01(\x0b\x32\r.routing.NodeB\x06\xe2?\x03\xf0\x01\x01\x12\x11\n\tnetworkId\x18\x02 \x01(\t\x12\x0f\n\x07\x63hainId\x18\x03 \x01(\x0c\"\x0b\n\tHeartbeat\"\x13\n\x11HeartbeatResponse\"9\n\x11ProtocolHandshake\x12\r\n\x05nonce\x18\x01 \x01(\x0c\x12\x15\n\rformatVersion\x18\x02 \x01(\r\"A\n\x19ProtocolHandshakeResponse\x12\r\n\x05nonce\x18\x01 \x01(\x0c\x12\x15\n\rformatVersion\x18\x02 \x01(\r\")\n\x06Packet\x12\x0e\n\x06typeId\x18\x01 \x01(\t\x12\x0f\n\x07\x63ontent\x18\x02 \x01(\x0c\"\x0c\n\nDisconnect\"\xba\x02\n\x08Protocol\x12\'\n\x06header\x18\x01 \x01(\x0b\x32\x0f.routing.HeaderB\x06\xe2?\x03\xf0\x01\x01\x12\'\n\theartbeat\x18\x02 \x01(\x0b\x32\x12.routing.HeartbeatH\x00\x12\x38\n\x12protocol_handshake\x18\x03 \x01(\x0b\x32\x1a.routing.ProtocolHandshakeH\x00\x12I\n\x1bprotocol_handshake_response\x18\x04 \x01(\x0b\x32\".routing.ProtocolHandshakeResponseH\x00\x12!\n\x06packet\x18\x05 \x01(\x0b\x32\x0f.routing.PacketH\x00\x12)\n\ndisconnect\x18\x06 \x01(\x0b\x32\x13.routing.DisconnectH\x00\x42\t\n\x07message\"8\n\tTLRequest\x12+\n\x08protocol\x18\x01 \x01(\x0b\x32\x11.routing.ProtocolB\x06\xe2?\x03\xf0\x01\x01\"$\n\x13InternalServerError\x12\r\n\x05\x65rror\x18\x01 \x01(\x0c\".\n\x03\x41\x63k\x12\'\n\x06header\x18\x01 \x01(\x0b\x32\x0f.routing.HeaderB\x06\xe2?\x03\xf0\x01\x01\"q\n\nTLResponse\x12\x1b\n\x03\x61\x63k\x18\x01 \x01(\x0b\x32\x0c.routing.AckH\x00\x12;\n\x13internalServerError\x18\x02 \x01(\x0b\x32\x1c.routing.InternalServerErrorH\x00\x42\t\n\x07payload\"\x93\x01\n\x0b\x43hunkHeader\x12%\n\x06sender\x18\x01 \x01(\x0b\x32\r.routing.NodeB\x06\xe2?\x03\xf0\x01\x01\x12\x0e\n\x06typeId\x18\x02 \x01(\t\x12\x12\n\ncompressed\x18\x03 \x01(\x08\x12\x15\n\rcontentLength\x18\x04 \x01(\x05\x12\x11\n\tnetworkId\x18\x05 \x01(\t\x12\x0f\n\x07\x63hainId\x18\x06 \x01(\x0c\" \n\tChunkData\x12\x13\n\x0b\x63ontentData\x18\x01 \x01(\x0c\"^\n\x05\x43hunk\x12&\n\x06header\x18\x01 \x01(\x0b\x32\x14.routing.ChunkHeaderH\x00\x12\"\n\x04\x64\x61ta\x18\x02 \x01(\x0b\x32\x12.routing.ChunkDataH\x00\x42\t\n\x07\x63ontent2v\n\x0eTransportLayer\x12\x31\n\x04Send\x12\x12.routing.TLRequest\x1a\x13.routing.TLResponse\"\x00\x12\x31\n\x06Stream\x12\x0e.routing.Chunk\x1a\x13.routing.TLResponse\"\x00(\x01\x42*\xe2?\'\n!coop.rchain.comm.protocol.routing\x10\x01H\x00\x62\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -46,35 +46,35 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_NODE']._serialized_start=49
   _globals['_NODE']._serialized_end=117
   _globals['_HEADER']._serialized_start=119
-  _globals['_HEADER']._serialized_end=185
-  _globals['_HEARTBEAT']._serialized_start=187
-  _globals['_HEARTBEAT']._serialized_end=198
-  _globals['_HEARTBEATRESPONSE']._serialized_start=200
-  _globals['_HEARTBEATRESPONSE']._serialized_end=219
-  _globals['_PROTOCOLHANDSHAKE']._serialized_start=221
-  _globals['_PROTOCOLHANDSHAKE']._serialized_end=255
-  _globals['_PROTOCOLHANDSHAKERESPONSE']._serialized_start=257
-  _globals['_PROTOCOLHANDSHAKERESPONSE']._serialized_end=299
-  _globals['_PACKET']._serialized_start=301
-  _globals['_PACKET']._serialized_end=342
-  _globals['_DISCONNECT']._serialized_start=344
-  _globals['_DISCONNECT']._serialized_end=356
-  _globals['_PROTOCOL']._serialized_start=359
-  _globals['_PROTOCOL']._serialized_end=673
-  _globals['_TLREQUEST']._serialized_start=675
-  _globals['_TLREQUEST']._serialized_end=731
-  _globals['_INTERNALSERVERERROR']._serialized_start=733
-  _globals['_INTERNALSERVERERROR']._serialized_end=769
-  _globals['_ACK']._serialized_start=771
-  _globals['_ACK']._serialized_end=817
-  _globals['_TLRESPONSE']._serialized_start=819
-  _globals['_TLRESPONSE']._serialized_end=932
-  _globals['_CHUNKHEADER']._serialized_start=935
-  _globals['_CHUNKHEADER']._serialized_end=1065
-  _globals['_CHUNKDATA']._serialized_start=1067
-  _globals['_CHUNKDATA']._serialized_end=1099
-  _globals['_CHUNK']._serialized_start=1101
-  _globals['_CHUNK']._serialized_end=1195
-  _globals['_TRANSPORTLAYER']._serialized_start=1197
-  _globals['_TRANSPORTLAYER']._serialized_end=1315
+  _globals['_HEADER']._serialized_end=202
+  _globals['_HEARTBEAT']._serialized_start=204
+  _globals['_HEARTBEAT']._serialized_end=215
+  _globals['_HEARTBEATRESPONSE']._serialized_start=217
+  _globals['_HEARTBEATRESPONSE']._serialized_end=236
+  _globals['_PROTOCOLHANDSHAKE']._serialized_start=238
+  _globals['_PROTOCOLHANDSHAKE']._serialized_end=295
+  _globals['_PROTOCOLHANDSHAKERESPONSE']._serialized_start=297
+  _globals['_PROTOCOLHANDSHAKERESPONSE']._serialized_end=362
+  _globals['_PACKET']._serialized_start=364
+  _globals['_PACKET']._serialized_end=405
+  _globals['_DISCONNECT']._serialized_start=407
+  _globals['_DISCONNECT']._serialized_end=419
+  _globals['_PROTOCOL']._serialized_start=422
+  _globals['_PROTOCOL']._serialized_end=736
+  _globals['_TLREQUEST']._serialized_start=738
+  _globals['_TLREQUEST']._serialized_end=794
+  _globals['_INTERNALSERVERERROR']._serialized_start=796
+  _globals['_INTERNALSERVERERROR']._serialized_end=832
+  _globals['_ACK']._serialized_start=834
+  _globals['_ACK']._serialized_end=880
+  _globals['_TLRESPONSE']._serialized_start=882
+  _globals['_TLRESPONSE']._serialized_end=995
+  _globals['_CHUNKHEADER']._serialized_start=998
+  _globals['_CHUNKHEADER']._serialized_end=1145
+  _globals['_CHUNKDATA']._serialized_start=1147
+  _globals['_CHUNKDATA']._serialized_end=1179
+  _globals['_CHUNK']._serialized_start=1181
+  _globals['_CHUNK']._serialized_end=1275
+  _globals['_TRANSPORTLAYER']._serialized_start=1277
+  _globals['_TRANSPORTLAYER']._serialized_end=1395
 # @@protoc_insertion_point(module_scope)

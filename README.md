@@ -15,7 +15,7 @@ See `pyproject.toml` for information about 3rd party library dependencies.
 
 | Module | Description |
 |--------|-------------|
-| `client.py` | `F1r3flyClient` -- gRPC client for deploy, block query, data query, deploy finalization status, status, bond status, file upload/download |
+| `client.py` | `F1r3flyClient` -- gRPC client for deploy, block query, data query, deploy finalization status, status, bond status |
 | `crypto.py` | `PrivateKey`, `PublicKey` -- SECP256k1 key handling, vault address derivation |
 | `par.py` | `par_as_string`, `par_as_int`, `par_as_map`, etc. -- type-safe extraction from Rholang Par protobuf messages |
 | `polling.py` | `poll_until`, `deploy_and_read`, `wait_for_finalized`, `wait_for_deploy_finalized`, `deploy_with_fallback` -- polling and deploy workflow utilities |
@@ -89,12 +89,16 @@ Note: Some examples require a running F1R3fly Node instance to connect to.
 
 To update protocol buffers from upstream run:
 
-    ./update-protobufs
+    ./update-protobufs [NODE_SOURCE] [NODE_REF]
     ./update-generated
 
-This first command will fetch latest F1R3fly `*.proto` files from `main` branch
-into `./protobuf` directory. The second command will generate gRPC Python code
-corresponding to the protcol buffers into `f1r3fly.pb` package (`./f1r3fly/pb`).
+The first command fetches the `*.proto` files of `f1r3node-rust` into
+`./protobuf` and records the commit they came from in `./protobuf/SOURCE`.
+`NODE_SOURCE` is a git URL or a local clone path (default: the
+`F1R3FLY-io/f1r3node-rust` repository) and `NODE_REF` a branch, tag or commit
+(default: `dev`). The block hash in `crypto.py` follows the same node commit.
+The second command generates gRPC Python code for them into the `f1r3fly.pb`
+package (`./f1r3fly/pb`).
 
 ### Running Tests and Linting
 

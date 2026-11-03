@@ -1,4 +1,5 @@
 syntax = "proto3";
+
 package casper;
 
 // If you are building for other languages "scalapb.proto"

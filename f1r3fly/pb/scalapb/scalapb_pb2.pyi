@@ -237,6 +237,7 @@ class ScalaPbOptions(_message.Message):
     GETTERS_FIELD_NUMBER: _builtins.int
     SCALA3_SOURCES_FIELD_NUMBER: _builtins.int
     PUBLIC_CONSTRUCTOR_PARAMETERS_FIELD_NUMBER: _builtins.int
+    USE_SCHEMA_UTF8_VALIDATION_FIELD_NUMBER: _builtins.int
     TEST_ONLY_NO_JAVA_CONVERSIONS_FIELD_NUMBER: _builtins.int
     package_name: _builtins.str
     """If set then it overrides the java_package and package."""
@@ -313,6 +314,12 @@ class ScalaPbOptions(_message.Message):
     """Generate sources that are compatible with Scala 3"""
     public_constructor_parameters: _builtins.bool
     """Makes constructor parameters public, including defaults and TypeMappers."""
+    use_schema_utf8_validation: _builtins.bool
+    """Use the resolved protobuf Java UTF-8 validation policy when parsing strings.
+    Defaults to false to preserve ScalaPB's legacy always-validating behavior.
+    Nonvalidating strings replace malformed UTF-8 and cannot preserve its bytes.
+    Map strings always validate. Applies to binary message fields, not extensions.
+    """
     test_only_no_java_conversions: _builtins.bool
     """For use in tests only. Inhibit Java conversions even when when generator parameters
     request for it.
@@ -376,11 +383,12 @@ class ScalaPbOptions(_message.Message):
         getters: _builtins.bool | None = ...,
         scala3_sources: _builtins.bool | None = ...,
         public_constructor_parameters: _builtins.bool | None = ...,
+        use_schema_utf8_validation: _builtins.bool | None = ...,
         test_only_no_java_conversions: _builtins.bool | None = ...,
     ) -> None: ...
-    _HasFieldArgType: _TypeAlias = _typing.Literal["bytes_type", b"bytes_type", "collection_type", b"collection_type", "enum_strip_prefix", b"enum_strip_prefix", "enum_value_naming", b"enum_value_naming", "flat_package", b"flat_package", "getters", b"getters", "ignore_all_transformations", b"ignore_all_transformations", "java_conversions", b"java_conversions", "lenses", b"lenses", "map_type", b"map_type", "no_default_values_in_constructor", b"no_default_values_in_constructor", "no_primitive_wrappers", b"no_primitive_wrappers", "object_name", b"object_name", "package_name", b"package_name", "preserve_unknown_fields", b"preserve_unknown_fields", "primitive_wrappers", b"primitive_wrappers", "public_constructor_parameters", b"public_constructor_parameters", "retain_source_code_info", b"retain_source_code_info", "scala3_sources", b"scala3_sources", "scope", b"scope", "single_file", b"single_file", "test_only_no_java_conversions", b"test_only_no_java_conversions"]  # noqa: Y015
+    _HasFieldArgType: _TypeAlias = _typing.Literal["bytes_type", b"bytes_type", "collection_type", b"collection_type", "enum_strip_prefix", b"enum_strip_prefix", "enum_value_naming", b"enum_value_naming", "flat_package", b"flat_package", "getters", b"getters", "ignore_all_transformations", b"ignore_all_transformations", "java_conversions", b"java_conversions", "lenses", b"lenses", "map_type", b"map_type", "no_default_values_in_constructor", b"no_default_values_in_constructor", "no_primitive_wrappers", b"no_primitive_wrappers", "object_name", b"object_name", "package_name", b"package_name", "preserve_unknown_fields", b"preserve_unknown_fields", "primitive_wrappers", b"primitive_wrappers", "public_constructor_parameters", b"public_constructor_parameters", "retain_source_code_info", b"retain_source_code_info", "scala3_sources", b"scala3_sources", "scope", b"scope", "single_file", b"single_file", "test_only_no_java_conversions", b"test_only_no_java_conversions", "use_schema_utf8_validation", b"use_schema_utf8_validation"]  # noqa: Y015
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["aux_enum_options", b"aux_enum_options", "aux_enum_value_options", b"aux_enum_value_options", "aux_field_options", b"aux_field_options", "aux_message_options", b"aux_message_options", "bytes_type", b"bytes_type", "collection_type", b"collection_type", "enum_strip_prefix", b"enum_strip_prefix", "enum_value_naming", b"enum_value_naming", "field_transformations", b"field_transformations", "flat_package", b"flat_package", "getters", b"getters", "ignore_all_transformations", b"ignore_all_transformations", "import", b"import", "java_conversions", b"java_conversions", "lenses", b"lenses", "map_type", b"map_type", "no_default_values_in_constructor", b"no_default_values_in_constructor", "no_primitive_wrappers", b"no_primitive_wrappers", "object_name", b"object_name", "package_name", b"package_name", "preamble", b"preamble", "preprocessors", b"preprocessors", "preserve_unknown_fields", b"preserve_unknown_fields", "primitive_wrappers", b"primitive_wrappers", "public_constructor_parameters", b"public_constructor_parameters", "retain_source_code_info", b"retain_source_code_info", "scala3_sources", b"scala3_sources", "scope", b"scope", "single_file", b"single_file", "test_only_no_java_conversions", b"test_only_no_java_conversions"]  # noqa: Y015
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["aux_enum_options", b"aux_enum_options", "aux_enum_value_options", b"aux_enum_value_options", "aux_field_options", b"aux_field_options", "aux_message_options", b"aux_message_options", "bytes_type", b"bytes_type", "collection_type", b"collection_type", "enum_strip_prefix", b"enum_strip_prefix", "enum_value_naming", b"enum_value_naming", "field_transformations", b"field_transformations", "flat_package", b"flat_package", "getters", b"getters", "ignore_all_transformations", b"ignore_all_transformations", "import", b"import", "java_conversions", b"java_conversions", "lenses", b"lenses", "map_type", b"map_type", "no_default_values_in_constructor", b"no_default_values_in_constructor", "no_primitive_wrappers", b"no_primitive_wrappers", "object_name", b"object_name", "package_name", b"package_name", "preamble", b"preamble", "preprocessors", b"preprocessors", "preserve_unknown_fields", b"preserve_unknown_fields", "primitive_wrappers", b"primitive_wrappers", "public_constructor_parameters", b"public_constructor_parameters", "retain_source_code_info", b"retain_source_code_info", "scala3_sources", b"scala3_sources", "scope", b"scope", "single_file", b"single_file", "test_only_no_java_conversions", b"test_only_no_java_conversions", "use_schema_utf8_validation", b"use_schema_utf8_validation"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
 Global___ScalaPbOptions: _TypeAlias = ScalaPbOptions  # noqa: Y015

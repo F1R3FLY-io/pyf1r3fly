@@ -9,6 +9,7 @@ from collections import abc as _abc
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
 from google.protobuf.internal import containers as _containers
+from google.protobuf.internal import enum_type_wrapper as _enum_type_wrapper
 import RhoTypes_pb2 as _RhoTypes_pb2
 import builtins as _builtins
 import sys
@@ -20,6 +21,42 @@ else:
     from typing_extensions import TypeAlias as _TypeAlias
 
 DESCRIPTOR: _descriptor.FileDescriptor
+
+class _ClaimOutcomeProto:
+    ValueType = _typing.NewType("ValueType", _builtins.int)
+    V: _TypeAlias = ValueType  # noqa: Y015
+
+class _ClaimOutcomeProtoEnumTypeWrapper(_enum_type_wrapper._EnumTypeWrapper[_ClaimOutcomeProto.ValueType], _builtins.type):
+    DESCRIPTOR: _descriptor.EnumDescriptor
+    CLAIM_OUTCOME_UNSPECIFIED: _ClaimOutcomeProto.ValueType  # 0
+    CLAIM_OUTCOME_PASS: _ClaimOutcomeProto.ValueType  # 1
+    CLAIM_OUTCOME_FAIL: _ClaimOutcomeProto.ValueType  # 2
+
+class ClaimOutcomeProto(_ClaimOutcomeProto, metaclass=_ClaimOutcomeProtoEnumTypeWrapper): ...
+
+CLAIM_OUTCOME_UNSPECIFIED: ClaimOutcomeProto.ValueType  # 0
+CLAIM_OUTCOME_PASS: ClaimOutcomeProto.ValueType  # 1
+CLAIM_OUTCOME_FAIL: ClaimOutcomeProto.ValueType  # 2
+Global___ClaimOutcomeProto: _TypeAlias = ClaimOutcomeProto  # noqa: Y015
+
+class _ClaimFamilyProto:
+    ValueType = _typing.NewType("ValueType", _builtins.int)
+    V: _TypeAlias = ValueType  # noqa: Y015
+
+class _ClaimFamilyProtoEnumTypeWrapper(_enum_type_wrapper._EnumTypeWrapper[_ClaimFamilyProto.ValueType], _builtins.type):
+    DESCRIPTOR: _descriptor.EnumDescriptor
+    CLAIM_FAMILY_UNSPECIFIED: _ClaimFamilyProto.ValueType  # 0
+    CLAIM_FAMILY_EJECT: _ClaimFamilyProto.ValueType  # 1
+    CLAIM_FAMILY_REJOIN: _ClaimFamilyProto.ValueType  # 2
+    CLAIM_FAMILY_OVERFLOW: _ClaimFamilyProto.ValueType  # 3
+
+class ClaimFamilyProto(_ClaimFamilyProto, metaclass=_ClaimFamilyProtoEnumTypeWrapper): ...
+
+CLAIM_FAMILY_UNSPECIFIED: ClaimFamilyProto.ValueType  # 0
+CLAIM_FAMILY_EJECT: ClaimFamilyProto.ValueType  # 1
+CLAIM_FAMILY_REJOIN: ClaimFamilyProto.ValueType  # 2
+CLAIM_FAMILY_OVERFLOW: ClaimFamilyProto.ValueType  # 3
+Global___ClaimFamilyProto: _TypeAlias = ClaimFamilyProto  # noqa: Y015
 
 @_typing.final
 class HasBlockRequestProto(_message.Message):
@@ -68,6 +105,307 @@ class BlockRequestProto(_message.Message):
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
 Global___BlockRequestProto: _TypeAlias = BlockRequestProto  # noqa: Y015
+
+@_typing.final
+class GetSnapshotChunkRequestProto(_message.Message):
+    """-------- Phase 7b-1 snapshot chunk-fetch --------
+    Joiners request individual 4 MiB chunks of a finalized snapshot
+    by (block_hash, chunk_index).  block_hash keys into the
+    serving validator's `snapshot_merkle_roots` cache to locate the
+    on-disk snapshot; chunk_index selects the 4 MiB slice.  The
+    response carries the raw bytes plus the chunk's precomputed
+    Blake2b256 hash so the requester can verify against a
+    concurrently-fetched inclusion proof against the anchored root.
+
+    Server-provided hash fields (chunk_hash, merkle_root) are
+    ADVISORY — the receiver MUST re-derive from the raw bytes and
+    its locally-anchored root respectively.  See each field's
+    comment for the authoritative-vs-advisory contract.
+
+    Merkle-tree shape: the chunk-hash tree is a plain bottom-up
+    binary Merkle tree with LAST-LEAF DUPLICATION on odd-count
+    levels (standard practice).  A receiver verifying an
+    inclusion proof MUST apply the identical duplication rule
+    when reconstructing the parent chain, or the recomputed root
+    will diverge from `merkle_root` even for well-formed
+    snapshots.  Pinned here against drift between the Wave 3.5
+    server slice and the Wave 3.6 client slice.
+    """
+
+    DESCRIPTOR: _descriptor.Descriptor
+
+    BLOCK_HASH_FIELD_NUMBER: _builtins.int
+    CHUNK_INDEX_FIELD_NUMBER: _builtins.int
+    block_hash: _builtins.bytes
+    """finalized block hash whose snapshot to fetch"""
+    chunk_index: _builtins.int
+    """which 4 MiB piece"""
+    def __init__(
+        self,
+        *,
+        block_hash: _builtins.bytes = ...,
+        chunk_index: _builtins.int = ...,
+    ) -> None: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["block_hash", b"block_hash", "chunk_index", b"chunk_index"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___GetSnapshotChunkRequestProto: _TypeAlias = GetSnapshotChunkRequestProto  # noqa: Y015
+
+@_typing.final
+class SnapshotChunkResponseProto(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
+
+    BLOCK_HASH_FIELD_NUMBER: _builtins.int
+    CHUNK_INDEX_FIELD_NUMBER: _builtins.int
+    CHUNK_BYTES_FIELD_NUMBER: _builtins.int
+    CHUNK_HASH_FIELD_NUMBER: _builtins.int
+    MERKLE_ROOT_FIELD_NUMBER: _builtins.int
+    CHUNK_COUNT_FIELD_NUMBER: _builtins.int
+    MERKLE_PROOF_FIELD_NUMBER: _builtins.int
+    block_hash: _builtins.bytes
+    """echo of the request's block_hash"""
+    chunk_index: _builtins.int
+    """echo of the request's chunk_index"""
+    chunk_bytes: _builtins.bytes
+    """raw chunk payload (may be < 4 MiB for tail)"""
+    chunk_hash: _builtins.bytes
+    """Blake2b256(chunk_bytes) — 32 bytes.
+
+    ADVISORY.  The receiver MUST recompute `Blake2b256(chunk_bytes)`
+    locally and compare — a malicious server could stuff a hash
+    that walks the Merkle proof without matching the actual
+    bytes, so trusting this field as authoritative would skip
+    the real check.  Kept in the wire for a fast pre-verify
+    short-circuit when the bytes are large.
+    """
+    merkle_root: _builtins.bytes
+    """Merkle root anchor over all chunk hashes — 32 bytes.
+
+    ADVISORY.  The receiver MUST compare against the root it
+    locally anchored via block finalization (NOT trust the
+    response's claim).  A matching value is a necessary
+    sanity check; it is NOT the authority.
+    """
+    chunk_count: _builtins.int
+    """total number of chunks in this snapshot"""
+    @_builtins.property
+    def merkle_proof(self) -> _containers.RepeatedCompositeFieldContainer[Global___MerkleProofStepProto]:
+        """inclusion proof for chunk_index"""
+
+    def __init__(
+        self,
+        *,
+        block_hash: _builtins.bytes = ...,
+        chunk_index: _builtins.int = ...,
+        chunk_bytes: _builtins.bytes = ...,
+        chunk_hash: _builtins.bytes = ...,
+        merkle_root: _builtins.bytes = ...,
+        chunk_count: _builtins.int = ...,
+        merkle_proof: _abc.Iterable[Global___MerkleProofStepProto] | None = ...,
+    ) -> None: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["block_hash", b"block_hash", "chunk_bytes", b"chunk_bytes", "chunk_count", b"chunk_count", "chunk_hash", b"chunk_hash", "chunk_index", b"chunk_index", "merkle_proof", b"merkle_proof", "merkle_root", b"merkle_root"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___SnapshotChunkResponseProto: _TypeAlias = SnapshotChunkResponseProto  # noqa: Y015
+
+@_typing.final
+class MerkleProofStepProto(_message.Message):
+    """One step of a bottom-up Merkle inclusion proof.  sibling_hash
+    is the co-child at this level; is_sibling_right = true means
+    the sibling is the right child (concat = current || sibling);
+    false means left (concat = sibling || current).
+    """
+
+    DESCRIPTOR: _descriptor.Descriptor
+
+    SIBLING_HASH_FIELD_NUMBER: _builtins.int
+    IS_SIBLING_RIGHT_FIELD_NUMBER: _builtins.int
+    sibling_hash: _builtins.bytes
+    is_sibling_right: _builtins.bool
+    def __init__(
+        self,
+        *,
+        sibling_hash: _builtins.bytes = ...,
+        is_sibling_right: _builtins.bool = ...,
+    ) -> None: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["is_sibling_right", b"is_sibling_right", "sibling_hash", b"sibling_hash"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___MerkleProofStepProto: _TypeAlias = MerkleProofStepProto  # noqa: Y015
+
+@_typing.final
+class HasSnapshotRequestProto(_message.Message):
+    """Sent by a joiner asking "do you have a serveable snapshot for
+    this block?"  Broadcast + point-to-point; serving nodes reply
+    with HasSnapshotProto when they can serve it.  Mirrors the
+    HasBlockRequestProto / HasBlockProto pattern.
+    """
+
+    DESCRIPTOR: _descriptor.Descriptor
+
+    BLOCK_HASH_FIELD_NUMBER: _builtins.int
+    block_hash: _builtins.bytes
+    def __init__(
+        self,
+        *,
+        block_hash: _builtins.bytes = ...,
+    ) -> None: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["block_hash", b"block_hash"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___HasSnapshotRequestProto: _TypeAlias = HasSnapshotRequestProto  # noqa: Y015
+
+@_typing.final
+class HasSnapshotProto(_message.Message):
+    """Response to HasSnapshotRequestProto.  Carries `merkle_root`
+    so the joiner can pin an anchor BEFORE issuing per-chunk
+    requests.  Both merkle_root and chunk_count here are
+    ADVISORY — the joiner MUST re-verify merkle_root against
+    its locally-anchored root (from block finalization) and
+    expect chunk_count to match the actual chunks it later
+    receives via GetSnapshotChunkRequest.  A server
+    reporting an inflated chunk_count would be caught by the
+    per-chunk inclusion-proof check during fetch.
+    """
+
+    DESCRIPTOR: _descriptor.Descriptor
+
+    BLOCK_HASH_FIELD_NUMBER: _builtins.int
+    MERKLE_ROOT_FIELD_NUMBER: _builtins.int
+    CHUNK_COUNT_FIELD_NUMBER: _builtins.int
+    block_hash: _builtins.bytes
+    merkle_root: _builtins.bytes
+    """ADVISORY anchor the joiner can pin"""
+    chunk_count: _builtins.int
+    """ADVISORY count the joiner can budget"""
+    def __init__(
+        self,
+        *,
+        block_hash: _builtins.bytes = ...,
+        merkle_root: _builtins.bytes = ...,
+        chunk_count: _builtins.int = ...,
+    ) -> None: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["block_hash", b"block_hash", "chunk_count", b"chunk_count", "merkle_root", b"merkle_root"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___HasSnapshotProto: _TypeAlias = HasSnapshotProto  # noqa: Y015
+
+@_typing.final
+class GetWalPayloadRequestProto(_message.Message):
+    """-------- Phase 7b-2 between-snapshot WAL payload fetch --------
+    After a joiner has assembled the latest snapshot, the WAL
+    between that snapshot and the head block still references
+    payload bytes by Blake2b256 hash.  For each hash that the
+    joiner can't reproduce locally (deterministic-Rholang /
+    deploy-data reducer misses), it asks peers for the bytes by
+    hash.  The response echoes the hash + the raw bytes; the
+    joiner rehashes the bytes to verify against the requested
+    hash before applying.
+
+    `payload_hash` in BOTH request and response is the content-
+    address.  The echoed hash in the response is ADVISORY — the
+    joiner MUST recompute `Blake2b256(payload_bytes)` and compare
+    against the ORIGINAL request's hash.  A server returning
+    mismatched bytes with a correct-looking echoed hash would
+    otherwise skip the real content-integrity check.
+
+    Payload sizes are bounded by write-op semantics: single
+    fs_write / fs_read replies map to one hash.  Cap enforced
+    at MAX_PAYLOAD_BYTES = 4 MiB (same as snapshot CHUNK_SIZE —
+    a natural upper bound; anything larger would already be
+    chunked by Phase 7b-1 during snapshot).
+    """
+
+    DESCRIPTOR: _descriptor.Descriptor
+
+    PAYLOAD_HASH_FIELD_NUMBER: _builtins.int
+    payload_hash: _builtins.bytes
+    """Blake2b256(payload bytes) — 32 bytes"""
+    def __init__(
+        self,
+        *,
+        payload_hash: _builtins.bytes = ...,
+    ) -> None: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["payload_hash", b"payload_hash"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___GetWalPayloadRequestProto: _TypeAlias = GetWalPayloadRequestProto  # noqa: Y015
+
+@_typing.final
+class WalPayloadResponseProto(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
+
+    PAYLOAD_HASH_FIELD_NUMBER: _builtins.int
+    PAYLOAD_BYTES_FIELD_NUMBER: _builtins.int
+    payload_hash: _builtins.bytes
+    """ADVISORY echo of the request's payload_hash.  Receiver
+    MUST recompute `Blake2b256(payload_bytes)` and compare
+    against the ORIGINAL request's hash (NOT this echo).
+    """
+    payload_bytes: _builtins.bytes
+    """raw payload bytes; joiner rehashes to verify"""
+    def __init__(
+        self,
+        *,
+        payload_hash: _builtins.bytes = ...,
+        payload_bytes: _builtins.bytes = ...,
+    ) -> None: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["payload_bytes", b"payload_bytes", "payload_hash", b"payload_hash"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___WalPayloadResponseProto: _TypeAlias = WalPayloadResponseProto  # noqa: Y015
+
+@_typing.final
+class HasWalPayloadRequestProto(_message.Message):
+    """Sent by a joiner asking "do you have bytes for this payload
+    hash?"  Broadcast + point-to-point; serving nodes reply with
+    HasWalPayloadProto when they can serve it.  Mirrors the
+    HasSnapshotRequestProto / HasSnapshotProto pattern.
+    """
+
+    DESCRIPTOR: _descriptor.Descriptor
+
+    PAYLOAD_HASH_FIELD_NUMBER: _builtins.int
+    payload_hash: _builtins.bytes
+    def __init__(
+        self,
+        *,
+        payload_hash: _builtins.bytes = ...,
+    ) -> None: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["payload_hash", b"payload_hash"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___HasWalPayloadRequestProto: _TypeAlias = HasWalPayloadRequestProto  # noqa: Y015
+
+@_typing.final
+class HasWalPayloadProto(_message.Message):
+    """Response to HasWalPayloadRequestProto.  Carries `payload_size`
+    so the joiner can budget before issuing the full fetch via
+    GetWalPayloadRequest.  Size is ADVISORY — the receiver MUST
+    cap at MAX_PAYLOAD_BYTES (4 MiB) regardless of what the
+    server claims here, and the actual response's byte count is
+    the authoritative truth.  A server over-reporting here would
+    get caught by the comm-layer message-size limit before memory
+    pressure.
+    """
+
+    DESCRIPTOR: _descriptor.Descriptor
+
+    PAYLOAD_HASH_FIELD_NUMBER: _builtins.int
+    PAYLOAD_SIZE_FIELD_NUMBER: _builtins.int
+    payload_hash: _builtins.bytes
+    payload_size: _builtins.int
+    """ADVISORY count the joiner can budget"""
+    def __init__(
+        self,
+        *,
+        payload_hash: _builtins.bytes = ...,
+        payload_size: _builtins.int = ...,
+    ) -> None: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["payload_hash", b"payload_hash", "payload_size", b"payload_size"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___HasWalPayloadProto: _TypeAlias = HasWalPayloadProto  # noqa: Y015
 
 @_typing.final
 class ForkChoiceTipRequestProto(_message.Message):
@@ -174,27 +512,158 @@ class BlockApprovalProto(_message.Message):
 Global___BlockApprovalProto: _TypeAlias = BlockApprovalProto  # noqa: Y015
 
 @_typing.final
+class FinalizedFloorSeedProto(_message.Message):
+    """The anchor's finalized floor and frontier as the responder derived them,
+    so a node restored from that anchor can start deriving forward instead of
+    re-deriving finality from history it will never hold.
+
+    Both blocks are named by hash AND number because the receiver needs the
+    numbers before it holds the blocks: they size the download window, and the
+    hashes are useless until the blocks they name are on disk.
+    """
+
+    DESCRIPTOR: _descriptor.Descriptor
+
+    FLOORHASH_FIELD_NUMBER: _builtins.int
+    FLOORNUMBER_FIELD_NUMBER: _builtins.int
+    FRONTIERHASH_FIELD_NUMBER: _builtins.int
+    FRONTIERNUMBER_FIELD_NUMBER: _builtins.int
+    floorHash: _builtins.bytes
+    floorNumber: _builtins.int
+    frontierHash: _builtins.bytes
+    frontierNumber: _builtins.int
+    def __init__(
+        self,
+        *,
+        floorHash: _builtins.bytes = ...,
+        floorNumber: _builtins.int = ...,
+        frontierHash: _builtins.bytes = ...,
+        frontierNumber: _builtins.int = ...,
+    ) -> None: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["floorHash", b"floorHash", "floorNumber", b"floorNumber", "frontierHash", b"frontierHash", "frontierNumber", b"frontierNumber"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___FinalizedFloorSeedProto: _TypeAlias = FinalizedFloorSeedProto  # noqa: Y015
+
+@_typing.final
 class ApprovedBlockProto(_message.Message):
     DESCRIPTOR: _descriptor.Descriptor
 
     CANDIDATE_FIELD_NUMBER: _builtins.int
     SIGS_FIELD_NUMBER: _builtins.int
+    FLOORSEED_FIELD_NUMBER: _builtins.int
     @_builtins.property
     def candidate(self) -> Global___ApprovedBlockCandidateProto: ...
     @_builtins.property
     def sigs(self) -> _containers.RepeatedCompositeFieldContainer[Global___Signature]: ...
+    @_builtins.property
+    def floorSeed(self) -> Global___FinalizedFloorSeedProto:
+        """Deliberately here and not on the candidate: the candidate's serialized
+        bytes are the payload the genesis ceremony signs and `Validate::approved_block`
+        re-derives, so a field there would put unsigned peer-supplied data inside
+        the signed envelope. Absent from peers that predate it, which the receiver
+        handles by deferring rather than by assuming a floor.
+        """
+
     def __init__(
         self,
         *,
         candidate: Global___ApprovedBlockCandidateProto | None = ...,
         sigs: _abc.Iterable[Global___Signature] | None = ...,
+        floorSeed: Global___FinalizedFloorSeedProto | None = ...,
     ) -> None: ...
-    _HasFieldArgType: _TypeAlias = _typing.Literal["candidate", b"candidate"]  # noqa: Y015
+    _HasFieldArgType: _TypeAlias = _typing.Literal["candidate", b"candidate", "floorSeed", b"floorSeed"]  # noqa: Y015
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["candidate", b"candidate", "sigs", b"sigs"]  # noqa: Y015
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["candidate", b"candidate", "floorSeed", b"floorSeed", "sigs", b"sigs"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
 Global___ApprovedBlockProto: _TypeAlias = ApprovedBlockProto  # noqa: Y015
+
+@_typing.final
+class FloorCacheRequestProto(_message.Message):
+    """The finalized-floor cache for a set of blocks, shipped so a restored node
+    receives finality for its window instead of re-deriving it from history it
+    does not keep. Values are pure functions of the named blocks, computed by
+    the responder when it validated them; trust is the same class as the
+    approved block itself — the peer that chose your anchor.
+    """
+
+    DESCRIPTOR: _descriptor.Descriptor
+
+    HASHES_FIELD_NUMBER: _builtins.int
+    @_builtins.property
+    def hashes(self) -> _containers.RepeatedScalarFieldContainer[_builtins.bytes]: ...
+    def __init__(
+        self,
+        *,
+        hashes: _abc.Iterable[_builtins.bytes] | None = ...,
+    ) -> None: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["hashes", b"hashes"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___FloorCacheRequestProto: _TypeAlias = FloorCacheRequestProto  # noqa: Y015
+
+@_typing.final
+class FloorCacheEntryProto(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
+
+    BLOCKHASH_FIELD_NUMBER: _builtins.int
+    FLOORHASH_FIELD_NUMBER: _builtins.int
+    FRONTIERHASH_FIELD_NUMBER: _builtins.int
+    blockHash: _builtins.bytes
+    floorHash: _builtins.bytes
+    frontierHash: _builtins.bytes
+    def __init__(
+        self,
+        *,
+        blockHash: _builtins.bytes = ...,
+        floorHash: _builtins.bytes = ...,
+        frontierHash: _builtins.bytes = ...,
+    ) -> None: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["blockHash", b"blockHash", "floorHash", b"floorHash", "frontierHash", b"frontierHash"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___FloorCacheEntryProto: _TypeAlias = FloorCacheEntryProto  # noqa: Y015
+
+@_typing.final
+class FloorCacheResponseProto(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
+
+    ENTRIES_FIELD_NUMBER: _builtins.int
+    GENESISHASH_FIELD_NUMBER: _builtins.int
+    GENESISBLOCK_FIELD_NUMBER: _builtins.int
+    genesisHash: _builtins.bytes
+    """The shard's genesis block hash (empty when the responder does not hold
+    it). A truncated requester holds no height-0 block but must seed
+    newly-bonded latest-message slots with the same network-uniform genesis
+    sentinel every ceremony node derives locally. Same trust class as the
+    entries: the peer that chose the anchor.
+    """
+    @_builtins.property
+    def entries(self) -> _containers.RepeatedCompositeFieldContainer[Global___FloorCacheEntryProto]: ...
+    @_builtins.property
+    def genesisBlock(self) -> Global___BlockMessageProto:
+        """The genesis block itself (absent when the responder does not hold it).
+        Hash-addressed: the receiver verifies it against genesisHash before
+        storing, so the field carries no trust of its own. Holding genesis makes
+        a truncated node's latest-message structures identical to a ceremony
+        node's — the newly-bonded sentinel points at it and the propose snapshot
+        dereferences every slot.
+        """
+
+    def __init__(
+        self,
+        *,
+        entries: _abc.Iterable[Global___FloorCacheEntryProto] | None = ...,
+        genesisHash: _builtins.bytes = ...,
+        genesisBlock: Global___BlockMessageProto | None = ...,
+    ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _typing.Literal["genesisBlock", b"genesisBlock"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["entries", b"entries", "genesisBlock", b"genesisBlock", "genesisHash", b"genesisHash"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___FloorCacheResponseProto: _TypeAlias = FloorCacheResponseProto  # noqa: Y015
 
 @_typing.final
 class ApprovedBlockRequestProto(_message.Message):
@@ -220,16 +689,16 @@ class NoApprovedBlockAvailableProto(_message.Message):
     DESCRIPTOR: _descriptor.Descriptor
 
     IDENTIFIER_FIELD_NUMBER: _builtins.int
-    NODEIDENTIFER_FIELD_NUMBER: _builtins.int
+    NODEIDENTIFIER_FIELD_NUMBER: _builtins.int
     identifier: _builtins.str
-    nodeIdentifer: _builtins.str
+    nodeIdentifier: _builtins.str
     def __init__(
         self,
         *,
         identifier: _builtins.str = ...,
-        nodeIdentifer: _builtins.str = ...,
+        nodeIdentifier: _builtins.str = ...,
     ) -> None: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["identifier", b"identifier", "nodeIdentifer", b"nodeIdentifer"]  # noqa: Y015
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["identifier", b"identifier", "nodeIdentifier", b"nodeIdentifier"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
 Global___NoApprovedBlockAvailableProto: _TypeAlias = NoApprovedBlockAvailableProto  # noqa: Y015
@@ -328,6 +797,8 @@ class BlockMetadataInternal(_message.Message):
     INVALID_FIELD_NUMBER: _builtins.int
     DIRECTLYFINALIZED_FIELD_NUMBER: _builtins.int
     FINALIZED_FIELD_NUMBER: _builtins.int
+    FAULTTOLERANCEVALUE_FIELD_NUMBER: _builtins.int
+    MERGEBASE_FIELD_NUMBER: _builtins.int
     blockHash: _builtins.bytes
     sender: _builtins.bytes
     blockNum: _builtins.int
@@ -338,6 +809,10 @@ class BlockMetadataInternal(_message.Message):
     """whether the block has been last finalized block (LFB)"""
     finalized: _builtins.bool
     """whether the block is finalized"""
+    faultToleranceValue: _builtins.float
+    """cached normalized FT at finalization time"""
+    mergeBase: _builtins.bytes
+    """recorded state parent (BlockProto body mergeBase); empty = header-derivable"""
     @_builtins.property
     def parents(self) -> _containers.RepeatedScalarFieldContainer[_builtins.bytes]: ...
     @_builtins.property
@@ -357,8 +832,10 @@ class BlockMetadataInternal(_message.Message):
         invalid: _builtins.bool = ...,
         directlyFinalized: _builtins.bool = ...,
         finalized: _builtins.bool = ...,
+        faultToleranceValue: _builtins.float = ...,
+        mergeBase: _builtins.bytes = ...,
     ) -> None: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["blockHash", b"blockHash", "blockNum", b"blockNum", "bonds", b"bonds", "directlyFinalized", b"directlyFinalized", "finalized", b"finalized", "invalid", b"invalid", "justifications", b"justifications", "parents", b"parents", "sender", b"sender", "seqNum", b"seqNum"]  # noqa: Y015
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["blockHash", b"blockHash", "blockNum", b"blockNum", "bonds", b"bonds", "directlyFinalized", b"directlyFinalized", "faultToleranceValue", b"faultToleranceValue", "finalized", b"finalized", "invalid", b"invalid", "justifications", b"justifications", "mergeBase", b"mergeBase", "parents", b"parents", "sender", b"sender", "seqNum", b"seqNum"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
 Global___BlockMetadataInternal: _TypeAlias = BlockMetadataInternal  # noqa: Y015
@@ -411,6 +888,8 @@ class DeployDataProto(_message.Message):
     VALIDAFTERBLOCKNUMBER_FIELD_NUMBER: _builtins.int
     SHARDID_FIELD_NUMBER: _builtins.int
     LANGUAGE_FIELD_NUMBER: _builtins.int
+    EXPIRATIONTIMESTAMP_FIELD_NUMBER: _builtins.int
+    PARAMETERS_FIELD_NUMBER: _builtins.int
     deployer: _builtins.bytes
     """public key"""
     term: _builtins.str
@@ -430,6 +909,10 @@ class DeployDataProto(_message.Message):
     """shard ID to prevent replay of deploys between shards"""
     language: _builtins.str
     """language (rholang or metta) of the source code"""
+    expirationTimestamp: _builtins.int
+    """optional millisecond timestamp after which deploy is invalid (0 = no expiration)"""
+    @_builtins.property
+    def parameters(self) -> _containers.RepeatedCompositeFieldContainer[Global___DeployParameter]: ...
     def __init__(
         self,
         *,
@@ -443,11 +926,155 @@ class DeployDataProto(_message.Message):
         validAfterBlockNumber: _builtins.int = ...,
         shardId: _builtins.str = ...,
         language: _builtins.str = ...,
+        expirationTimestamp: _builtins.int = ...,
+        parameters: _abc.Iterable[Global___DeployParameter] | None = ...,
     ) -> None: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["deployer", b"deployer", "language", b"language", "phloLimit", b"phloLimit", "phloPrice", b"phloPrice", "shardId", b"shardId", "sig", b"sig", "sigAlgorithm", b"sigAlgorithm", "term", b"term", "timestamp", b"timestamp", "validAfterBlockNumber", b"validAfterBlockNumber"]  # noqa: Y015
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["deployer", b"deployer", "expirationTimestamp", b"expirationTimestamp", "language", b"language", "parameters", b"parameters", "phloLimit", b"phloLimit", "phloPrice", b"phloPrice", "shardId", b"shardId", "sig", b"sig", "sigAlgorithm", b"sigAlgorithm", "term", b"term", "timestamp", b"timestamp", "validAfterBlockNumber", b"validAfterBlockNumber"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
 Global___DeployDataProto: _TypeAlias = DeployDataProto  # noqa: Y015
+
+@_typing.final
+class DeployParameter(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
+
+    NAME_FIELD_NUMBER: _builtins.int
+    VALUE_FIELD_NUMBER: _builtins.int
+    name: _builtins.str
+    @_builtins.property
+    def value(self) -> Global___RholangValue: ...
+    def __init__(
+        self,
+        *,
+        name: _builtins.str = ...,
+        value: Global___RholangValue | None = ...,
+    ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _typing.Literal["value", b"value"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["name", b"name", "value", b"value"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___DeployParameter: _TypeAlias = DeployParameter  # noqa: Y015
+
+@_typing.final
+class RholangValue(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
+
+    BOOL_VALUE_FIELD_NUMBER: _builtins.int
+    INT_VALUE_FIELD_NUMBER: _builtins.int
+    STRING_VALUE_FIELD_NUMBER: _builtins.int
+    BYTES_VALUE_FIELD_NUMBER: _builtins.int
+    TUPLE_VALUE_FIELD_NUMBER: _builtins.int
+    LIST_VALUE_FIELD_NUMBER: _builtins.int
+    SET_VALUE_FIELD_NUMBER: _builtins.int
+    MAP_VALUE_FIELD_NUMBER: _builtins.int
+    NIL_VALUE_FIELD_NUMBER: _builtins.int
+    URI_VALUE_FIELD_NUMBER: _builtins.int
+    bool_value: _builtins.bool
+    int_value: _builtins.int
+    string_value: _builtins.str
+    bytes_value: _builtins.bytes
+    uri_value: _builtins.str
+    @_builtins.property
+    def tuple_value(self) -> Global___RholangSequence: ...
+    @_builtins.property
+    def list_value(self) -> Global___RholangSequence: ...
+    @_builtins.property
+    def set_value(self) -> Global___RholangSequence: ...
+    @_builtins.property
+    def map_value(self) -> Global___RholangMap: ...
+    @_builtins.property
+    def nil_value(self) -> Global___RholangNil: ...
+    def __init__(
+        self,
+        *,
+        bool_value: _builtins.bool = ...,
+        int_value: _builtins.int = ...,
+        string_value: _builtins.str = ...,
+        bytes_value: _builtins.bytes = ...,
+        tuple_value: Global___RholangSequence | None = ...,
+        list_value: Global___RholangSequence | None = ...,
+        set_value: Global___RholangSequence | None = ...,
+        map_value: Global___RholangMap | None = ...,
+        nil_value: Global___RholangNil | None = ...,
+        uri_value: _builtins.str = ...,
+    ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _typing.Literal["bool_value", b"bool_value", "bytes_value", b"bytes_value", "int_value", b"int_value", "list_value", b"list_value", "map_value", b"map_value", "nil_value", b"nil_value", "set_value", b"set_value", "string_value", b"string_value", "tuple_value", b"tuple_value", "uri_value", b"uri_value", "value", b"value"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["bool_value", b"bool_value", "bytes_value", b"bytes_value", "int_value", b"int_value", "list_value", b"list_value", "map_value", b"map_value", "nil_value", b"nil_value", "set_value", b"set_value", "string_value", b"string_value", "tuple_value", b"tuple_value", "uri_value", b"uri_value", "value", b"value"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    _WhichOneofReturnType_value: _TypeAlias = _typing.Literal["bool_value", "int_value", "string_value", "bytes_value", "tuple_value", "list_value", "set_value", "map_value", "nil_value", "uri_value"]  # noqa: Y015
+    _WhichOneofArgType_value: _TypeAlias = _typing.Literal["value", b"value"]  # noqa: Y015
+    def WhichOneof(self, oneof_group: _WhichOneofArgType_value) -> _WhichOneofReturnType_value | None: ...
+
+Global___RholangValue: _TypeAlias = RholangValue  # noqa: Y015
+
+@_typing.final
+class RholangSequence(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
+
+    VALUES_FIELD_NUMBER: _builtins.int
+    @_builtins.property
+    def values(self) -> _containers.RepeatedCompositeFieldContainer[Global___RholangValue]: ...
+    def __init__(
+        self,
+        *,
+        values: _abc.Iterable[Global___RholangValue] | None = ...,
+    ) -> None: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["values", b"values"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___RholangSequence: _TypeAlias = RholangSequence  # noqa: Y015
+
+@_typing.final
+class RholangMap(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
+
+    ENTRIES_FIELD_NUMBER: _builtins.int
+    @_builtins.property
+    def entries(self) -> _containers.RepeatedCompositeFieldContainer[Global___RholangMapEntry]: ...
+    def __init__(
+        self,
+        *,
+        entries: _abc.Iterable[Global___RholangMapEntry] | None = ...,
+    ) -> None: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["entries", b"entries"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___RholangMap: _TypeAlias = RholangMap  # noqa: Y015
+
+@_typing.final
+class RholangMapEntry(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
+
+    KEY_FIELD_NUMBER: _builtins.int
+    VALUE_FIELD_NUMBER: _builtins.int
+    @_builtins.property
+    def key(self) -> Global___RholangValue: ...
+    @_builtins.property
+    def value(self) -> Global___RholangValue: ...
+    def __init__(
+        self,
+        *,
+        key: Global___RholangValue | None = ...,
+        value: Global___RholangValue | None = ...,
+    ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _typing.Literal["key", b"key", "value", b"value"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["key", b"key", "value", b"value"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___RholangMapEntry: _TypeAlias = RholangMapEntry  # noqa: Y015
+
+@_typing.final
+class RholangNil(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
+
+    def __init__(
+        self,
+    ) -> None: ...
+
+Global___RholangNil: _TypeAlias = RholangNil  # noqa: Y015
 
 @_typing.final
 class ProcessedDeployProto(_message.Message):
@@ -491,15 +1118,18 @@ class SlashSystemDeployDataProto(_message.Message):
 
     INVALIDBLOCKHASH_FIELD_NUMBER: _builtins.int
     ISSUERPUBLICKEY_FIELD_NUMBER: _builtins.int
+    TARGETACTIVATIONEPOCH_FIELD_NUMBER: _builtins.int
     invalidBlockHash: _builtins.bytes
     issuerPublicKey: _builtins.bytes
+    targetActivationEpoch: _builtins.int
     def __init__(
         self,
         *,
         invalidBlockHash: _builtins.bytes = ...,
         issuerPublicKey: _builtins.bytes = ...,
+        targetActivationEpoch: _builtins.int = ...,
     ) -> None: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["invalidBlockHash", b"invalidBlockHash", "issuerPublicKey", b"issuerPublicKey"]  # noqa: Y015
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["invalidBlockHash", b"invalidBlockHash", "issuerPublicKey", b"issuerPublicKey", "targetActivationEpoch", b"targetActivationEpoch"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
 Global___SlashSystemDeployDataProto: _TypeAlias = SlashSystemDeployDataProto  # noqa: Y015
@@ -515,26 +1145,158 @@ class CloseBlockSystemDeployDataProto(_message.Message):
 Global___CloseBlockSystemDeployDataProto: _TypeAlias = CloseBlockSystemDeployDataProto  # noqa: Y015
 
 @_typing.final
+class ClaimResolutionProto(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
+
+    FAMILY_FIELD_NUMBER: _builtins.int
+    TARGET_FIELD_NUMBER: _builtins.int
+    OPENEDAT_FIELD_NUMBER: _builtins.int
+    PROPOSER_FIELD_NUMBER: _builtins.int
+    OUTCOME_FIELD_NUMBER: _builtins.int
+    family: Global___ClaimFamilyProto.ValueType
+    target: _builtins.bytes
+    openedAt: _builtins.int
+    proposer: _builtins.bytes
+    outcome: Global___ClaimOutcomeProto.ValueType
+    def __init__(
+        self,
+        *,
+        family: Global___ClaimFamilyProto.ValueType = ...,
+        target: _builtins.bytes = ...,
+        openedAt: _builtins.int = ...,
+        proposer: _builtins.bytes = ...,
+        outcome: Global___ClaimOutcomeProto.ValueType = ...,
+    ) -> None: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["family", b"family", "openedAt", b"openedAt", "outcome", b"outcome", "proposer", b"proposer", "target", b"target"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___ClaimResolutionProto: _TypeAlias = ClaimResolutionProto  # noqa: Y015
+
+@_typing.final
+class ClaimIdProto(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
+
+    FAMILY_FIELD_NUMBER: _builtins.int
+    TARGET_FIELD_NUMBER: _builtins.int
+    OPENEDAT_FIELD_NUMBER: _builtins.int
+    PROPOSER_FIELD_NUMBER: _builtins.int
+    family: Global___ClaimFamilyProto.ValueType
+    target: _builtins.bytes
+    openedAt: _builtins.int
+    proposer: _builtins.bytes
+    def __init__(
+        self,
+        *,
+        family: Global___ClaimFamilyProto.ValueType = ...,
+        target: _builtins.bytes = ...,
+        openedAt: _builtins.int = ...,
+        proposer: _builtins.bytes = ...,
+    ) -> None: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["family", b"family", "openedAt", b"openedAt", "proposer", b"proposer", "target", b"target"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___ClaimIdProto: _TypeAlias = ClaimIdProto  # noqa: Y015
+
+@_typing.final
+class ResolveClaimsSystemDeployDataProto(_message.Message):
+    """The claims whose tally crossed at the block's floor, with that floor; the
+    ejected validators whose grace that floor has passed; and the claims whose
+    deadline that floor has reached undecided.
+    """
+
+    DESCRIPTOR: _descriptor.Descriptor
+
+    RESOLUTIONS_FIELD_NUMBER: _builtins.int
+    FLOORHASH_FIELD_NUMBER: _builtins.int
+    FLOORNUMBER_FIELD_NUMBER: _builtins.int
+    GRACEEXPIRIES_FIELD_NUMBER: _builtins.int
+    EXPIRIES_FIELD_NUMBER: _builtins.int
+    floorHash: _builtins.bytes
+    floorNumber: _builtins.int
+    @_builtins.property
+    def resolutions(self) -> _containers.RepeatedCompositeFieldContainer[Global___ClaimResolutionProto]: ...
+    @_builtins.property
+    def graceExpiries(self) -> _containers.RepeatedScalarFieldContainer[_builtins.bytes]: ...
+    @_builtins.property
+    def expiries(self) -> _containers.RepeatedCompositeFieldContainer[Global___ClaimIdProto]: ...
+    def __init__(
+        self,
+        *,
+        resolutions: _abc.Iterable[Global___ClaimResolutionProto] | None = ...,
+        floorHash: _builtins.bytes = ...,
+        floorNumber: _builtins.int = ...,
+        graceExpiries: _abc.Iterable[_builtins.bytes] | None = ...,
+        expiries: _abc.Iterable[Global___ClaimIdProto] | None = ...,
+    ) -> None: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["expiries", b"expiries", "floorHash", b"floorHash", "floorNumber", b"floorNumber", "graceExpiries", b"graceExpiries", "resolutions", b"resolutions"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___ResolveClaimsSystemDeployDataProto: _TypeAlias = ResolveClaimsSystemDeployDataProto  # noqa: Y015
+
+@_typing.final
+class DishonestVoteSystemDeployDataProto(_message.Message):
+    """Slashes the validator that cast a nay on an overflow claim its own signed
+    ancestry proves it owed: the vote block and the claim it voted on.
+    """
+
+    DESCRIPTOR: _descriptor.Descriptor
+
+    ACCUSED_FIELD_NUMBER: _builtins.int
+    VOTEBLOCK_FIELD_NUMBER: _builtins.int
+    FAMILY_FIELD_NUMBER: _builtins.int
+    TARGET_FIELD_NUMBER: _builtins.int
+    OPENEDAT_FIELD_NUMBER: _builtins.int
+    PROPOSER_FIELD_NUMBER: _builtins.int
+    accused: _builtins.bytes
+    voteBlock: _builtins.bytes
+    family: Global___ClaimFamilyProto.ValueType
+    target: _builtins.bytes
+    openedAt: _builtins.int
+    proposer: _builtins.bytes
+    def __init__(
+        self,
+        *,
+        accused: _builtins.bytes = ...,
+        voteBlock: _builtins.bytes = ...,
+        family: Global___ClaimFamilyProto.ValueType = ...,
+        target: _builtins.bytes = ...,
+        openedAt: _builtins.int = ...,
+        proposer: _builtins.bytes = ...,
+    ) -> None: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["accused", b"accused", "family", b"family", "openedAt", b"openedAt", "proposer", b"proposer", "target", b"target", "voteBlock", b"voteBlock"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___DishonestVoteSystemDeployDataProto: _TypeAlias = DishonestVoteSystemDeployDataProto  # noqa: Y015
+
+@_typing.final
 class SystemDeployDataProto(_message.Message):
     DESCRIPTOR: _descriptor.Descriptor
 
     SLASHSYSTEMDEPLOY_FIELD_NUMBER: _builtins.int
     CLOSEBLOCKSYSTEMDEPLOY_FIELD_NUMBER: _builtins.int
+    RESOLVECLAIMSSYSTEMDEPLOY_FIELD_NUMBER: _builtins.int
+    DISHONESTVOTESYSTEMDEPLOY_FIELD_NUMBER: _builtins.int
     @_builtins.property
     def slashSystemDeploy(self) -> Global___SlashSystemDeployDataProto: ...
     @_builtins.property
     def closeBlockSystemDeploy(self) -> Global___CloseBlockSystemDeployDataProto: ...
+    @_builtins.property
+    def resolveClaimsSystemDeploy(self) -> Global___ResolveClaimsSystemDeployDataProto: ...
+    @_builtins.property
+    def dishonestVoteSystemDeploy(self) -> Global___DishonestVoteSystemDeployDataProto: ...
     def __init__(
         self,
         *,
         slashSystemDeploy: Global___SlashSystemDeployDataProto | None = ...,
         closeBlockSystemDeploy: Global___CloseBlockSystemDeployDataProto | None = ...,
+        resolveClaimsSystemDeploy: Global___ResolveClaimsSystemDeployDataProto | None = ...,
+        dishonestVoteSystemDeploy: Global___DishonestVoteSystemDeployDataProto | None = ...,
     ) -> None: ...
-    _HasFieldArgType: _TypeAlias = _typing.Literal["closeBlockSystemDeploy", b"closeBlockSystemDeploy", "slashSystemDeploy", b"slashSystemDeploy", "systemDeploy", b"systemDeploy"]  # noqa: Y015
+    _HasFieldArgType: _TypeAlias = _typing.Literal["closeBlockSystemDeploy", b"closeBlockSystemDeploy", "dishonestVoteSystemDeploy", b"dishonestVoteSystemDeploy", "resolveClaimsSystemDeploy", b"resolveClaimsSystemDeploy", "slashSystemDeploy", b"slashSystemDeploy", "systemDeploy", b"systemDeploy"]  # noqa: Y015
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["closeBlockSystemDeploy", b"closeBlockSystemDeploy", "slashSystemDeploy", b"slashSystemDeploy", "systemDeploy", b"systemDeploy"]  # noqa: Y015
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["closeBlockSystemDeploy", b"closeBlockSystemDeploy", "dishonestVoteSystemDeploy", b"dishonestVoteSystemDeploy", "resolveClaimsSystemDeploy", b"resolveClaimsSystemDeploy", "slashSystemDeploy", b"slashSystemDeploy", "systemDeploy", b"systemDeploy"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
-    _WhichOneofReturnType_systemDeploy: _TypeAlias = _typing.Literal["slashSystemDeploy", "closeBlockSystemDeploy"]  # noqa: Y015
+    _WhichOneofReturnType_systemDeploy: _TypeAlias = _typing.Literal["slashSystemDeploy", "closeBlockSystemDeploy", "resolveClaimsSystemDeploy", "dishonestVoteSystemDeploy"]  # noqa: Y015
     _WhichOneofArgType_systemDeploy: _TypeAlias = _typing.Literal["systemDeploy", b"systemDeploy"]  # noqa: Y015
     def WhichOneof(self, oneof_group: _WhichOneofArgType_systemDeploy) -> _WhichOneofReturnType_systemDeploy | None: ...
 
@@ -575,7 +1337,19 @@ class BodyProto(_message.Message):
     SYSTEMDEPLOYS_FIELD_NUMBER: _builtins.int
     EXTRABYTES_FIELD_NUMBER: _builtins.int
     REJECTEDDEPLOYS_FIELD_NUMBER: _builtins.int
+    APPLIEDFROMSCOPE_FIELD_NUMBER: _builtins.int
+    MERGEBASE_FIELD_NUMBER: _builtins.int
+    LEAKYBUCKETVOTES_FIELD_NUMBER: _builtins.int
     extraBytes: _builtins.bytes
+    mergeBase: _builtins.bytes
+    """The block whose committed state this block's pre-state derives from:
+    for a merged block its main parent, or the floor block when that
+    parent's state does not hold the floor's settled content; the covering
+    parent for the fast path; empty where the header derives it
+    (single-parent and genesis). Recording it makes state-membership a walk over recorded
+    pointers instead of a per-block re-derivation:
+    state(B) = state(mergeBase) + appliedFromScope + deploys.
+    """
     @_builtins.property
     def state(self) -> Global___RChainStateProto: ...
     @_builtins.property
@@ -584,6 +1358,18 @@ class BodyProto(_message.Message):
     def systemDeploys(self) -> _containers.RepeatedCompositeFieldContainer[Global___ProcessedSystemDeployProto]: ...
     @_builtins.property
     def rejectedDeploys(self) -> _containers.RepeatedCompositeFieldContainer[Global___RejectedDeployProto]: ...
+    @_builtins.property
+    def appliedFromScope(self) -> _containers.RepeatedScalarFieldContainer[_builtins.bytes]:
+        """User-deploy sigs whose chains this block's merge APPLIED from scope
+        into its pre-state. The state plane's positive fact: a deploy's
+        effect enters a state either by fresh execution (a `deploys` entry)
+        or by a merge re-applying its chain — which, without this field, no
+        block data records. Empty for non-merged blocks. Validator-recomputed
+        and consensus-checked alongside rejectedDeploys.
+        """
+
+    @_builtins.property
+    def leakyBucketVotes(self) -> _containers.RepeatedCompositeFieldContainer[Global___LeakyBucketVoteProto]: ...
     def __init__(
         self,
         *,
@@ -592,26 +1378,155 @@ class BodyProto(_message.Message):
         systemDeploys: _abc.Iterable[Global___ProcessedSystemDeployProto] | None = ...,
         extraBytes: _builtins.bytes = ...,
         rejectedDeploys: _abc.Iterable[Global___RejectedDeployProto] | None = ...,
+        appliedFromScope: _abc.Iterable[_builtins.bytes] | None = ...,
+        mergeBase: _builtins.bytes = ...,
+        leakyBucketVotes: _abc.Iterable[Global___LeakyBucketVoteProto] | None = ...,
     ) -> None: ...
     _HasFieldArgType: _TypeAlias = _typing.Literal["state", b"state"]  # noqa: Y015
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["deploys", b"deploys", "extraBytes", b"extraBytes", "rejectedDeploys", b"rejectedDeploys", "state", b"state", "systemDeploys", b"systemDeploys"]  # noqa: Y015
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["appliedFromScope", b"appliedFromScope", "deploys", b"deploys", "extraBytes", b"extraBytes", "leakyBucketVotes", b"leakyBucketVotes", "mergeBase", b"mergeBase", "rejectedDeploys", b"rejectedDeploys", "state", b"state", "systemDeploys", b"systemDeploys"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
 Global___BodyProto: _TypeAlias = BodyProto  # noqa: Y015
+
+@_typing.final
+class LeakyBucketVoteProto(_message.Message):
+    """The proposer's vote on an open claim, which is named by its family, its
+    target, the block number it was opened at and the validator that opened it.
+    """
+
+    DESCRIPTOR: _descriptor.Descriptor
+
+    FAMILY_FIELD_NUMBER: _builtins.int
+    TARGET_FIELD_NUMBER: _builtins.int
+    OPENEDAT_FIELD_NUMBER: _builtins.int
+    PROPOSER_FIELD_NUMBER: _builtins.int
+    YEA_FIELD_NUMBER: _builtins.int
+    TESTIMONY_FIELD_NUMBER: _builtins.int
+    family: Global___ClaimFamilyProto.ValueType
+    target: _builtins.bytes
+    openedAt: _builtins.int
+    proposer: _builtins.bytes
+    yea: _builtins.bool
+    @_builtins.property
+    def testimony(self) -> Global___OverflowTestimonyProto: ...
+    def __init__(
+        self,
+        *,
+        family: Global___ClaimFamilyProto.ValueType = ...,
+        target: _builtins.bytes = ...,
+        openedAt: _builtins.int = ...,
+        proposer: _builtins.bytes = ...,
+        yea: _builtins.bool = ...,
+        testimony: Global___OverflowTestimonyProto | None = ...,
+    ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _typing.Literal["testimony", b"testimony"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["family", b"family", "openedAt", b"openedAt", "proposer", b"proposer", "target", b"target", "testimony", b"testimony", "yea", b"yea"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___LeakyBucketVoteProto: _TypeAlias = LeakyBucketVoteProto  # noqa: Y015
+
+@_typing.final
+class OverflowTestimonyProto(_message.Message):
+    """What a nay on an overflow claim was decided under: the claim's amount, and
+    what the voting block's floor records of the claimant.
+    """
+
+    DESCRIPTOR: _descriptor.Descriptor
+
+    AMOUNT_FIELD_NUMBER: _builtins.int
+    FLOORNUMBER_FIELD_NUMBER: _builtins.int
+    CLAIMEDTOTAL_FIELD_NUMBER: _builtins.int
+    FREEZES_FIELD_NUMBER: _builtins.int
+    amount: _builtins.int
+    floorNumber: _builtins.int
+    claimedTotal: _builtins.int
+    @_builtins.property
+    def freezes(self) -> _containers.RepeatedCompositeFieldContainer[Global___FreezeIntervalProto]: ...
+    def __init__(
+        self,
+        *,
+        amount: _builtins.int = ...,
+        floorNumber: _builtins.int = ...,
+        claimedTotal: _builtins.int = ...,
+        freezes: _abc.Iterable[Global___FreezeIntervalProto] | None = ...,
+    ) -> None: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["amount", b"amount", "claimedTotal", b"claimedTotal", "floorNumber", b"floorNumber", "freezes", b"freezes"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___OverflowTestimonyProto: _TypeAlias = OverflowTestimonyProto  # noqa: Y015
+
+@_typing.final
+class FreezeIntervalProto(_message.Message):
+    """An ejection's freeze over block numbers, closed by the rejoin that paid."""
+
+    DESCRIPTOR: _descriptor.Descriptor
+
+    FROM_FIELD_NUMBER: _builtins.int
+    REJOIN_FIELD_NUMBER: _builtins.int
+    @_builtins.property
+    def rejoin(self) -> Global___RejoinProto: ...
+    def __init__(
+        self,
+        *,
+        rejoin: Global___RejoinProto | None = ...,
+    ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _typing.Literal["rejoin", b"rejoin"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["from", b"from", "rejoin", b"rejoin"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___FreezeIntervalProto: _TypeAlias = FreezeIntervalProto  # noqa: Y015
+
+@_typing.final
+class RejoinProto(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
+
+    AT_FIELD_NUMBER: _builtins.int
+    TOPUP_FIELD_NUMBER: _builtins.int
+    at: _builtins.int
+    topup: _builtins.int
+    def __init__(
+        self,
+        *,
+        at: _builtins.int = ...,
+        topup: _builtins.int = ...,
+    ) -> None: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["at", b"at", "topup", b"topup"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___RejoinProto: _TypeAlias = RejoinProto  # noqa: Y015
 
 @_typing.final
 class RejectedDeployProto(_message.Message):
     DESCRIPTOR: _descriptor.Descriptor
 
     SIG_FIELD_NUMBER: _builtins.int
+    DUPLICATE_FIELD_NUMBER: _builtins.int
+    CARRIER_FIELD_NUMBER: _builtins.int
     sig: _builtins.bytes
+    duplicate: _builtins.bool
+    """Set by the merge that formed this record when the sig's effect is
+    present in that merge's own post-state (a kept copy in the same merge,
+    or already settled in its base): the record discarded a redundant copy
+    and does not dispute the sig's standing win. Validators recompute the
+    flag during checkpoint validation; a mismatch invalidates the block.
+    """
+    carrier: _builtins.bytes
+    """The block that held the copy this record adjudicated. The merge knows
+    it exactly (the rejected chain's source block); recording it makes
+    coverage an equality instead of an inference. Validators recompute the
+    carrier during checkpoint validation; a mismatch invalidates the block.
+    """
     def __init__(
         self,
         *,
         sig: _builtins.bytes = ...,
+        duplicate: _builtins.bool = ...,
+        carrier: _builtins.bytes = ...,
     ) -> None: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["sig", b"sig"]  # noqa: Y015
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["carrier", b"carrier", "duplicate", b"duplicate", "sig", b"sig"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
 Global___RejectedDeployProto: _TypeAlias = RejectedDeployProto  # noqa: Y015
@@ -908,3 +1823,43 @@ class StoreItemsMessageProto(_message.Message):
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
 Global___StoreItemsMessageProto: _TypeAlias = StoreItemsMessageProto  # noqa: Y015
+
+@_typing.final
+class MergeableEntryRequestProto(_message.Message):
+    """--------- Mergeable channels store sync --------"""
+
+    DESCRIPTOR: _descriptor.Descriptor
+
+    BLOCK_HASH_FIELD_NUMBER: _builtins.int
+    block_hash: _builtins.bytes
+    def __init__(
+        self,
+        *,
+        block_hash: _builtins.bytes = ...,
+    ) -> None: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["block_hash", b"block_hash"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___MergeableEntryRequestProto: _TypeAlias = MergeableEntryRequestProto  # noqa: Y015
+
+@_typing.final
+class MergeableEntryResponseProto(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
+
+    BLOCK_HASH_FIELD_NUMBER: _builtins.int
+    SERIALIZED_ENTRY_FIELD_NUMBER: _builtins.int
+    block_hash: _builtins.bytes
+    serialized_entry: _builtins.bytes
+    """bincode of Vec<DeployMergeableData>. Empty bytes = peer has the block but
+    no entry for it.
+    """
+    def __init__(
+        self,
+        *,
+        block_hash: _builtins.bytes = ...,
+        serialized_entry: _builtins.bytes = ...,
+    ) -> None: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["block_hash", b"block_hash", "serialized_entry", b"serialized_entry"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___MergeableEntryResponseProto: _TypeAlias = MergeableEntryResponseProto  # noqa: Y015

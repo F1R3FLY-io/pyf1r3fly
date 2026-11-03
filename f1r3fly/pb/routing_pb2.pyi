@@ -47,7 +47,9 @@ class Header(_message.Message):
 
     SENDER_FIELD_NUMBER: _builtins.int
     NETWORKID_FIELD_NUMBER: _builtins.int
+    CHAINID_FIELD_NUMBER: _builtins.int
     networkId: _builtins.str
+    chainId: _builtins.bytes
     @_builtins.property
     def sender(self) -> Global___Node: ...
     def __init__(
@@ -55,10 +57,11 @@ class Header(_message.Message):
         *,
         sender: Global___Node | None = ...,
         networkId: _builtins.str = ...,
+        chainId: _builtins.bytes = ...,
     ) -> None: ...
     _HasFieldArgType: _TypeAlias = _typing.Literal["sender", b"sender"]  # noqa: Y015
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["networkId", b"networkId", "sender", b"sender"]  # noqa: Y015
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["chainId", b"chainId", "networkId", b"networkId", "sender", b"sender"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
 Global___Header: _TypeAlias = Header  # noqa: Y015
@@ -88,13 +91,24 @@ class ProtocolHandshake(_message.Message):
     DESCRIPTOR: _descriptor.Descriptor
 
     NONCE_FIELD_NUMBER: _builtins.int
+    FORMATVERSION_FIELD_NUMBER: _builtins.int
     nonce: _builtins.bytes
+    formatVersion: _builtins.int
+    """Protocol-format version advertised by the sender.  0 (proto3
+    default) means the peer predates this field and makes no claim; any
+    non-zero value is an explicit assertion that the sender speaks a
+    specific wire + consensus format family.  See
+    comm::rp::protocol_helper::PROTOCOL_FORMAT_VERSION for the value a
+    current node advertises and the handshake-mismatch handling in
+    comm::rp::handle_messages::handle_protocol_handshake.
+    """
     def __init__(
         self,
         *,
         nonce: _builtins.bytes = ...,
+        formatVersion: _builtins.int = ...,
     ) -> None: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["nonce", b"nonce"]  # noqa: Y015
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["formatVersion", b"formatVersion", "nonce", b"nonce"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
 Global___ProtocolHandshake: _TypeAlias = ProtocolHandshake  # noqa: Y015
@@ -104,13 +118,19 @@ class ProtocolHandshakeResponse(_message.Message):
     DESCRIPTOR: _descriptor.Descriptor
 
     NONCE_FIELD_NUMBER: _builtins.int
+    FORMATVERSION_FIELD_NUMBER: _builtins.int
     nonce: _builtins.bytes
+    formatVersion: _builtins.int
+    """Protocol-format version advertised by the responder.  Same
+    semantics as ProtocolHandshake.formatVersion.
+    """
     def __init__(
         self,
         *,
         nonce: _builtins.bytes = ...,
+        formatVersion: _builtins.int = ...,
     ) -> None: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["nonce", b"nonce"]  # noqa: Y015
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["formatVersion", b"formatVersion", "nonce", b"nonce"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
 Global___ProtocolHandshakeResponse: _TypeAlias = ProtocolHandshakeResponse  # noqa: Y015
@@ -275,10 +295,12 @@ class ChunkHeader(_message.Message):
     COMPRESSED_FIELD_NUMBER: _builtins.int
     CONTENTLENGTH_FIELD_NUMBER: _builtins.int
     NETWORKID_FIELD_NUMBER: _builtins.int
+    CHAINID_FIELD_NUMBER: _builtins.int
     typeId: _builtins.str
     compressed: _builtins.bool
     contentLength: _builtins.int
     networkId: _builtins.str
+    chainId: _builtins.bytes
     @_builtins.property
     def sender(self) -> Global___Node: ...
     def __init__(
@@ -289,10 +311,11 @@ class ChunkHeader(_message.Message):
         compressed: _builtins.bool = ...,
         contentLength: _builtins.int = ...,
         networkId: _builtins.str = ...,
+        chainId: _builtins.bytes = ...,
     ) -> None: ...
     _HasFieldArgType: _TypeAlias = _typing.Literal["sender", b"sender"]  # noqa: Y015
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["compressed", b"compressed", "contentLength", b"contentLength", "networkId", b"networkId", "sender", b"sender", "typeId", b"typeId"]  # noqa: Y015
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["chainId", b"chainId", "compressed", b"compressed", "contentLength", b"contentLength", "networkId", b"networkId", "sender", b"sender", "typeId", b"typeId"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
 Global___ChunkHeader: _TypeAlias = ChunkHeader  # noqa: Y015
