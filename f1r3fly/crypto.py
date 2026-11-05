@@ -1,6 +1,6 @@
 import hashlib
 import random
-from typing import Any, Optional
+from typing import Any, Iterable, Literal, Optional
 
 import bitcoin.base58
 from ecdsa import SigningKey, VerifyingKey
@@ -8,23 +8,51 @@ from ecdsa.curves import SECP256k1
 from ecdsa.util import sigdecode_der, sigencode_der_canonize
 from eth_hash.auto import keccak
 from eth_keyfile import extract_key_from_keyfile
+from google.protobuf.message import Message
 from google.protobuf.wrappers_pb2 import Int32Value, StringValue
 
 from f1r3fly.pb.CasperMessage_pb2 import BlockMessageProto
 
 VAULTADDR_LENGTH = 40
+BlockHashScheme = Literal['legacy', 'merkle-v1', 'merkle-v1-justifications']
 
 
 def blake2b_32(data: bytes = b'') -> hashlib.blake2b:
     return hashlib.blake2b(data, digest_size=32)
 
 
-def gen_deploys_hash_from_block(block: BlockMessageProto) -> bytes:
-    hash_obj = b"".join([deploy.SerializeToString() for deploy in block.body.deploys])
-    return blake2b_32(hash_obj).digest()
+def gen_deploys_hash_from_block(
+        block: BlockMessageProto, *, scheme: BlockHashScheme = 'legacy',
+) -> bytes:
+    """Return the legacy deploy hash or the selected Merkle deploys root.
+
+    Merkle profiles include user deploys followed by system deploys, in
+    commit order. The legacy default preserves existing callers.
+    """
+    if scheme == 'legacy':
+        hash_obj = b''.join(
+            deploy.SerializeToString() for deploy in block.body.deploys
+        )
+        return blake2b_32(hash_obj).digest()
+    _check_merkle_block(block, scheme)
+    return _merkle_deploys_root(block)
 
 
-def gen_block_hash_from_block(block: BlockMessageProto) -> bytes:
+def gen_block_hash_from_block(
+        block: BlockMessageProto, *, scheme: BlockHashScheme = 'legacy',
+) -> bytes:
+    """Hash a canonical node-produced block using an explicit profile.
+
+    ``legacy`` retains the original flat hash. ``merkle-v1`` matches the
+    Rust recipe before node PR #790; ``merkle-v1-justifications`` includes
+    its justification commitment. Header.version does not identify these
+    profiles, so no automatic detection or fallback is performed.
+
+    This computes a digest, not block validity or signature validity.
+    """
+    if scheme != 'legacy':
+        _check_merkle_block(block, scheme)
+        return _merkle_block_hash(block, scheme)
     signed_obj = b''.join([block.header.SerializeToString(),
                            block.body.SerializeToString(),
                            block.sender,
@@ -33,6 +61,87 @@ def gen_block_hash_from_block(block: BlockMessageProto) -> bytes:
                            StringValue(value=block.shardId).SerializeToString(),
                            block.extraBytes])
     return blake2b_32(signed_obj).digest()
+
+
+def _check_merkle_block(
+        block: BlockMessageProto, scheme: BlockHashScheme,
+) -> None:
+    if scheme not in ('merkle-v1', 'merkle-v1-justifications'):
+        raise ValueError(f'Unsupported block hash scheme: {scheme}')
+    if not (block.HasField('header') and block.HasField('body')
+            and block.body.HasField('state')):
+        raise ValueError('Merkle hashing requires a block header, body and state')
+    known = BlockMessageProto()
+    known.CopyFrom(block)
+    known.DiscardUnknownFields()
+    if known != block:
+        raise ValueError('Unsupported protobuf fields in block; update bindings')
+
+
+def _hash_leaf(domain: int, payload: bytes) -> bytes:
+    return blake2b_32(bytes([domain]) + payload).digest()
+
+
+def _hash_proto_leaf(domain: int, message: Message) -> bytes:
+    return _hash_leaf(domain, message.SerializeToString(deterministic=True))
+
+
+def _merkle_root(leaves: Iterable[bytes]) -> bytes:
+    level = list(leaves)
+    if not level:
+        return bytes(32)
+    while len(level) > 1:
+        next_level = [
+            _hash_leaf(0x01, level[i] + level[i + 1])
+            for i in range(0, len(level) - 1, 2)
+        ]
+        if len(level) % 2:
+            next_level.append(level[-1])
+        level = next_level
+    return level[0]
+
+
+def _merkle_deploys_root(block: BlockMessageProto) -> bytes:
+    return _merkle_root([
+        *(_hash_proto_leaf(0x10, pd) for pd in block.body.deploys),
+        *(_hash_proto_leaf(0x11, psd) for psd in block.body.systemDeploys),
+    ])
+
+
+def _merkle_block_hash(
+        block: BlockMessageProto, scheme: BlockHashScheme,
+) -> bytes:
+    body = block.body
+    state = body.state
+    bonds_root = _merkle_root(
+        _hash_leaf(0x15, bond.validator + bond.stake.to_bytes(8, 'little', signed=True))
+        for bond in sorted(state.bonds, key=lambda bond: bond.validator)
+    )
+    justifications_root = b''
+    if scheme == 'merkle-v1-justifications':
+        justifications_root = _merkle_root(
+            _hash_leaf(0x16, len(j.validator).to_bytes(4, 'little')
+                       + j.validator + j.latestBlockHash)
+            for j in block.justifications
+        )
+    rejected_root = _merkle_root(
+        _hash_proto_leaf(0x13, rejected)
+        for rejected in sorted(body.rejectedDeploys, key=lambda rejected: rejected.sig)
+    )
+    applied_root = _merkle_root(
+        _hash_leaf(0x14, sig) for sig in sorted(body.appliedFromScope)
+    )
+    header_preimage = b''.join([
+        b'\x01', block.header.SerializeToString(deterministic=True),
+        state.preStateHash, state.postStateHash, bonds_root,
+        justifications_root, state.blockNumber.to_bytes(8, 'little', signed=True),
+        rejected_root, applied_root, body.mergeBase, body.extraBytes,
+        block.sender, block.sigAlgorithm.encode('utf-8'),
+        block.seqNum.to_bytes(4, 'little', signed=True),
+        block.shardId.encode('utf-8'), block.extraBytes,
+    ])
+    return _hash_leaf(0x02, _hash_leaf(0x12, header_preimage)
+                      + _merkle_deploys_root(block))
 
 
 def verify_vault_address(vault_address: str) -> bool:
