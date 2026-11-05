@@ -49,6 +49,47 @@ with F1r3flyClient("localhost", 40401) as client:
     value = par_as_int(pars[0])  # 42
 ```
 
+## Block hash profiles
+
+`gen_block_hash_from_block` and `gen_deploys_hash_from_block` in `f1r3fly.crypto`
+accept a keyword-only `scheme`. Existing calls default to `legacy`, preserving
+the old flat Blake2b algorithm. For Rust nodes, select the profile of the
+actual node build explicitly:
+
+| Scheme | Node hash recipe |
+|---|---|
+| `legacy` | Historical flat header/body hash; original Python behavior |
+| `merkle-v1` | Rust Merkle recipe before node PR #790 |
+| `merkle-v1-justifications` | Rust Merkle recipe including #790's justification root |
+
+```python
+from f1r3fly.crypto import gen_block_hash_from_block
+
+digest = gen_block_hash_from_block(block, scheme='merkle-v1-justifications')
+assert digest == block.blockHash
+```
+
+These helpers take a canonical, node-produced `BlockMessageProto`, not the
+HTTP/gRPC `BlockInfo` response. Both Merkle profiles use scheme byte 1 and can
+have the same `header.version`; neither that field nor the supplied block hash
+is used to guess a profile or fall back to another algorithm. A computed hash
+does not validate consensus rules or signatures. Merkle hashing rejects unknown
+protobuf fields so newer, unsupported schemas cannot silently produce a digest.
+
+The Merkle deploys root includes user deploys followed by system deploys, in
+commit order; it uses zero bytes for the empty root and promotes odd tails
+unchanged. Bonds, rejected deploys and applied-from-scope signatures are sorted
+as in the node; justifications retain their supplied order. The new node
+requires strictly ascending justification validators separately during validation.
+
+The implementation and hash-reachable protobuf additions follow
+[node #790 at `277e83a2c48e`](https://github.com/F1R3FLY-io/f1r3node-rust/blob/277e83a2c48e2c3bc884588cc3e756744f170eff/casper/src/rust/util/proto_util.rs).
+They include merge metadata, rejection provenance, slash activation epochs and
+deploy expiration/parameters. This is a scoped schema update for hashing;
+deploy signing and submission behavior are unchanged. Tests pin the Rust empty
+block golden hashes before and after #790. Network/state migration remains a
+separate node deployment concern.
+
 ## Examples
 
 1. [generate private key and public key](https://github.com/F1R3FLY-io/pyf1r3fly/blob/main/examples/keys_example.py)
