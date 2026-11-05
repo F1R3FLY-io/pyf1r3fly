@@ -58,6 +58,27 @@ class F1r3flyClientException(Exception):
         super().__init__(message)
 
 
+class DeployAdmissionRefused(F1r3flyClientException):
+    """The node explicitly did not accept this signed deploy."""
+
+    def __init__(self, deploy_id: str, code: str, message: str) -> None:
+        self.deploy_id = deploy_id
+        self.code = code
+        super().__init__(
+            f"Deploy {deploy_id} not accepted ({code}): {message}"
+        )
+
+
+class DeploySubmissionUnknown(F1r3flyClientException):
+    """A lost RPC response may follow admission; reconcile this deploy ID."""
+
+    def __init__(self, deploy_id: str, message: str) -> None:
+        self.deploy_id = deploy_id
+        super().__init__(
+            f"Deploy {deploy_id} submission outcome unknown: {message}"
+        )
+
+
 class DataQueries:
 
     @staticmethod
@@ -164,10 +185,22 @@ class F1r3flyClient:
         return self.send_deploy(deploy_data)
 
     def send_deploy(self, deploy: DeployDataProto) -> str:
-        response = self._deploy_stub.doDeploy(deploy, timeout=self.timeout)
+        deploy_id = deploy.sig.hex()
+        try:
+            response = self._deploy_stub.doDeploy(deploy, timeout=self.timeout)
+        except grpc.RpcError as error:
+            raise DeploySubmissionUnknown(deploy_id, str(error)) from error
+        if response.WhichOneof("message") == 'error':
+            messages = list(response.error.messages)
+            if len(messages) == 1:
+                code = messages[0].partition(':')[0].strip()
+                if code in ('deploy_pool_busy', 'deploy_admission_busy'):
+                    raise DeployAdmissionRefused(deploy_id, code, messages[0])
         self._check_response(response)
-        # sig of deploy data is deployId
-        return deploy.sig.hex()
+        if response.WhichOneof("message") != 'result':
+            raise DeploySubmissionUnknown(deploy_id, "missing deploy response")
+        # The signature identifies the original signed deploy; never re-sign here.
+        return deploy_id
 
     def show_block(self, block_hash: str) -> BlockInfo:
         block_query = BlockQuery(hash=block_hash)

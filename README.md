@@ -101,3 +101,17 @@ corresponding to the protcol buffers into `f1r3fly.pb` package (`./f1r3fly/pb`).
 	python -m pytest f1r3fly/tests
     python -m mypy f1r3fly
     isort --recursive --check-only f1r3fly
+
+## Deploy admission failures
+
+For node [#789](https://github.com/F1R3FLY-io/f1r3node-rust/pull/789),
+`send_deploy` raises `DeployAdmissionRefused` only for an explicit gRPC service
+error with the leading code `deploy_pool_busy` or `deploy_admission_busy`.
+Its `code` distinguishes the reasons and `deploy_id` retains the signed ID.
+Other service errors keep `F1r3flyClientException`.
+
+RPC failures (including deadlines and unavailability) raise
+`DeploySubmissionUnknown`, with the original `deploy_id` and chained RPC error.
+They do not establish that the deploy was rejected. Reconcile that ID before
+creating a new payment. No automatic retry or new signature is added; callers
+that retry should retain the original signed proto and pass it to `send_deploy`.
