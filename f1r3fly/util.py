@@ -2,6 +2,7 @@ import hashlib
 import time
 from typing import Optional
 
+from . import token_amount
 from .crypto import PrivateKey, PublicKey
 from .pb.CasperMessage_pb2 import DeployDataProto
 from .pb.DeployServiceV1_pb2 import FileUploadMetadata
@@ -71,7 +72,7 @@ def create_deploy_data(
     data = DeployDataProto(
         deployer=key.get_public_key().to_bytes(),
         term=term,
-        phloPrice=phlo_price,
+        phloPrice=token_amount.encode(phlo_price),
         phloLimit=phlo_limit,
         validAfterBlockNumber=valid_after_block_no,
         timestamp=timestamp_millis,
@@ -118,7 +119,7 @@ def create_file_upload_metadata(
     deploy_data = DeployDataProto(
         deployer=key.get_public_key().to_bytes(),
         term=term,
-        phloPrice=phlo_price,
+        phloPrice=token_amount.encode(phlo_price),
         phloLimit=phlo_limit,
         validAfterBlockNumber=valid_after_block_no,
         timestamp=timestamp_millis,

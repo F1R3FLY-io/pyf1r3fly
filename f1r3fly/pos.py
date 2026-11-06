@@ -28,7 +28,7 @@ BOND_RHO_TPL = """
 new retCh, PoSCh, rl(`rho:registry:lookup`), deployerId(`rho:system:deployerId`), deployId(`rho:system:deployId`) in {
   rl!(`rho:system:pos`, *PoSCh) |
   for (@(_, PoS) <- PoSCh) {
-    @PoS!("bond", *deployerId, $amount, *retCh) |
+    @PoS!("bond", *deployerId, ${amount}n, *retCh) |
     for (@result <- retCh) {
       deployId!(result)
     }
