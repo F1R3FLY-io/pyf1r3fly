@@ -794,17 +794,15 @@ class BlockMetadataInternal(_message.Message):
     BONDS_FIELD_NUMBER: _builtins.int
     BLOCKNUM_FIELD_NUMBER: _builtins.int
     SEQNUM_FIELD_NUMBER: _builtins.int
-    INVALID_FIELD_NUMBER: _builtins.int
     DIRECTLYFINALIZED_FIELD_NUMBER: _builtins.int
     FINALIZED_FIELD_NUMBER: _builtins.int
     FAULTTOLERANCEVALUE_FIELD_NUMBER: _builtins.int
     MERGEBASE_FIELD_NUMBER: _builtins.int
+    EQUIVOCATES_FIELD_NUMBER: _builtins.int
     blockHash: _builtins.bytes
     sender: _builtins.bytes
     blockNum: _builtins.int
     seqNum: _builtins.int
-    invalid: _builtins.bool
-    """whether the block was marked as invalid"""
     directlyFinalized: _builtins.bool
     """whether the block has been last finalized block (LFB)"""
     finalized: _builtins.bool
@@ -813,6 +811,8 @@ class BlockMetadataInternal(_message.Message):
     """cached normalized FT at finalization time"""
     mergeBase: _builtins.bytes
     """recorded state parent (BlockProto body mergeBase); empty = header-derivable"""
+    equivocates: _builtins.bytes
+    """the sender's other block at this block's seqNum; empty unless the block is an equivocation"""
     @_builtins.property
     def parents(self) -> _containers.RepeatedScalarFieldContainer[_builtins.bytes]: ...
     @_builtins.property
@@ -829,13 +829,13 @@ class BlockMetadataInternal(_message.Message):
         bonds: _abc.Iterable[Global___BondProto] | None = ...,
         blockNum: _builtins.int = ...,
         seqNum: _builtins.int = ...,
-        invalid: _builtins.bool = ...,
         directlyFinalized: _builtins.bool = ...,
         finalized: _builtins.bool = ...,
         faultToleranceValue: _builtins.float = ...,
         mergeBase: _builtins.bytes = ...,
+        equivocates: _builtins.bytes = ...,
     ) -> None: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["blockHash", b"blockHash", "blockNum", b"blockNum", "bonds", b"bonds", "directlyFinalized", b"directlyFinalized", "faultToleranceValue", b"faultToleranceValue", "finalized", b"finalized", "invalid", b"invalid", "justifications", b"justifications", "mergeBase", b"mergeBase", "parents", b"parents", "sender", b"sender", "seqNum", b"seqNum"]  # noqa: Y015
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["blockHash", b"blockHash", "blockNum", b"blockNum", "bonds", b"bonds", "directlyFinalized", b"directlyFinalized", "equivocates", b"equivocates", "faultToleranceValue", b"faultToleranceValue", "finalized", b"finalized", "justifications", b"justifications", "mergeBase", b"mergeBase", "parents", b"parents", "sender", b"sender", "seqNum", b"seqNum"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
 Global___BlockMetadataInternal: _TypeAlias = BlockMetadataInternal  # noqa: Y015
@@ -848,9 +848,12 @@ class HeaderProto(_message.Message):
     TIMESTAMP_FIELD_NUMBER: _builtins.int
     VERSION_FIELD_NUMBER: _builtins.int
     EXTRABYTES_FIELD_NUMBER: _builtins.int
+    CHAINID_FIELD_NUMBER: _builtins.int
     timestamp: _builtins.int
     version: _builtins.int
     extraBytes: _builtins.bytes
+    chainId: _builtins.bytes
+    """genesis block hash of the block's chain; empty in the genesis block"""
     @_builtins.property
     def parentsHashList(self) -> _containers.RepeatedScalarFieldContainer[_builtins.bytes]:
         """list of parent block hashes"""
@@ -862,8 +865,9 @@ class HeaderProto(_message.Message):
         timestamp: _builtins.int = ...,
         version: _builtins.int = ...,
         extraBytes: _builtins.bytes = ...,
+        chainId: _builtins.bytes = ...,
     ) -> None: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["extraBytes", b"extraBytes", "parentsHashList", b"parentsHashList", "timestamp", b"timestamp", "version", b"version"]  # noqa: Y015
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["chainId", b"chainId", "extraBytes", b"extraBytes", "parentsHashList", b"parentsHashList", "timestamp", b"timestamp", "version", b"version"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
 Global___HeaderProto: _TypeAlias = HeaderProto  # noqa: Y015
@@ -1113,23 +1117,101 @@ class ProcessedDeployProto(_message.Message):
 Global___ProcessedDeployProto: _TypeAlias = ProcessedDeployProto  # noqa: Y015
 
 @_typing.final
-class SlashSystemDeployDataProto(_message.Message):
+class BlockCommitmentProto(_message.Message):
+    """Everything a block's hash commits to, with the deploys reduced to their
+    root, plus the signature: enough to recompute the hash and verify the
+    signature without the block.
+    """
+
     DESCRIPTOR: _descriptor.Descriptor
 
-    INVALIDBLOCKHASH_FIELD_NUMBER: _builtins.int
-    ISSUERPUBLICKEY_FIELD_NUMBER: _builtins.int
-    TARGETACTIVATIONEPOCH_FIELD_NUMBER: _builtins.int
-    invalidBlockHash: _builtins.bytes
-    issuerPublicKey: _builtins.bytes
-    targetActivationEpoch: _builtins.int
+    HEADER_FIELD_NUMBER: _builtins.int
+    PRESTATEHASH_FIELD_NUMBER: _builtins.int
+    POSTSTATEHASH_FIELD_NUMBER: _builtins.int
+    BONDSROOT_FIELD_NUMBER: _builtins.int
+    BLOCKNUMBER_FIELD_NUMBER: _builtins.int
+    REJECTEDROOT_FIELD_NUMBER: _builtins.int
+    APPLIEDFROMSCOPEROOT_FIELD_NUMBER: _builtins.int
+    MERGEBASE_FIELD_NUMBER: _builtins.int
+    BODYEXTRABYTES_FIELD_NUMBER: _builtins.int
+    SENDER_FIELD_NUMBER: _builtins.int
+    SIGALGORITHM_FIELD_NUMBER: _builtins.int
+    SEQNUM_FIELD_NUMBER: _builtins.int
+    SHARDID_FIELD_NUMBER: _builtins.int
+    EXTRABYTES_FIELD_NUMBER: _builtins.int
+    DEPLOYSROOT_FIELD_NUMBER: _builtins.int
+    SIG_FIELD_NUMBER: _builtins.int
+    LEAKYBUCKETVOTESROOT_FIELD_NUMBER: _builtins.int
+    preStateHash: _builtins.bytes
+    postStateHash: _builtins.bytes
+    bondsRoot: _builtins.bytes
+    blockNumber: _builtins.int
+    rejectedRoot: _builtins.bytes
+    appliedFromScopeRoot: _builtins.bytes
+    mergeBase: _builtins.bytes
+    bodyExtraBytes: _builtins.bytes
+    sender: _builtins.bytes
+    sigAlgorithm: _builtins.str
+    seqNum: _builtins.int
+    shardId: _builtins.str
+    extraBytes: _builtins.bytes
+    deploysRoot: _builtins.bytes
+    sig: _builtins.bytes
+    leakyBucketVotesRoot: _builtins.bytes
+    @_builtins.property
+    def header(self) -> Global___HeaderProto: ...
     def __init__(
         self,
         *,
-        invalidBlockHash: _builtins.bytes = ...,
-        issuerPublicKey: _builtins.bytes = ...,
-        targetActivationEpoch: _builtins.int = ...,
+        header: Global___HeaderProto | None = ...,
+        preStateHash: _builtins.bytes = ...,
+        postStateHash: _builtins.bytes = ...,
+        bondsRoot: _builtins.bytes = ...,
+        blockNumber: _builtins.int = ...,
+        rejectedRoot: _builtins.bytes = ...,
+        appliedFromScopeRoot: _builtins.bytes = ...,
+        mergeBase: _builtins.bytes = ...,
+        bodyExtraBytes: _builtins.bytes = ...,
+        sender: _builtins.bytes = ...,
+        sigAlgorithm: _builtins.str = ...,
+        seqNum: _builtins.int = ...,
+        shardId: _builtins.str = ...,
+        extraBytes: _builtins.bytes = ...,
+        deploysRoot: _builtins.bytes = ...,
+        sig: _builtins.bytes = ...,
+        leakyBucketVotesRoot: _builtins.bytes = ...,
     ) -> None: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["invalidBlockHash", b"invalidBlockHash", "issuerPublicKey", b"issuerPublicKey", "targetActivationEpoch", b"targetActivationEpoch"]  # noqa: Y015
+    _HasFieldArgType: _TypeAlias = _typing.Literal["header", b"header"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["appliedFromScopeRoot", b"appliedFromScopeRoot", "blockNumber", b"blockNumber", "bodyExtraBytes", b"bodyExtraBytes", "bondsRoot", b"bondsRoot", "deploysRoot", b"deploysRoot", "extraBytes", b"extraBytes", "header", b"header", "leakyBucketVotesRoot", b"leakyBucketVotesRoot", "mergeBase", b"mergeBase", "postStateHash", b"postStateHash", "preStateHash", b"preStateHash", "rejectedRoot", b"rejectedRoot", "sender", b"sender", "seqNum", b"seqNum", "shardId", b"shardId", "sig", b"sig", "sigAlgorithm", b"sigAlgorithm"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___BlockCommitmentProto: _TypeAlias = BlockCommitmentProto  # noqa: Y015
+
+@_typing.final
+class SlashSystemDeployDataProto(_message.Message):
+    """Two blocks one sender signed at one sequence number, ordered by block hash."""
+
+    DESCRIPTOR: _descriptor.Descriptor
+
+    ISSUERPUBLICKEY_FIELD_NUMBER: _builtins.int
+    FIRST_FIELD_NUMBER: _builtins.int
+    SECOND_FIELD_NUMBER: _builtins.int
+    issuerPublicKey: _builtins.bytes
+    @_builtins.property
+    def first(self) -> Global___BlockCommitmentProto: ...
+    @_builtins.property
+    def second(self) -> Global___BlockCommitmentProto: ...
+    def __init__(
+        self,
+        *,
+        issuerPublicKey: _builtins.bytes = ...,
+        first: Global___BlockCommitmentProto | None = ...,
+        second: Global___BlockCommitmentProto | None = ...,
+    ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _typing.Literal["first", b"first", "second", b"second"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["first", b"first", "issuerPublicKey", b"issuerPublicKey", "second", b"second"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
 Global___SlashSystemDeployDataProto: _TypeAlias = SlashSystemDeployDataProto  # noqa: Y015
