@@ -10,7 +10,9 @@ from ecdsa.util import sigdecode_der, sigencode_der_canonize
 from eth_hash.auto import keccak
 from eth_keyfile import extract_key_from_keyfile
 
-from f1r3fly.pb.CasperMessage_pb2 import BlockMessageProto
+from f1r3fly.pb.CasperMessage_pb2 import (
+    BlockCommitmentProto, BlockMessageProto,
+)
 
 VAULTADDR_LENGTH = 40
 
@@ -64,49 +66,73 @@ def _deploys_root(block: BlockMessageProto) -> bytes:
     return _merkle_root(leaves)
 
 
-def _header_preimage(block: BlockMessageProto) -> bytes:
+def block_commitment(block: BlockMessageProto) -> BlockCommitmentProto:
+    """What the block's hash and signature commit to."""
     body = block.body
     state = body.state
-    bonds_root = _merkle_root([
-        _hash_leaf(_LEAF_BOND, bond.validator + struct.pack('<q', bond.stake))
-        for bond in sorted(state.bonds, key=lambda bond: bond.validator)
-    ])
-    rejected_root = _merkle_root([
-        _hash_leaf(_LEAF_REJECTED_DEPLOY, rejected.SerializeToString())
-        for rejected in sorted(body.rejectedDeploys, key=lambda rejected: rejected.sig)
-    ])
-    applied_from_scope_root = _merkle_root([
-        _hash_leaf(_LEAF_APPLIED_FROM_SCOPE_SIG, sig)
-        for sig in sorted(body.appliedFromScope)
-    ])
-    votes_root = _merkle_root([
-        _hash_leaf(_LEAF_LEAKY_BUCKET_VOTE, vote.SerializeToString())
-        for vote in body.leakyBucketVotes
-    ])
+    commitment = BlockCommitmentProto(
+        preStateHash=state.preStateHash,
+        postStateHash=state.postStateHash,
+        bondsRoot=_merkle_root([
+            _hash_leaf(_LEAF_BOND, bond.validator + struct.pack('<q', bond.stake))
+            for bond in sorted(state.bonds, key=lambda bond: bond.validator)
+        ]),
+        blockNumber=state.blockNumber,
+        rejectedRoot=_merkle_root([
+            _hash_leaf(_LEAF_REJECTED_DEPLOY, rejected.SerializeToString())
+            for rejected in sorted(body.rejectedDeploys, key=lambda rejected: rejected.sig)
+        ]),
+        appliedFromScopeRoot=_merkle_root([
+            _hash_leaf(_LEAF_APPLIED_FROM_SCOPE_SIG, sig)
+            for sig in sorted(body.appliedFromScope)
+        ]),
+        leakyBucketVotesRoot=_merkle_root([
+            _hash_leaf(_LEAF_LEAKY_BUCKET_VOTE, vote.SerializeToString())
+            for vote in body.leakyBucketVotes
+        ]),
+        mergeBase=body.mergeBase,
+        bodyExtraBytes=body.extraBytes,
+        sender=block.sender,
+        sigAlgorithm=block.sigAlgorithm,
+        seqNum=block.seqNum,
+        shardId=block.shardId,
+        extraBytes=block.extraBytes,
+        deploysRoot=_deploys_root(block),
+        sig=block.sig,
+    )
+    commitment.header.CopyFrom(block.header)
+    return commitment
+
+
+def _header_preimage(commitment: BlockCommitmentProto) -> bytes:
     return b''.join([
         bytes([BLOCK_HASH_SCHEME_VERSION]),
-        block.header.SerializeToString(),
-        state.preStateHash,
-        state.postStateHash,
-        bonds_root,
-        struct.pack('<q', state.blockNumber),
-        rejected_root,
-        applied_from_scope_root,
-        votes_root,
-        body.mergeBase,
-        body.extraBytes,
-        block.sender,
-        block.sigAlgorithm.encode(),
-        struct.pack('<i', block.seqNum),
-        block.shardId.encode(),
-        block.extraBytes,
+        commitment.header.SerializeToString(),
+        commitment.preStateHash,
+        commitment.postStateHash,
+        commitment.bondsRoot,
+        struct.pack('<q', commitment.blockNumber),
+        commitment.rejectedRoot,
+        commitment.appliedFromScopeRoot,
+        commitment.leakyBucketVotesRoot,
+        commitment.mergeBase,
+        commitment.bodyExtraBytes,
+        commitment.sender,
+        commitment.sigAlgorithm.encode(),
+        struct.pack('<i', commitment.seqNum),
+        commitment.shardId.encode(),
+        commitment.extraBytes,
     ])
+
+
+def commitment_hash(commitment: BlockCommitmentProto) -> bytes:
+    """The node's Merkle block hash (scheme v1) of a block commitment."""
+    header_leaf = _hash_leaf(_LEAF_HEADER, _header_preimage(commitment))
+    return blake2b_32(bytes([_TOP_DOMAIN]) + header_leaf + commitment.deploysRoot).digest()
 
 
 def gen_block_hash_from_block(block: BlockMessageProto) -> bytes:
-    """The node's Merkle block hash (scheme v1)."""
-    header_leaf = _hash_leaf(_LEAF_HEADER, _header_preimage(block))
-    return blake2b_32(bytes([_TOP_DOMAIN]) + header_leaf + _deploys_root(block)).digest()
+    return commitment_hash(block_commitment(block))
 
 
 def verify_vault_address(vault_address: str) -> bool:

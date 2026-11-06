@@ -16,7 +16,7 @@ See `pyproject.toml` for information about 3rd party library dependencies.
 | Module | Description |
 |--------|-------------|
 | `client.py` | `F1r3flyClient` -- gRPC client for deploy, block query, data query, deploy finalization status, status, bond status |
-| `crypto.py` | `PrivateKey`, `PublicKey` -- SECP256k1 key handling, vault address derivation; `gen_block_hash_from_block` -- the node's Merkle block hash |
+| `crypto.py` | `PrivateKey`, `PublicKey` -- SECP256k1 key handling, vault address derivation; `gen_block_hash_from_block` -- the node's Merkle block hash; `block_commitment`, `commitment_hash` -- what a block's hash and signature commit to, and its hash |
 | `par.py` | `par_as_string`, `par_as_int`, `par_as_map`, etc. -- type-safe extraction from Rholang Par protobuf messages |
 | `polling.py` | `poll_until`, `deploy_and_read`, `wait_for_finalized`, `wait_for_deploy_finalized`, `deploy_with_fallback` -- polling and deploy workflow utilities |
 | `deploy.py` | `check_deploy_succeeded`, `check_deploy_errored`, `find_deploy_in_block` -- deploy result inspection |

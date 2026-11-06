@@ -5,9 +5,12 @@ from ecdsa.keys import BadSignatureError
 
 from f1r3fly.crypto import (
     PrivateKey, PublicKey, _hash_leaf, _merkle_root, blake2b_32,
-    gen_block_hash_from_block, verify_vault_address,
+    block_commitment, commitment_hash, gen_block_hash_from_block,
+    verify_vault_address,
 )
-from f1r3fly.pb.CasperMessage_pb2 import CLAIM_FAMILY_EJECT, BlockMessageProto
+from f1r3fly.pb.CasperMessage_pb2 import (
+    CLAIM_FAMILY_EJECT, BlockCommitmentProto, BlockMessageProto,
+)
 
 
 @pytest.mark.parametrize('input_str,expected_output', [
@@ -153,13 +156,69 @@ def test_block_hash_matches_node_empty_block_golden() -> None:
     )
 
 
-@pytest.mark.parametrize('name', ['one_deploy', 'two_deploys'])
-def test_block_hash_matches_node_blocks(name: str) -> None:
+def _node_block(name: str) -> BlockMessageProto:
     path = os.path.join(os.path.dirname(os.path.abspath(__file__)), f'resources/blocks/{name}.bin')
     block = BlockMessageProto()
     with open(path, 'rb') as f:
         block.ParseFromString(f.read())
+    return block
+
+
+@pytest.mark.parametrize('name', ['one_deploy', 'two_deploys'])
+def test_block_hash_matches_node_blocks(name: str) -> None:
+    block = _node_block(name)
     assert gen_block_hash_from_block(block) == block.blockHash
+
+
+@pytest.mark.parametrize('name', ['one_deploy', 'two_deploys'])
+def test_commitment_of_a_node_block_hashes_to_its_hash_after_the_wire(name: str) -> None:
+    block = _node_block(name)
+    received = BlockCommitmentProto()
+    received.ParseFromString(block_commitment(block).SerializeToString())
+    assert commitment_hash(received) == block.blockHash
+    assert received.sig == block.sig
+
+
+def test_block_hash_commits_to_chain_id() -> None:
+    bound = _empty_block()
+    bound.header.chainId = bytes([0x33]) * 32
+    assert gen_block_hash_from_block(bound) != gen_block_hash_from_block(_empty_block())
+
+
+_COMMITMENT_FIELDS = [
+    ('preStateHash', bytes([1]) * 32),
+    ('postStateHash', bytes([2]) * 32),
+    ('bondsRoot', bytes([3]) * 32),
+    ('blockNumber', 7),
+    ('rejectedRoot', bytes([4]) * 32),
+    ('appliedFromScopeRoot', bytes([5]) * 32),
+    ('leakyBucketVotesRoot', bytes([6]) * 32),
+    ('mergeBase', bytes([7]) * 32),
+    ('bodyExtraBytes', b'\x08'),
+    ('sender', bytes([9]) * 65),
+    ('sigAlgorithm', 'ed25519'),
+    ('seqNum', 4),
+    ('shardId', 'other-shard'),
+    ('extraBytes', b'\x0a'),
+    ('deploysRoot', bytes([11]) * 32),
+]
+
+
+@pytest.mark.parametrize('field,value', _COMMITMENT_FIELDS)
+def test_commitment_hash_commits_to_each_field(field: str, value: object) -> None:
+    commitment = block_commitment(_empty_block())
+    changed = BlockCommitmentProto()
+    changed.CopyFrom(commitment)
+    setattr(changed, field, value)
+    assert commitment_hash(changed) != commitment_hash(commitment)
+
+
+def test_commitment_hash_excludes_the_signature() -> None:
+    commitment = block_commitment(_empty_block())
+    signed = BlockCommitmentProto()
+    signed.CopyFrom(commitment)
+    signed.sig = bytes([0x30]) * 70
+    assert commitment_hash(signed) == commitment_hash(commitment)
 
 
 def test_merkle_root_of_no_leaves_is_zero() -> None:
