@@ -4,8 +4,9 @@ from ecdsa.keys import BadSignatureError
 from f1r3fly import token_amount
 from f1r3fly.crypto import PrivateKey
 from f1r3fly.data_types import BondInfo, DeployInfo
-from f1r3fly.pb.DeployServiceCommon_pb2 import BondInfo as BondInfoProto
-from f1r3fly.pb.DeployServiceCommon_pb2 import DeployInfo as DeployInfoProto
+from f1r3fly.pb.DeployServiceCommon_pb2 import (
+    BondInfo as BondInfoProto, DeployInfo as DeployInfoProto,
+)
 from f1r3fly.pos import BOND_RHO_TPL, render_contract_template
 from f1r3fly.util import create_deploy_data, verify_deploy_data
 
