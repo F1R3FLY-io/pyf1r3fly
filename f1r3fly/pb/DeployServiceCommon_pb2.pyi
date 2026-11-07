@@ -371,12 +371,12 @@ class BondInfo(_message.Message):
     VALIDATOR_FIELD_NUMBER: _builtins.int
     STAKE_FIELD_NUMBER: _builtins.int
     validator: _builtins.str
-    stake: _builtins.int
+    stake: _builtins.str
     def __init__(
         self,
         *,
         validator: _builtins.str = ...,
-        stake: _builtins.int = ...,
+        stake: _builtins.str = ...,
     ) -> None: ...
     _ClearFieldArgType: _TypeAlias = _typing.Literal["stake", b"stake", "validator", b"validator"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
@@ -422,7 +422,7 @@ class DeployInfo(_message.Message):
     timestamp: _builtins.int
     sig: _builtins.str
     sigAlgorithm: _builtins.str
-    phloPrice: _builtins.int
+    phloPrice: _builtins.str
     phloLimit: _builtins.int
     validAfterBlockNumber: _builtins.int
     cost: _builtins.int
@@ -436,7 +436,7 @@ class DeployInfo(_message.Message):
         timestamp: _builtins.int = ...,
         sig: _builtins.str = ...,
         sigAlgorithm: _builtins.str = ...,
-        phloPrice: _builtins.int = ...,
+        phloPrice: _builtins.str = ...,
         phloLimit: _builtins.int = ...,
         validAfterBlockNumber: _builtins.int = ...,
         cost: _builtins.int = ...,
@@ -906,7 +906,7 @@ class Status(_message.Message):
     shardId: _builtins.str
     peers: _builtins.int
     nodes: _builtins.int
-    minPhloPrice: _builtins.int
+    minPhloPrice: _builtins.str
     nativeTokenName: _builtins.str
     nativeTokenSymbol: _builtins.str
     nativeTokenDecimals: _builtins.int
@@ -929,7 +929,7 @@ class Status(_message.Message):
         shardId: _builtins.str = ...,
         peers: _builtins.int = ...,
         nodes: _builtins.int = ...,
-        minPhloPrice: _builtins.int = ...,
+        minPhloPrice: _builtins.str = ...,
         peerList: _abc.Iterable[Global___PeerInfo] | None = ...,
         nativeTokenName: _builtins.str = ...,
         nativeTokenSymbol: _builtins.str = ...,

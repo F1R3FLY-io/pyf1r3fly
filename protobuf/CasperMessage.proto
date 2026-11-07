@@ -142,7 +142,8 @@ message DeployDataProto {
   int64  timestamp            = 3; //millisecond timestamp
   bytes  sig                  = 4; //signature of (hash(term) + timestamp) using private key
   string sigAlgorithm         = 5; //name of the algorithm used to sign
-  int64 phloPrice             = 7; //phlo price
+  reserved 7;
+  bytes phloPrice             = 15; //phlo price: unsigned 256-bit big-endian, exactly 32 bytes
   int64 phloLimit             = 8; //phlo limit for the deployment
   int64 validAfterBlockNumber = 10;
   string shardId              = 11;//shard ID to prevent replay of deploys between shards
@@ -241,7 +242,8 @@ message PeekProto {
 
 message BondProto {
   bytes validator = 1;
-  int64 stake     = 2;
+  reserved 2;
+  bytes stake = 3; //unsigned 256-bit big-endian, exactly 32 bytes
 }
 // --------- End Core Protocol  --------
 
