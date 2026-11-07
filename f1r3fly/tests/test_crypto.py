@@ -152,7 +152,7 @@ def _interior(left: bytes, right: bytes) -> bytes:
 
 def test_block_hash_matches_node_empty_block_golden() -> None:
     assert gen_block_hash_from_block(_empty_block()).hex() == (
-        '249c70aa27fa8353d0373e13d6e9fc8ed4f50fc77d40bf901531fdbd4bc3884f'
+        '060b927fa86011c3db9b132a456299102d6628be7dec55edccc07fdac8bd777f'
     )
 
 
@@ -164,13 +164,28 @@ def _node_block(name: str) -> BlockMessageProto:
     return block
 
 
-@pytest.mark.parametrize('name', ['one_deploy', 'two_deploys'])
+@pytest.mark.parametrize('name', ['one_deploy', 'slash'])
 def test_block_hash_matches_node_blocks(name: str) -> None:
     block = _node_block(name)
+    assert block.header.chainId
+    assert block.justifications
     assert gen_block_hash_from_block(block) == block.blockHash
 
 
-@pytest.mark.parametrize('name', ['one_deploy', 'two_deploys'])
+def test_node_slash_evidence_names_the_equivocators_block() -> None:
+    equivocated = _node_block('one_deploy')
+    slashes = [
+        deploy.systemDeploy.slashSystemDeploy
+        for deploy in _node_block('slash').body.systemDeploys
+        if deploy.systemDeploy.WhichOneof('systemDeploy') == 'slashSystemDeploy'
+    ]
+    assert len(slashes) == 1
+    first, second = commitment_hash(slashes[0].first), commitment_hash(slashes[0].second)
+    assert first < second
+    assert equivocated.blockHash in (first, second)
+
+
+@pytest.mark.parametrize('name', ['one_deploy', 'slash'])
 def test_commitment_of_a_node_block_hashes_to_its_hash_after_the_wire(name: str) -> None:
     block = _node_block(name)
     received = BlockCommitmentProto()
@@ -189,6 +204,7 @@ _COMMITMENT_FIELDS = [
     ('preStateHash', bytes([1]) * 32),
     ('postStateHash', bytes([2]) * 32),
     ('bondsRoot', bytes([3]) * 32),
+    ('justificationsRoot', bytes([12]) * 32),
     ('blockNumber', 7),
     ('rejectedRoot', bytes([4]) * 32),
     ('appliedFromScopeRoot', bytes([5]) * 32),
@@ -211,6 +227,19 @@ def test_commitment_hash_commits_to_each_field(field: str, value: object) -> Non
     changed.CopyFrom(commitment)
     setattr(changed, field, value)
     assert commitment_hash(changed) != commitment_hash(commitment)
+
+
+def test_block_hash_commits_to_justifications() -> None:
+    cited = _empty_block()
+    cited.justifications.add(validator=bytes([0x11]) * 65, latestBlockHash=bytes([0x22]) * 32)
+    assert gen_block_hash_from_block(cited) != gen_block_hash_from_block(_empty_block())
+
+
+def test_commitment_hash_refuses_a_root_that_is_not_32_bytes() -> None:
+    commitment = block_commitment(_empty_block())
+    commitment.justificationsRoot = bytes(31)
+    with pytest.raises(ValueError):
+        commitment_hash(commitment)
 
 
 def test_commitment_hash_excludes_the_signature() -> None:

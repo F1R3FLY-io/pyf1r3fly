@@ -21,7 +21,7 @@ def blake2b_32(data: bytes = b'') -> hashlib.blake2b:
     return hashlib.blake2b(data, digest_size=32)
 
 
-BLOCK_HASH_SCHEME_VERSION = 0x01
+BLOCK_HASH_SCHEME_VERSION = 0x02
 
 _INTERIOR_DOMAIN = 0x01
 _TOP_DOMAIN = 0x02
@@ -31,7 +31,8 @@ _LEAF_HEADER = 0x12
 _LEAF_REJECTED_DEPLOY = 0x13
 _LEAF_APPLIED_FROM_SCOPE_SIG = 0x14
 _LEAF_BOND = 0x15
-_LEAF_LEAKY_BUCKET_VOTE = 0x16
+_LEAF_JUSTIFICATION = 0x16
+_LEAF_LEAKY_BUCKET_VOTE = 0x17
 
 _EMPTY_ROOT = bytes(32)
 
@@ -77,6 +78,13 @@ def block_commitment(block: BlockMessageProto) -> BlockCommitmentProto:
             _hash_leaf(_LEAF_BOND, bond.validator + struct.pack('<q', bond.stake))
             for bond in sorted(state.bonds, key=lambda bond: bond.validator)
         ]),
+        justificationsRoot=_merkle_root([
+            _hash_leaf(
+                _LEAF_JUSTIFICATION,
+                struct.pack('<I', len(j.validator)) + j.validator + j.latestBlockHash,
+            )
+            for j in block.justifications
+        ]),
         blockNumber=state.blockNumber,
         rejectedRoot=_merkle_root([
             _hash_leaf(_LEAF_REJECTED_DEPLOY, rejected.SerializeToString())
@@ -104,31 +112,43 @@ def block_commitment(block: BlockMessageProto) -> BlockCommitmentProto:
     return commitment
 
 
+def _field(data: bytes) -> bytes:
+    return struct.pack('<I', len(data)) + data
+
+
+def _root(name: str, data: bytes) -> bytes:
+    if len(data) != 32:
+        raise ValueError(f'{name} is {len(data)} bytes, not 32')
+    return data
+
+
 def _header_preimage(commitment: BlockCommitmentProto) -> bytes:
     return b''.join([
         bytes([BLOCK_HASH_SCHEME_VERSION]),
-        commitment.header.SerializeToString(),
-        commitment.preStateHash,
-        commitment.postStateHash,
-        commitment.bondsRoot,
+        _field(commitment.header.SerializeToString()),
+        _field(commitment.preStateHash),
+        _field(commitment.postStateHash),
+        _root('bondsRoot', commitment.bondsRoot),
+        _root('justificationsRoot', commitment.justificationsRoot),
         struct.pack('<q', commitment.blockNumber),
-        commitment.rejectedRoot,
-        commitment.appliedFromScopeRoot,
-        commitment.leakyBucketVotesRoot,
-        commitment.mergeBase,
-        commitment.bodyExtraBytes,
-        commitment.sender,
-        commitment.sigAlgorithm.encode(),
+        _root('rejectedRoot', commitment.rejectedRoot),
+        _root('appliedFromScopeRoot', commitment.appliedFromScopeRoot),
+        _root('leakyBucketVotesRoot', commitment.leakyBucketVotesRoot),
+        _field(commitment.mergeBase),
+        _field(commitment.bodyExtraBytes),
+        _field(commitment.sender),
+        _field(commitment.sigAlgorithm.encode()),
         struct.pack('<i', commitment.seqNum),
-        commitment.shardId.encode(),
-        commitment.extraBytes,
+        _field(commitment.shardId.encode()),
+        _field(commitment.extraBytes),
     ])
 
 
 def commitment_hash(commitment: BlockCommitmentProto) -> bytes:
     """The node's Merkle block hash (scheme v1) of a block commitment."""
     header_leaf = _hash_leaf(_LEAF_HEADER, _header_preimage(commitment))
-    return blake2b_32(bytes([_TOP_DOMAIN]) + header_leaf + commitment.deploysRoot).digest()
+    deploys_root = _root('deploysRoot', commitment.deploysRoot)
+    return blake2b_32(bytes([_TOP_DOMAIN]) + header_leaf + deploys_root).digest()
 
 
 def gen_block_hash_from_block(block: BlockMessageProto) -> bytes:
