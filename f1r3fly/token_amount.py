@@ -31,6 +31,13 @@ def decode(data: bytes) -> int:
 
 def parse(text: str) -> int:
     """Amount from its canonical decimal form."""
+    return _check(parse_total(text))
+
+
+def parse_total(text: str) -> int:
+    """Sum of amounts, such as a total stake, which can exceed ``MAX``."""
+    if not isinstance(text, str):
+        raise TypeError(f'token amount must be a decimal string, got {type(text).__name__}')
     if not text or not text.isascii() or not text.isdigit() or (len(text) > 1 and text[0] == '0'):
         raise ValueError(f'token amount must be a canonical unsigned decimal integer: {text!r}')
-    return _check(int(text))
+    return int(text)

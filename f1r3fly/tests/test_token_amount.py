@@ -35,6 +35,24 @@ def test_non_integer_amounts_are_rejected(value: object) -> None:
         token_amount.encode(value)  # type: ignore[arg-type]
 
 
+@pytest.mark.parametrize('value', [0, 5, 2**64, 1.0, None, b'1'])
+def test_non_string_api_amounts_are_rejected(value: object) -> None:
+    with pytest.raises(TypeError):
+        token_amount.parse(value)  # type: ignore[arg-type]
+    with pytest.raises(TypeError):
+        token_amount.parse_total(value)  # type: ignore[arg-type]
+
+
+def test_totals_may_exceed_one_amount() -> None:
+    total = token_amount.MAX * 2
+    assert token_amount.parse_total(str(total)) == total
+    with pytest.raises(ValueError):
+        token_amount.parse(str(total))
+    for text in ['', '01', '-1', '1.0']:
+        with pytest.raises(ValueError):
+            token_amount.parse_total(text)
+
+
 @pytest.mark.parametrize('text', ['', '00', '01', '+1', '-0', '1.0', '1e2', ' 1', '1 ', '١'])
 def test_non_canonical_decimals_are_rejected(text: str) -> None:
     with pytest.raises(ValueError):
