@@ -97,9 +97,11 @@ def par_value(par: Par) -> Any:
     """Extract the first available value from a Par, auto-detecting the type.
 
     Tries string, int, BigInt, bool, tuple, list, set, map, URI, byte array in
-    order. Returns the first match. Raises ValueError if no known type is
-    found.
+    order. Returns the first match, or ``None`` for ``Nil`` (the empty Par).
+    Raises ValueError if no known type is found.
     """
+    if par.ByteSize() == 0:
+        return None
     for expr in par.exprs:
         if expr.HasField("g_string"):
             return expr.g_string
