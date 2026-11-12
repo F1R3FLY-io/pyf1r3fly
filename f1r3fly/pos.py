@@ -21,14 +21,15 @@ from typing import Any, Dict, List, Mapping, Set, Tuple
 from .client import F1r3flyClient
 from .crypto import PrivateKey
 from .par import (
-    par_as_bool, par_as_int, par_as_map, par_as_string, par_as_tuple, par_value,
+    par_as_bool, par_as_int, par_as_map, par_as_string, par_as_tuple,
+    par_value,
 )
 
 BOND_RHO_TPL = """
 new retCh, PoSCh, rl(`rho:registry:lookup`), deployerId(`rho:system:deployerId`), deployId(`rho:system:deployId`) in {
   rl!(`rho:system:pos`, *PoSCh) |
   for (@(_, PoS) <- PoSCh) {
-    @PoS!("bond", *deployerId, $amount, *retCh) |
+    @PoS!("bond", *deployerId, ${amount}n, *retCh) |
     for (@result <- retCh) {
       deployId!(result)
     }
@@ -54,7 +55,7 @@ REJOIN_FROM_EJECTION_RHO_TPL = """
 new retCh, PoSCh, rl(`rho:registry:lookup`), deployerId(`rho:system:deployerId`), deployId(`rho:system:deployId`) in {
   rl!(`rho:system:pos`, *PoSCh) |
   for (@(_, PoS) <- PoSCh) {
-    @PoS!("rejoinFromEjection", *deployerId, $topup, *retCh) |
+    @PoS!("rejoinFromEjection", *deployerId, ${topup}n, *retCh) |
     for (@result <- retCh) {
       deployId!(result)
     }

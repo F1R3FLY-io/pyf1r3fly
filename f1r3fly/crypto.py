@@ -21,7 +21,7 @@ def blake2b_32(data: bytes = b'') -> hashlib.blake2b:
     return hashlib.blake2b(data, digest_size=32)
 
 
-BLOCK_HASH_SCHEME_VERSION = 0x02
+BLOCK_HASH_SCHEME_VERSION = 0x03
 
 _INTERIOR_DOMAIN = 0x01
 _TOP_DOMAIN = 0x02
@@ -75,7 +75,7 @@ def block_commitment(block: BlockMessageProto) -> BlockCommitmentProto:
         preStateHash=state.preStateHash,
         postStateHash=state.postStateHash,
         bondsRoot=_merkle_root([
-            _hash_leaf(_LEAF_BOND, bond.validator + struct.pack('<q', bond.stake))
+            _hash_leaf(_LEAF_BOND, bond.SerializeToString())
             for bond in sorted(state.bonds, key=lambda bond: bond.validator)
         ]),
         justificationsRoot=_merkle_root([

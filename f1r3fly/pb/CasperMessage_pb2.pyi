@@ -723,7 +723,7 @@ class BlockMessageProto(_message.Message):
     SHARDID_FIELD_NUMBER: _builtins.int
     EXTRABYTES_FIELD_NUMBER: _builtins.int
     blockHash: _builtins.bytes
-    """Merkle block hash (scheme v2); covers every field except blockHash and sig"""
+    """Merkle block hash (scheme v3); covers every field except blockHash and sig"""
     sender: _builtins.bytes
     """public key of the validator that created the block"""
     seqNum: _builtins.int
@@ -904,8 +904,7 @@ class DeployDataProto(_message.Message):
     """signature of (hash(term) + timestamp) using private key"""
     sigAlgorithm: _builtins.str
     """name of the algorithm used to sign"""
-    phloPrice: _builtins.int
-    """phlo price"""
+    phloPrice: _builtins.bytes
     phloLimit: _builtins.int
     """phlo limit for the deployment"""
     validAfterBlockNumber: _builtins.int
@@ -925,7 +924,7 @@ class DeployDataProto(_message.Message):
         timestamp: _builtins.int = ...,
         sig: _builtins.bytes = ...,
         sigAlgorithm: _builtins.str = ...,
-        phloPrice: _builtins.int = ...,
+        phloPrice: _builtins.bytes = ...,
         phloLimit: _builtins.int = ...,
         validAfterBlockNumber: _builtins.int = ...,
         shardId: _builtins.str = ...,
@@ -974,11 +973,14 @@ class RholangValue(_message.Message):
     MAP_VALUE_FIELD_NUMBER: _builtins.int
     NIL_VALUE_FIELD_NUMBER: _builtins.int
     URI_VALUE_FIELD_NUMBER: _builtins.int
+    BIG_INT_VALUE_FIELD_NUMBER: _builtins.int
     bool_value: _builtins.bool
     int_value: _builtins.int
     string_value: _builtins.str
     bytes_value: _builtins.bytes
     uri_value: _builtins.str
+    big_int_value: _builtins.str
+    """canonical signed decimal, absolute value below 2^512"""
     @_builtins.property
     def tuple_value(self) -> Global___RholangSequence: ...
     @_builtins.property
@@ -1002,12 +1004,13 @@ class RholangValue(_message.Message):
         map_value: Global___RholangMap | None = ...,
         nil_value: Global___RholangNil | None = ...,
         uri_value: _builtins.str = ...,
+        big_int_value: _builtins.str = ...,
     ) -> None: ...
-    _HasFieldArgType: _TypeAlias = _typing.Literal["bool_value", b"bool_value", "bytes_value", b"bytes_value", "int_value", b"int_value", "list_value", b"list_value", "map_value", b"map_value", "nil_value", b"nil_value", "set_value", b"set_value", "string_value", b"string_value", "tuple_value", b"tuple_value", "uri_value", b"uri_value", "value", b"value"]  # noqa: Y015
+    _HasFieldArgType: _TypeAlias = _typing.Literal["big_int_value", b"big_int_value", "bool_value", b"bool_value", "bytes_value", b"bytes_value", "int_value", b"int_value", "list_value", b"list_value", "map_value", b"map_value", "nil_value", b"nil_value", "set_value", b"set_value", "string_value", b"string_value", "tuple_value", b"tuple_value", "uri_value", b"uri_value", "value", b"value"]  # noqa: Y015
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["bool_value", b"bool_value", "bytes_value", b"bytes_value", "int_value", b"int_value", "list_value", b"list_value", "map_value", b"map_value", "nil_value", b"nil_value", "set_value", b"set_value", "string_value", b"string_value", "tuple_value", b"tuple_value", "uri_value", b"uri_value", "value", b"value"]  # noqa: Y015
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["big_int_value", b"big_int_value", "bool_value", b"bool_value", "bytes_value", b"bytes_value", "int_value", b"int_value", "list_value", b"list_value", "map_value", b"map_value", "nil_value", b"nil_value", "set_value", b"set_value", "string_value", b"string_value", "tuple_value", b"tuple_value", "uri_value", b"uri_value", "value", b"value"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
-    _WhichOneofReturnType_value: _TypeAlias = _typing.Literal["bool_value", "int_value", "string_value", "bytes_value", "tuple_value", "list_value", "set_value", "map_value", "nil_value", "uri_value"]  # noqa: Y015
+    _WhichOneofReturnType_value: _TypeAlias = _typing.Literal["bool_value", "int_value", "string_value", "bytes_value", "tuple_value", "list_value", "set_value", "map_value", "nil_value", "uri_value", "big_int_value"]  # noqa: Y015
     _WhichOneofArgType_value: _TypeAlias = _typing.Literal["value", b"value"]  # noqa: Y015
     def WhichOneof(self, oneof_group: _WhichOneofArgType_value) -> _WhichOneofReturnType_value | None: ...
 
@@ -1238,11 +1241,18 @@ class ClaimResolutionProto(_message.Message):
     OPENEDAT_FIELD_NUMBER: _builtins.int
     PROPOSER_FIELD_NUMBER: _builtins.int
     OUTCOME_FIELD_NUMBER: _builtins.int
+    FROMSEQUENCE_FIELD_NUMBER: _builtins.int
     family: Global___ClaimFamilyProto.ValueType
     target: _builtins.bytes
     openedAt: _builtins.int
     proposer: _builtins.bytes
     outcome: Global___ClaimOutcomeProto.ValueType
+    @_builtins.property
+    def fromSequence(self) -> Global___SequenceNumberProto:
+        """Set on a passed ejection only: the target's last sequence number at the
+        floor the ejection passed at.
+        """
+
     def __init__(
         self,
         *,
@@ -1251,11 +1261,30 @@ class ClaimResolutionProto(_message.Message):
         openedAt: _builtins.int = ...,
         proposer: _builtins.bytes = ...,
         outcome: Global___ClaimOutcomeProto.ValueType = ...,
+        fromSequence: Global___SequenceNumberProto | None = ...,
     ) -> None: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["family", b"family", "openedAt", b"openedAt", "outcome", b"outcome", "proposer", b"proposer", "target", b"target"]  # noqa: Y015
+    _HasFieldArgType: _TypeAlias = _typing.Literal["fromSequence", b"fromSequence"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["family", b"family", "fromSequence", b"fromSequence", "openedAt", b"openedAt", "outcome", b"outcome", "proposer", b"proposer", "target", b"target"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
 Global___ClaimResolutionProto: _TypeAlias = ClaimResolutionProto  # noqa: Y015
+
+@_typing.final
+class SequenceNumberProto(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
+
+    VALUE_FIELD_NUMBER: _builtins.int
+    value: _builtins.int
+    def __init__(
+        self,
+        *,
+        value: _builtins.int = ...,
+    ) -> None: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["value", b"value"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___SequenceNumberProto: _TypeAlias = SequenceNumberProto  # noqa: Y015
 
 @_typing.final
 class ClaimIdProto(_message.Message):
@@ -1524,17 +1553,17 @@ class OverflowTestimonyProto(_message.Message):
     FLOORNUMBER_FIELD_NUMBER: _builtins.int
     CLAIMEDTOTAL_FIELD_NUMBER: _builtins.int
     FREEZES_FIELD_NUMBER: _builtins.int
-    amount: _builtins.int
+    amount: _builtins.bytes
     floorNumber: _builtins.int
-    claimedTotal: _builtins.int
+    claimedTotal: _builtins.bytes
     @_builtins.property
     def freezes(self) -> _containers.RepeatedCompositeFieldContainer[Global___FreezeIntervalProto]: ...
     def __init__(
         self,
         *,
-        amount: _builtins.int = ...,
+        amount: _builtins.bytes = ...,
         floorNumber: _builtins.int = ...,
-        claimedTotal: _builtins.int = ...,
+        claimedTotal: _builtins.bytes = ...,
         freezes: _abc.Iterable[Global___FreezeIntervalProto] | None = ...,
     ) -> None: ...
     _ClearFieldArgType: _TypeAlias = _typing.Literal["amount", b"amount", "claimedTotal", b"claimedTotal", "floorNumber", b"floorNumber", "freezes", b"freezes"]  # noqa: Y015
@@ -1544,22 +1573,27 @@ Global___OverflowTestimonyProto: _TypeAlias = OverflowTestimonyProto  # noqa: Y0
 
 @_typing.final
 class FreezeIntervalProto(_message.Message):
-    """An ejection's freeze over block numbers, closed by the rejoin that paid."""
+    """An ejection's freeze over block numbers, closed by the rejoin that paid,
+    and over the frozen validator's own blocks above `fromSequence`.
+    """
 
     DESCRIPTOR: _descriptor.Descriptor
 
     FROM_FIELD_NUMBER: _builtins.int
     REJOIN_FIELD_NUMBER: _builtins.int
+    FROMSEQUENCE_FIELD_NUMBER: _builtins.int
+    fromSequence: _builtins.int
     @_builtins.property
     def rejoin(self) -> Global___RejoinProto: ...
     def __init__(
         self,
         *,
         rejoin: Global___RejoinProto | None = ...,
+        fromSequence: _builtins.int = ...,
     ) -> None: ...
     _HasFieldArgType: _TypeAlias = _typing.Literal["rejoin", b"rejoin"]  # noqa: Y015
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["from", b"from", "rejoin", b"rejoin"]  # noqa: Y015
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["from", b"from", "fromSequence", b"fromSequence", "rejoin", b"rejoin"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
 Global___FreezeIntervalProto: _TypeAlias = FreezeIntervalProto  # noqa: Y015
@@ -1571,12 +1605,12 @@ class RejoinProto(_message.Message):
     AT_FIELD_NUMBER: _builtins.int
     TOPUP_FIELD_NUMBER: _builtins.int
     at: _builtins.int
-    topup: _builtins.int
+    topup: _builtins.bytes
     def __init__(
         self,
         *,
         at: _builtins.int = ...,
-        topup: _builtins.int = ...,
+        topup: _builtins.bytes = ...,
     ) -> None: ...
     _ClearFieldArgType: _TypeAlias = _typing.Literal["at", b"at", "topup", b"topup"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
@@ -1805,12 +1839,12 @@ class BondProto(_message.Message):
     VALIDATOR_FIELD_NUMBER: _builtins.int
     STAKE_FIELD_NUMBER: _builtins.int
     validator: _builtins.bytes
-    stake: _builtins.int
+    stake: _builtins.bytes
     def __init__(
         self,
         *,
         validator: _builtins.bytes = ...,
-        stake: _builtins.int = ...,
+        stake: _builtins.bytes = ...,
     ) -> None: ...
     _ClearFieldArgType: _TypeAlias = _typing.Literal["stake", b"stake", "validator", b"validator"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...

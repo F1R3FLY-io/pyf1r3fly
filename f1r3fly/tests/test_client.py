@@ -82,7 +82,7 @@ def test_client_show_block() -> None:
     preStateHash = "preStateHash"
     postStateHash = "postStateHash"
     bodyExtraBytes = b"bodyExtraBytes"
-    bond = BondInfo(validator="a", stake=100)
+    bond = BondInfo(validator="a", stake="100")
     blockSize = "100"
     deployCount = 1
     faultTolerance = 0.2
@@ -92,7 +92,7 @@ def test_client_show_block() -> None:
         timestamp=timestamp,
         sig=sig,
         sigAlgorithm=sigAlgorithm,
-        phloPrice=1,
+        phloPrice="1",
         phloLimit=100000,
         validAfterBlockNumber=1,
         cost=100,
@@ -168,7 +168,7 @@ def test_client_show_blocks() -> None:
     preStateHash = "preStateHash"
     postStateHash = "postStateHash"
     bodyExtraBytes = b"bodyExtraBytes"
-    bond = BondInfo(validator="a", stake=100)
+    bond = BondInfo(validator="a", stake="100")
     blockSize = "100"
     deployCount = 1
     faultTolerance = 0.2

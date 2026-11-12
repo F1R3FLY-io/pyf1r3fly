@@ -3,6 +3,7 @@ import os
 import pytest
 from ecdsa.keys import BadSignatureError
 
+from f1r3fly import token_amount
 from f1r3fly.crypto import (
     PrivateKey, PublicKey, _hash_leaf, _merkle_root, blake2b_32,
     block_commitment, commitment_hash, gen_block_hash_from_block,
@@ -152,7 +153,7 @@ def _interior(left: bytes, right: bytes) -> bytes:
 
 def test_block_hash_matches_node_empty_block_golden() -> None:
     assert gen_block_hash_from_block(_empty_block()).hex() == (
-        '060b927fa86011c3db9b132a456299102d6628be7dec55edccc07fdac8bd777f'
+        '3c15d5b0085c3e12cdccb3209bc7de9efebf435f162e7f8f9d45522dd06d8fa8'
     )
 
 
@@ -273,7 +274,7 @@ def _with_bonds(order: list) -> BlockMessageProto:
     for validator, stake in order:
         bond = block.body.state.bonds.add()
         bond.validator = validator
-        bond.stake = stake
+        bond.stake = token_amount.encode(stake)
     return block
 
 

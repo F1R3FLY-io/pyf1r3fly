@@ -94,7 +94,7 @@ def test_bond_term_substitutes_amount():
     did = api.bond(Mock(), 200)
     assert did == "deadbeef"
     contract = client.deploy_with_vabn_filled.call_args.args[1]
-    assert '"bond", *deployerId, 200, *retCh' in contract
+    assert '"bond", *deployerId, 200n, *retCh' in contract
     assert "deployId!(result)" in contract
 
 
@@ -114,7 +114,7 @@ def test_rejoin_from_ejection_term_substitutes_topup():
     did = PosAPI(client).rejoin_from_ejection(Mock(), 150)
     assert did == "f00d"
     contract = client.deploy_with_vabn_filled.call_args.args[1]
-    assert '"rejoinFromEjection", *deployerId, 150, *retCh' in contract
+    assert '"rejoinFromEjection", *deployerId, 150n, *retCh' in contract
     assert "deployId!(result)" in contract
 
 

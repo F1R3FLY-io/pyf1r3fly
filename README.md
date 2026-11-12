@@ -98,7 +98,12 @@ The first command fetches the `*.proto` files of `f1r3node-rust` into
 `F1R3FLY-io/f1r3node-rust` repository) and `NODE_REF` a branch, tag or commit
 (default: `dev`). The block hash in `crypto.py` follows the same node commit.
 The second command generates gRPC Python code for them into the `f1r3fly.pb`
-package (`./f1r3fly/pb`).
+package (`./f1r3fly/pb`). Run it in the virtual environment of the local
+development setup. The `dev` extra pins `grpcio-tools` and `mypy-protobuf`.
+The generated code checks the protobuf runtime version at import. The pinned
+`grpcio-tools` generates code for protobuf 6.31.1. A newer generator can
+generate code that needs a newer runtime than the projects that use this
+library install.
 
 ### Running Tests and Linting
 

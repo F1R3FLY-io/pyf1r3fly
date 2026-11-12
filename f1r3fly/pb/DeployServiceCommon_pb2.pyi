@@ -390,12 +390,12 @@ class BondInfo(_message.Message):
     VALIDATOR_FIELD_NUMBER: _builtins.int
     STAKE_FIELD_NUMBER: _builtins.int
     validator: _builtins.str
-    stake: _builtins.int
+    stake: _builtins.str
     def __init__(
         self,
         *,
         validator: _builtins.str = ...,
-        stake: _builtins.int = ...,
+        stake: _builtins.str = ...,
     ) -> None: ...
     _ClearFieldArgType: _TypeAlias = _typing.Literal["stake", b"stake", "validator", b"validator"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
@@ -427,29 +427,29 @@ class TransferInfo(_message.Message):
 
     FROMADDR_FIELD_NUMBER: _builtins.int
     TOADDR_FIELD_NUMBER: _builtins.int
-    AMOUNT_FIELD_NUMBER: _builtins.int
     SUCCESS_FIELD_NUMBER: _builtins.int
     FAILREASON_FIELD_NUMBER: _builtins.int
+    AMOUNTRAW_FIELD_NUMBER: _builtins.int
     fromAddr: _builtins.str
     """Sender address"""
     toAddr: _builtins.str
     """Recipient address"""
-    amount: _builtins.int
-    """Amount in dust (smallest unit)"""
     success: _builtins.bool
     """Whether the transfer succeeded"""
     failReason: _builtins.str
     """Error message if success is false, empty otherwise"""
+    amountRaw: _builtins.str
+    """Exact amount in dust (smallest unit) as a canonical decimal string"""
     def __init__(
         self,
         *,
         fromAddr: _builtins.str = ...,
         toAddr: _builtins.str = ...,
-        amount: _builtins.int = ...,
         success: _builtins.bool = ...,
         failReason: _builtins.str = ...,
+        amountRaw: _builtins.str = ...,
     ) -> None: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["amount", b"amount", "failReason", b"failReason", "fromAddr", b"fromAddr", "success", b"success", "toAddr", b"toAddr"]  # noqa: Y015
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["amountRaw", b"amountRaw", "failReason", b"failReason", "fromAddr", b"fromAddr", "success", b"success", "toAddr", b"toAddr"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
 Global___TransferInfo: _TypeAlias = TransferInfo  # noqa: Y015
@@ -477,7 +477,7 @@ class DeployInfo(_message.Message):
     timestamp: _builtins.int
     sig: _builtins.str
     sigAlgorithm: _builtins.str
-    phloPrice: _builtins.int
+    phloPrice: _builtins.str
     phloLimit: _builtins.int
     validAfterBlockNumber: _builtins.int
     cost: _builtins.int
@@ -497,7 +497,7 @@ class DeployInfo(_message.Message):
         timestamp: _builtins.int = ...,
         sig: _builtins.str = ...,
         sigAlgorithm: _builtins.str = ...,
-        phloPrice: _builtins.int = ...,
+        phloPrice: _builtins.str = ...,
         phloLimit: _builtins.int = ...,
         validAfterBlockNumber: _builtins.int = ...,
         cost: _builtins.int = ...,
@@ -1042,7 +1042,7 @@ class Status(_message.Message):
     shardId: _builtins.str
     peers: _builtins.int
     nodes: _builtins.int
-    minPhloPrice: _builtins.int
+    minPhloPrice: _builtins.str
     nativeTokenName: _builtins.str
     """Native token metadata baked into genesis state. Queryable on-chain via
     the TokenMetadata contract at `rho:system:tokenMetadata`.
@@ -1070,7 +1070,7 @@ class Status(_message.Message):
         shardId: _builtins.str = ...,
         peers: _builtins.int = ...,
         nodes: _builtins.int = ...,
-        minPhloPrice: _builtins.int = ...,
+        minPhloPrice: _builtins.str = ...,
         peerList: _abc.Iterable[Global___PeerInfo] | None = ...,
         nativeTokenName: _builtins.str = ...,
         nativeTokenSymbol: _builtins.str = ...,
