@@ -1,6 +1,7 @@
 import hashlib
 import random
-from typing import Any, Optional
+import struct
+from typing import Any, Optional, Sequence
 
 import bitcoin.base58
 from ecdsa import SigningKey, VerifyingKey
@@ -8,9 +9,10 @@ from ecdsa.curves import SECP256k1
 from ecdsa.util import sigdecode_der, sigencode_der_canonize
 from eth_hash.auto import keccak
 from eth_keyfile import extract_key_from_keyfile
-from google.protobuf.wrappers_pb2 import Int32Value, StringValue
 
-from f1r3fly.pb.CasperMessage_pb2 import BlockMessageProto
+from f1r3fly.pb.CasperMessage_pb2 import (
+    BlockCommitmentProto, BlockMessageProto,
+)
 
 VAULTADDR_LENGTH = 40
 
@@ -19,20 +21,138 @@ def blake2b_32(data: bytes = b'') -> hashlib.blake2b:
     return hashlib.blake2b(data, digest_size=32)
 
 
-def gen_deploys_hash_from_block(block: BlockMessageProto) -> bytes:
-    hash_obj = b"".join([deploy.SerializeToString() for deploy in block.body.deploys])
-    return blake2b_32(hash_obj).digest()
+BLOCK_HASH_SCHEME_VERSION = 0x03
+
+_INTERIOR_DOMAIN = 0x01
+_TOP_DOMAIN = 0x02
+_LEAF_PROCESSED_DEPLOY = 0x10
+_LEAF_PROCESSED_SYSTEM_DEPLOY = 0x11
+_LEAF_HEADER = 0x12
+_LEAF_REJECTED_DEPLOY = 0x13
+_LEAF_APPLIED_FROM_SCOPE_SIG = 0x14
+_LEAF_BOND = 0x15
+_LEAF_JUSTIFICATION = 0x16
+_LEAF_LEAKY_BUCKET_VOTE = 0x17
+
+_EMPTY_ROOT = bytes(32)
+
+
+def _hash_leaf(domain: int, data: bytes) -> bytes:
+    return blake2b_32(bytes([domain]) + data).digest()
+
+
+def _merkle_root(leaves: Sequence[bytes]) -> bytes:
+    if not leaves:
+        return _EMPTY_ROOT
+    level = list(leaves)
+    while len(level) > 1:
+        parents = [
+            blake2b_32(bytes([_INTERIOR_DOMAIN]) + level[i] + level[i + 1]).digest()
+            for i in range(0, len(level) - 1, 2)
+        ]
+        if len(level) % 2:
+            parents.append(level[-1])
+        level = parents
+    return level[0]
+
+
+def _deploys_root(block: BlockMessageProto) -> bytes:
+    leaves = [
+        _hash_leaf(_LEAF_PROCESSED_DEPLOY, deploy.SerializeToString())
+        for deploy in block.body.deploys
+    ] + [
+        _hash_leaf(_LEAF_PROCESSED_SYSTEM_DEPLOY, deploy.SerializeToString())
+        for deploy in block.body.systemDeploys
+    ]
+    return _merkle_root(leaves)
+
+
+def block_commitment(block: BlockMessageProto) -> BlockCommitmentProto:
+    """What the block's hash and signature commit to."""
+    body = block.body
+    state = body.state
+    commitment = BlockCommitmentProto(
+        preStateHash=state.preStateHash,
+        postStateHash=state.postStateHash,
+        bondsRoot=_merkle_root([
+            _hash_leaf(_LEAF_BOND, bond.SerializeToString())
+            for bond in sorted(state.bonds, key=lambda bond: bond.validator)
+        ]),
+        justificationsRoot=_merkle_root([
+            _hash_leaf(
+                _LEAF_JUSTIFICATION,
+                struct.pack('<I', len(j.validator)) + j.validator + j.latestBlockHash,
+            )
+            for j in block.justifications
+        ]),
+        blockNumber=state.blockNumber,
+        rejectedRoot=_merkle_root([
+            _hash_leaf(_LEAF_REJECTED_DEPLOY, rejected.SerializeToString())
+            for rejected in sorted(body.rejectedDeploys, key=lambda rejected: rejected.sig)
+        ]),
+        appliedFromScopeRoot=_merkle_root([
+            _hash_leaf(_LEAF_APPLIED_FROM_SCOPE_SIG, sig)
+            for sig in sorted(body.appliedFromScope)
+        ]),
+        leakyBucketVotesRoot=_merkle_root([
+            _hash_leaf(_LEAF_LEAKY_BUCKET_VOTE, vote.SerializeToString())
+            for vote in body.leakyBucketVotes
+        ]),
+        mergeBase=body.mergeBase,
+        bodyExtraBytes=body.extraBytes,
+        sender=block.sender,
+        sigAlgorithm=block.sigAlgorithm,
+        seqNum=block.seqNum,
+        shardId=block.shardId,
+        extraBytes=block.extraBytes,
+        deploysRoot=_deploys_root(block),
+        sig=block.sig,
+    )
+    commitment.header.CopyFrom(block.header)
+    return commitment
+
+
+def _field(data: bytes) -> bytes:
+    return struct.pack('<I', len(data)) + data
+
+
+def _root(name: str, data: bytes) -> bytes:
+    if len(data) != 32:
+        raise ValueError(f'{name} is {len(data)} bytes, not 32')
+    return data
+
+
+def _header_preimage(commitment: BlockCommitmentProto) -> bytes:
+    return b''.join([
+        bytes([BLOCK_HASH_SCHEME_VERSION]),
+        _field(commitment.header.SerializeToString()),
+        _field(commitment.preStateHash),
+        _field(commitment.postStateHash),
+        _root('bondsRoot', commitment.bondsRoot),
+        _root('justificationsRoot', commitment.justificationsRoot),
+        struct.pack('<q', commitment.blockNumber),
+        _root('rejectedRoot', commitment.rejectedRoot),
+        _root('appliedFromScopeRoot', commitment.appliedFromScopeRoot),
+        _root('leakyBucketVotesRoot', commitment.leakyBucketVotesRoot),
+        _field(commitment.mergeBase),
+        _field(commitment.bodyExtraBytes),
+        _field(commitment.sender),
+        _field(commitment.sigAlgorithm.encode()),
+        struct.pack('<i', commitment.seqNum),
+        _field(commitment.shardId.encode()),
+        _field(commitment.extraBytes),
+    ])
+
+
+def commitment_hash(commitment: BlockCommitmentProto) -> bytes:
+    """The node's Merkle block hash (scheme v1) of a block commitment."""
+    header_leaf = _hash_leaf(_LEAF_HEADER, _header_preimage(commitment))
+    deploys_root = _root('deploysRoot', commitment.deploysRoot)
+    return blake2b_32(bytes([_TOP_DOMAIN]) + header_leaf + deploys_root).digest()
 
 
 def gen_block_hash_from_block(block: BlockMessageProto) -> bytes:
-    signed_obj = b''.join([block.header.SerializeToString(),
-                           block.body.SerializeToString(),
-                           block.sender,
-                           StringValue(value=block.sigAlgorithm).SerializeToString(),
-                           Int32Value(value=block.seqNum).SerializeToString(),
-                           StringValue(value=block.shardId).SerializeToString(),
-                           block.extraBytes])
-    return blake2b_32(signed_obj).digest()
+    return commitment_hash(block_commitment(block))
 
 
 def verify_vault_address(vault_address: str) -> bool:

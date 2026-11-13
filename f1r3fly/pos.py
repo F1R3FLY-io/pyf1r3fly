@@ -16,12 +16,13 @@ dev mode.
 import dataclasses
 import string
 import time
-from typing import Dict, List, Mapping, Tuple
+from typing import Any, Dict, List, Mapping, Set, Tuple
 
 from .client import F1r3flyClient
 from .crypto import PrivateKey
 from .par import (
     par_as_bool, par_as_int, par_as_map, par_as_string, par_as_tuple,
+    par_value,
 )
 
 BOND_RHO_TPL = """
@@ -41,6 +42,20 @@ new retCh, PoSCh, rl(`rho:registry:lookup`), deployerId(`rho:system:deployerId`)
   rl!(`rho:system:pos`, *PoSCh) |
   for (@(_, PoS) <- PoSCh) {
     @PoS!("withdraw", *deployerId, *retCh) |
+    for (@result <- retCh) {
+      deployId!(result)
+    }
+  }
+}
+"""
+
+# rejoinFromEjection(@deployerId, @topup, returnCh): opens a rejoin claim for an
+# ejected deployer; the topup is paid only if the claim passes.
+REJOIN_FROM_EJECTION_RHO_TPL = """
+new retCh, PoSCh, rl(`rho:registry:lookup`), deployerId(`rho:system:deployerId`), deployId(`rho:system:deployId`) in {
+  rl!(`rho:system:pos`, *PoSCh) |
+  for (@(_, PoS) <- PoSCh) {
+    @PoS!("rejoinFromEjection", *deployerId, ${topup}n, *retCh) |
     for (@result <- retCh) {
       deployId!(result)
     }
@@ -190,6 +205,18 @@ class PosAPI:
             key, contract, phlo_price, phlo_limit, timestamp_mill, self.shard_id,
         )
 
+    def rejoin_from_ejection(self, key: PrivateKey, topup: int,
+                             phlo_price: int = BOND_PHLO_PRICE,
+                             phlo_limit: int = BOND_PHLO_LIMIT) -> str:
+        """Ask to reinstate the ejected validator identified by ``key``, offering
+        ``topup``. The deploy can run on any validator, since an ejected one does
+        not propose. Read the ack with :meth:`read_result`. Returns the deploy ID."""
+        contract = render_contract_template(REJOIN_FROM_EJECTION_RHO_TPL, {"topup": str(topup)})
+        timestamp_mill = int(time.time() * 1000)
+        return self.client.deploy_with_vabn_filled(
+            key, contract, phlo_price, phlo_limit, timestamp_mill, self.shard_id,
+        )
+
     def commit_random_image(self, key: PrivateKey, image_hex: str,
                             phlo_price: int = BOND_PHLO_PRICE,
                             phlo_limit: int = BOND_PHLO_LIMIT) -> str:
@@ -318,6 +345,35 @@ class PosAPI:
     def get_quarantine_length(self, block_hash: str = "") -> int:
         """``getQuarantineLength``: the genesis ``quarantineLength`` parameter."""
         return self._read_int("getQuarantineLength", block_hash)
+
+    def get_active_validators(self, block_hash: str = "") -> Set[str]:
+        """``activeValidators``: the seated validators' pubkeys (hex)."""
+        return set(self._read_value("getActiveValidators", block_hash))
+
+    def get_ejection_evidence(self, block_hash: str = "") -> Dict[str, Dict[str, Any]]:
+        """Open ejection claims: ``{target: {proposer, openedAt, electorate}}``,
+        with ``electorate`` a ``{pubkey: stake}`` map frozen when the claim opened."""
+        return self._read_value("getEjectionEvidence", block_hash)
+
+    def get_ejected_validators(self, block_hash: str = "") -> Dict[str, Dict[str, Any]]:
+        """Ejected validators in grace: ``{pubkey: {graceEnd, ejectFloor,
+        ejectFloorHash, ejectionSnapshot}}``."""
+        return self._read_value("getEjectedValidators", block_hash)
+
+    def get_pending_rejoins(self, block_hash: str = "") -> Dict[str, Dict[str, Any]]:
+        """Open rejoin claims: ``{pubkey: {proposer, openedAt, topup}}``."""
+        return self._read_value("getPendingRejoins", block_hash)
+
+    def get_freeze_history(self, block_hash: str = "") -> Dict[str, Dict[int, Dict[str, Any]]]:
+        """Each validator's freezes, keyed by the floor it was ejected at:
+        ``{pubkey: {ejectFloor: {to, topup}}}``. ``to`` and ``topup`` are
+        ``None`` while the freeze is open."""
+        return self._read_value("getFreezeHistory", block_hash)
+
+    def _read_value(self, method: str, block_hash: str) -> Any:
+        contract = render_contract_template(READ_RHO_TPL, {"method": method})
+        result = self.client.exploratory_deploy(contract, block_hash)
+        return par_value(result[0])
 
     def _read_map(self, method: str, block_hash: str) -> Dict:
         contract = render_contract_template(READ_RHO_TPL, {"method": method})

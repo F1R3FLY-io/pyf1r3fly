@@ -44,6 +44,25 @@ DEPLOY_STATE_PENDING: DeployFinalizationStateProto.ValueType  # 3
 DEPLOY_STATE_EXPIRED: DeployFinalizationStateProto.ValueType  # 4
 Global___DeployFinalizationStateProto: _TypeAlias = DeployFinalizationStateProto  # noqa: Y015
 
+class _ReportPhase:
+    ValueType = _typing.NewType("ValueType", _builtins.int)
+    V: _TypeAlias = ValueType  # noqa: Y015
+
+class _ReportPhaseEnumTypeWrapper(_enum_type_wrapper._EnumTypeWrapper[_ReportPhase.ValueType], _builtins.type):
+    DESCRIPTOR: _descriptor.EnumDescriptor
+    REPORT_PHASE_UNSPECIFIED: _ReportPhase.ValueType  # 0
+    REPORT_PHASE_PRECHARGE: _ReportPhase.ValueType  # 1
+    REPORT_PHASE_USER: _ReportPhase.ValueType  # 2
+    REPORT_PHASE_REFUND: _ReportPhase.ValueType  # 3
+
+class ReportPhase(_ReportPhase, metaclass=_ReportPhaseEnumTypeWrapper): ...
+
+REPORT_PHASE_UNSPECIFIED: ReportPhase.ValueType  # 0
+REPORT_PHASE_PRECHARGE: ReportPhase.ValueType  # 1
+REPORT_PHASE_USER: ReportPhase.ValueType  # 2
+REPORT_PHASE_REFUND: ReportPhase.ValueType  # 3
+Global___ReportPhase: _TypeAlias = ReportPhase  # noqa: Y015
+
 @_typing.final
 class FindDeployQuery(_message.Message):
     DESCRIPTOR: _descriptor.Descriptor
@@ -403,6 +422,39 @@ class JustificationInfo(_message.Message):
 Global___JustificationInfo: _TypeAlias = JustificationInfo  # noqa: Y015
 
 @_typing.final
+class TransferInfo(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
+
+    FROMADDR_FIELD_NUMBER: _builtins.int
+    TOADDR_FIELD_NUMBER: _builtins.int
+    SUCCESS_FIELD_NUMBER: _builtins.int
+    FAILREASON_FIELD_NUMBER: _builtins.int
+    AMOUNTRAW_FIELD_NUMBER: _builtins.int
+    fromAddr: _builtins.str
+    """Sender address"""
+    toAddr: _builtins.str
+    """Recipient address"""
+    success: _builtins.bool
+    """Whether the transfer succeeded"""
+    failReason: _builtins.str
+    """Error message if success is false, empty otherwise"""
+    amountRaw: _builtins.str
+    """Exact amount in dust (smallest unit) as a canonical decimal string"""
+    def __init__(
+        self,
+        *,
+        fromAddr: _builtins.str = ...,
+        toAddr: _builtins.str = ...,
+        success: _builtins.bool = ...,
+        failReason: _builtins.str = ...,
+        amountRaw: _builtins.str = ...,
+    ) -> None: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["amountRaw", b"amountRaw", "failReason", b"failReason", "fromAddr", b"fromAddr", "success", b"success", "toAddr", b"toAddr"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___TransferInfo: _TypeAlias = TransferInfo  # noqa: Y015
+
+@_typing.final
 class DeployInfo(_message.Message):
     DESCRIPTOR: _descriptor.Descriptor
 
@@ -417,6 +469,9 @@ class DeployInfo(_message.Message):
     COST_FIELD_NUMBER: _builtins.int
     ERRORED_FIELD_NUMBER: _builtins.int
     SYSTEMDEPLOYERROR_FIELD_NUMBER: _builtins.int
+    TRANSFERS_FIELD_NUMBER: _builtins.int
+    TRANSFERSAVAILABLE_FIELD_NUMBER: _builtins.int
+    PARAMETERS_FIELD_NUMBER: _builtins.int
     deployer: _builtins.str
     term: _builtins.str
     timestamp: _builtins.int
@@ -428,6 +483,12 @@ class DeployInfo(_message.Message):
     cost: _builtins.int
     errored: _builtins.bool
     systemDeployError: _builtins.str
+    transfersAvailable: _builtins.bool
+    """true when transfers were extracted (readonly), false on validators"""
+    @_builtins.property
+    def transfers(self) -> _containers.RepeatedCompositeFieldContainer[Global___TransferInfo]: ...
+    @_builtins.property
+    def parameters(self) -> _containers.RepeatedCompositeFieldContainer[_CasperMessage_pb2.DeployParameter]: ...
     def __init__(
         self,
         *,
@@ -442,11 +503,83 @@ class DeployInfo(_message.Message):
         cost: _builtins.int = ...,
         errored: _builtins.bool = ...,
         systemDeployError: _builtins.str = ...,
+        transfers: _abc.Iterable[Global___TransferInfo] | None = ...,
+        transfersAvailable: _builtins.bool = ...,
+        parameters: _abc.Iterable[_CasperMessage_pb2.DeployParameter] | None = ...,
     ) -> None: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["cost", b"cost", "deployer", b"deployer", "errored", b"errored", "phloLimit", b"phloLimit", "phloPrice", b"phloPrice", "sig", b"sig", "sigAlgorithm", b"sigAlgorithm", "systemDeployError", b"systemDeployError", "term", b"term", "timestamp", b"timestamp", "validAfterBlockNumber", b"validAfterBlockNumber"]  # noqa: Y015
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["cost", b"cost", "deployer", b"deployer", "errored", b"errored", "parameters", b"parameters", "phloLimit", b"phloLimit", "phloPrice", b"phloPrice", "sig", b"sig", "sigAlgorithm", b"sigAlgorithm", "systemDeployError", b"systemDeployError", "term", b"term", "timestamp", b"timestamp", "transfers", b"transfers", "transfersAvailable", b"transfersAvailable", "validAfterBlockNumber", b"validAfterBlockNumber"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
 Global___DeployInfo: _TypeAlias = DeployInfo  # noqa: Y015
+
+@_typing.final
+class PendingDeploysQuery(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
+
+    DEPLOYERPUBKEY_FIELD_NUMBER: _builtins.int
+    deployerPubkey: _builtins.bytes
+    """Empty bytes = return all pending deploys regardless of deployer.
+    Non-empty = return only deploys signed by this public key.
+    """
+    def __init__(
+        self,
+        *,
+        deployerPubkey: _builtins.bytes = ...,
+    ) -> None: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["deployerPubkey", b"deployerPubkey"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___PendingDeploysQuery: _TypeAlias = PendingDeploysQuery  # noqa: Y015
+
+@_typing.final
+class PendingDeployInfo(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
+
+    DEPLOY_FIELD_NUMBER: _builtins.int
+    ISREJECTED_FIELD_NUMBER: _builtins.int
+    isRejected: _builtins.bool
+    """true  = from rejected_deploy_buffer (recovering after merge conflict)
+    false = from deploy_storage (fresh, not yet proposed)
+    """
+    @_builtins.property
+    def deploy(self) -> _CasperMessage_pb2.DeployDataProto: ...
+    def __init__(
+        self,
+        *,
+        deploy: _CasperMessage_pb2.DeployDataProto | None = ...,
+        isRejected: _builtins.bool = ...,
+    ) -> None: ...
+    _HasFieldArgType: _TypeAlias = _typing.Literal["deploy", b"deploy"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["deploy", b"deploy", "isRejected", b"isRejected"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___PendingDeployInfo: _TypeAlias = PendingDeployInfo  # noqa: Y015
+
+@_typing.final
+class PendingDeploysResponsePayload(_message.Message):
+    DESCRIPTOR: _descriptor.Descriptor
+
+    DEPLOYS_FIELD_NUMBER: _builtins.int
+    TOTALAVAILABLE_FIELD_NUMBER: _builtins.int
+    totalAvailable: _builtins.int
+    """Total count of pending deploys that matched the query before cap
+    truncation was applied. Compare with `deploys.size()` to detect
+    truncation: when `deploys.size() < totalAvailable`, more pending
+    deploys exist than were returned.
+    """
+    @_builtins.property
+    def deploys(self) -> _containers.RepeatedCompositeFieldContainer[Global___PendingDeployInfo]: ...
+    def __init__(
+        self,
+        *,
+        deploys: _abc.Iterable[Global___PendingDeployInfo] | None = ...,
+        totalAvailable: _builtins.int = ...,
+    ) -> None: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["deploys", b"deploys", "totalAvailable", b"totalAvailable"]  # noqa: Y015
+    def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+
+Global___PendingDeploysResponsePayload: _TypeAlias = PendingDeploysResponsePayload  # noqa: Y015
 
 @_typing.final
 class LightBlockInfo(_message.Message):
@@ -755,14 +888,17 @@ class SingleReport(_message.Message):
     DESCRIPTOR: _descriptor.Descriptor
 
     EVENTS_FIELD_NUMBER: _builtins.int
+    PHASE_FIELD_NUMBER: _builtins.int
+    phase: Global___ReportPhase.ValueType
     @_builtins.property
     def events(self) -> _containers.RepeatedCompositeFieldContainer[Global___ReportProto]: ...
     def __init__(
         self,
         *,
         events: _abc.Iterable[Global___ReportProto] | None = ...,
+        phase: Global___ReportPhase.ValueType = ...,
     ) -> None: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["events", b"events"]  # noqa: Y015
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["events", b"events", "phase", b"phase"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
 Global___SingleReport: _TypeAlias = SingleReport  # noqa: Y015
@@ -908,6 +1044,9 @@ class Status(_message.Message):
     nodes: _builtins.int
     minPhloPrice: _builtins.str
     nativeTokenName: _builtins.str
+    """Native token metadata baked into genesis state. Queryable on-chain via
+    the TokenMetadata contract at `rho:system:tokenMetadata`.
+    """
     nativeTokenSymbol: _builtins.str
     nativeTokenDecimals: _builtins.int
     lastFinalizedBlockNumber: _builtins.int
@@ -919,7 +1058,9 @@ class Status(_message.Message):
     @_builtins.property
     def version(self) -> Global___VersionInfo: ...
     @_builtins.property
-    def peerList(self) -> _containers.RepeatedCompositeFieldContainer[Global___PeerInfo]: ...
+    def peerList(self) -> _containers.RepeatedCompositeFieldContainer[Global___PeerInfo]:
+        """Detailed peer list"""
+
     def __init__(
         self,
         *,

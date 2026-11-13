@@ -3,8 +3,14 @@ import os
 import pytest
 from ecdsa.keys import BadSignatureError
 
+from f1r3fly import token_amount
 from f1r3fly.crypto import (
-    PrivateKey, PublicKey, blake2b_32, verify_vault_address,
+    PrivateKey, PublicKey, _hash_leaf, _merkle_root, blake2b_32,
+    block_commitment, commitment_hash, gen_block_hash_from_block,
+    verify_vault_address,
+)
+from f1r3fly.pb.CasperMessage_pb2 import (
+    CLAIM_FAMILY_EJECT, BlockCommitmentProto, BlockMessageProto,
 )
 
 
@@ -123,3 +129,183 @@ def test_vault_address_validation():
     for i in range(20):
         key = PrivateKey.generate()
         assert verify_vault_address(key.get_public_key().get_vault_address()) is True
+
+
+def _empty_block() -> BlockMessageProto:
+    block = BlockMessageProto()
+    block.header.timestamp = 1_700_000_000_000
+    block.header.version = 1
+    block.body.state.preStateHash = bytes(32)
+    block.body.state.postStateHash = bytes(32)
+    block.sender = bytes(33)
+    block.sigAlgorithm = 'secp256k1'
+    block.shardId = 'test-shard'
+    return block
+
+
+def _leaf(byte: int) -> bytes:
+    return _hash_leaf(0x00, bytes([byte]))
+
+
+def _interior(left: bytes, right: bytes) -> bytes:
+    return blake2b_32(bytes([0x01]) + left + right).digest()
+
+
+def test_block_hash_matches_node_empty_block_golden() -> None:
+    assert gen_block_hash_from_block(_empty_block()).hex() == (
+        '3c15d5b0085c3e12cdccb3209bc7de9efebf435f162e7f8f9d45522dd06d8fa8'
+    )
+
+
+def _node_block(name: str) -> BlockMessageProto:
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), f'resources/blocks/{name}.bin')
+    block = BlockMessageProto()
+    with open(path, 'rb') as f:
+        block.ParseFromString(f.read())
+    return block
+
+
+@pytest.mark.parametrize('name', ['one_deploy', 'slash'])
+def test_block_hash_matches_node_blocks(name: str) -> None:
+    block = _node_block(name)
+    assert block.header.chainId
+    assert block.justifications
+    assert gen_block_hash_from_block(block) == block.blockHash
+
+
+def test_node_slash_evidence_names_the_equivocators_block() -> None:
+    equivocated = _node_block('one_deploy')
+    slashes = [
+        deploy.systemDeploy.slashSystemDeploy
+        for deploy in _node_block('slash').body.systemDeploys
+        if deploy.systemDeploy.WhichOneof('systemDeploy') == 'slashSystemDeploy'
+    ]
+    assert len(slashes) == 1
+    first, second = commitment_hash(slashes[0].first), commitment_hash(slashes[0].second)
+    assert first < second
+    assert equivocated.blockHash in (first, second)
+
+
+@pytest.mark.parametrize('name', ['one_deploy', 'slash'])
+def test_commitment_of_a_node_block_hashes_to_its_hash_after_the_wire(name: str) -> None:
+    block = _node_block(name)
+    received = BlockCommitmentProto()
+    received.ParseFromString(block_commitment(block).SerializeToString())
+    assert commitment_hash(received) == block.blockHash
+    assert received.sig == block.sig
+
+
+def test_block_hash_commits_to_chain_id() -> None:
+    bound = _empty_block()
+    bound.header.chainId = bytes([0x33]) * 32
+    assert gen_block_hash_from_block(bound) != gen_block_hash_from_block(_empty_block())
+
+
+_COMMITMENT_FIELDS = [
+    ('preStateHash', bytes([1]) * 32),
+    ('postStateHash', bytes([2]) * 32),
+    ('bondsRoot', bytes([3]) * 32),
+    ('justificationsRoot', bytes([12]) * 32),
+    ('blockNumber', 7),
+    ('rejectedRoot', bytes([4]) * 32),
+    ('appliedFromScopeRoot', bytes([5]) * 32),
+    ('leakyBucketVotesRoot', bytes([6]) * 32),
+    ('mergeBase', bytes([7]) * 32),
+    ('bodyExtraBytes', b'\x08'),
+    ('sender', bytes([9]) * 65),
+    ('sigAlgorithm', 'ed25519'),
+    ('seqNum', 4),
+    ('shardId', 'other-shard'),
+    ('extraBytes', b'\x0a'),
+    ('deploysRoot', bytes([11]) * 32),
+]
+
+
+@pytest.mark.parametrize('field,value', _COMMITMENT_FIELDS)
+def test_commitment_hash_commits_to_each_field(field: str, value: object) -> None:
+    commitment = block_commitment(_empty_block())
+    changed = BlockCommitmentProto()
+    changed.CopyFrom(commitment)
+    setattr(changed, field, value)
+    assert commitment_hash(changed) != commitment_hash(commitment)
+
+
+def test_block_hash_commits_to_justifications() -> None:
+    cited = _empty_block()
+    cited.justifications.add(validator=bytes([0x11]) * 65, latestBlockHash=bytes([0x22]) * 32)
+    assert gen_block_hash_from_block(cited) != gen_block_hash_from_block(_empty_block())
+
+
+def test_commitment_hash_refuses_a_root_that_is_not_32_bytes() -> None:
+    commitment = block_commitment(_empty_block())
+    commitment.justificationsRoot = bytes(31)
+    with pytest.raises(ValueError):
+        commitment_hash(commitment)
+
+
+def test_commitment_hash_excludes_the_signature() -> None:
+    commitment = block_commitment(_empty_block())
+    signed = BlockCommitmentProto()
+    signed.CopyFrom(commitment)
+    signed.sig = bytes([0x30]) * 70
+    assert commitment_hash(signed) == commitment_hash(commitment)
+
+
+def test_merkle_root_of_no_leaves_is_zero() -> None:
+    assert _merkle_root([]) == bytes(32)
+
+
+def test_merkle_root_of_one_leaf_is_the_leaf() -> None:
+    assert _merkle_root([_leaf(1)]) == _leaf(1)
+
+
+def test_merkle_root_promotes_an_odd_last_leaf() -> None:
+    a, b, c = _leaf(1), _leaf(2), _leaf(3)
+    assert _merkle_root([a, b, c]) == _interior(_interior(a, b), c)
+
+
+def test_merkle_root_pairs_four_leaves() -> None:
+    a, b, c, d = _leaf(1), _leaf(2), _leaf(3), _leaf(4)
+    assert _merkle_root([a, b, c, d]) == _interior(_interior(a, b), _interior(c, d))
+
+
+def _with_bonds(order: list) -> BlockMessageProto:
+    block = _empty_block()
+    for validator, stake in order:
+        bond = block.body.state.bonds.add()
+        bond.validator = validator
+        bond.stake = token_amount.encode(stake)
+    return block
+
+
+def test_block_hash_ignores_bond_order() -> None:
+    bonds = [(bytes([0x22]) * 33, 7), (bytes([0x11]) * 33, 5)]
+    assert gen_block_hash_from_block(_with_bonds(bonds)) == gen_block_hash_from_block(
+        _with_bonds(list(reversed(bonds)))
+    )
+
+
+def test_block_hash_ignores_rejected_deploy_and_applied_from_scope_order() -> None:
+    sigs = [bytes([0x22]) * 64, bytes([0x11]) * 64]
+    first, second = _empty_block(), _empty_block()
+    for block, order in ((first, sigs), (second, list(reversed(sigs)))):
+        for sig in order:
+            block.body.rejectedDeploys.add().sig = sig
+            block.body.appliedFromScope.append(sig)
+    assert gen_block_hash_from_block(first) == gen_block_hash_from_block(second)
+
+
+def test_block_hash_depends_on_leaky_bucket_vote_order() -> None:
+    first, second = _empty_block(), _empty_block()
+    for block, targets in ((first, (0x11, 0x22)), (second, (0x22, 0x11))):
+        for target in targets:
+            vote = block.body.leakyBucketVotes.add()
+            vote.family = CLAIM_FAMILY_EJECT
+            vote.target = bytes([target]) * 33
+    assert gen_block_hash_from_block(first) != gen_block_hash_from_block(second)
+
+
+def test_block_hash_commits_to_leaky_bucket_votes() -> None:
+    voted = _empty_block()
+    voted.body.leakyBucketVotes.add().family = CLAIM_FAMILY_EJECT
+    assert gen_block_hash_from_block(voted) != gen_block_hash_from_block(_empty_block())

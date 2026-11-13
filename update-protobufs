@@ -1,36 +1,41 @@
 #!/bin/sh
+# Usage: ./update-protobufs [NODE_SOURCE] [NODE_REF]
+#   NODE_SOURCE  git URL or local clone path of f1r3node-rust
+#                (default: https://github.com/F1R3FLY-io/f1r3node-rust.git)
+#   NODE_REF     branch, tag or commit (default: dev)
 set -e
 
-branch_f1r3fly=main
+node_source=${1:-https://github.com/F1R3FLY-io/f1r3node-rust.git}
+node_ref=${2:-dev}
 branch_scalapb=master
 out_dir=protobuf
 tmp_dir=$(mktemp -d)
+trap 'rm -rf "$tmp_dir"' EXIT
 
-mkdir -p $out_dir
+rm -rf "$out_dir"
+mkdir -p "$out_dir"
 
-# Clone f1r3node repo (sparse checkout for just protobuf files)
-echo "Fetching protobufs from F1R3FLY-io/f1r3node..."
-git clone --depth 1 --filter=blob:none --sparse \
-    https://github.com/F1R3FLY-io/f1r3node.git \
-    --branch $branch_f1r3fly \
-    "$tmp_dir/f1r3node"
-cd "$tmp_dir/f1r3node"
-git sparse-checkout set models/src/main/protobuf
-cp -r models/src/main/protobuf/* "$OLDPWD/$out_dir/"
-cd "$OLDPWD"
+echo "Fetching protobufs from $node_source at $node_ref..."
+git clone --quiet --filter=blob:none --no-checkout "$node_source" "$tmp_dir/node"
+(
+    cd "$tmp_dir/node"
+    git sparse-checkout set models/src/main/protobuf
+    git checkout --quiet "$node_ref"
+)
+cp -r "$tmp_dir/node/models/src/main/protobuf/"* "$out_dir/"
+node_commit=$(cd "$tmp_dir/node" && git rev-parse HEAD)
 
-# Clone ScalaPB repo (sparse checkout for just protobuf files)
 echo "Fetching protobufs from scalapb/ScalaPB..."
-git clone --depth 1 --filter=blob:none --sparse \
+git clone --quiet --depth 1 --filter=blob:none --sparse \
+    --branch "$branch_scalapb" \
     https://github.com/scalapb/ScalaPB.git \
-    --branch $branch_scalapb \
     "$tmp_dir/scalapb"
-cd "$tmp_dir/scalapb"
-git sparse-checkout set protobuf
-cp -r protobuf/* "$OLDPWD/$out_dir/"
-cd "$OLDPWD"
+(
+    cd "$tmp_dir/scalapb"
+    git sparse-checkout set protobuf
+)
+cp -r "$tmp_dir/scalapb/protobuf/"* "$out_dir/"
 
-# Cleanup
-rm -rf "$tmp_dir"
+printf 'f1r3node-rust %s\n' "$node_commit" > "$out_dir/SOURCE"
 
-echo "Done! Protobufs updated in $out_dir/"
+echo "Done! Protobufs from f1r3node-rust $node_commit in $out_dir/"
