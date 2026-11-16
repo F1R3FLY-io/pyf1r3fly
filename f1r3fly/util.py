@@ -1,11 +1,31 @@
 import hashlib
+import threading
 import time
-from typing import Optional
+from typing import Dict, Optional
 
 from . import token_amount
 from .crypto import PrivateKey, PublicKey
 from .pb.CasperMessage_pb2 import DeployDataProto
 from .pb.DeployServiceV1_pb2 import FileUploadMetadata
+
+_timestamp_lock = threading.Lock()
+_last_timestamp_millis: Dict[bytes, int] = {}
+
+
+def next_timestamp_millis(deployer: bytes) -> int:
+    """A timestamp in milliseconds for a new deploy by ``deployer``.
+
+    A deploy's unforgeable names derive from its deployer, timestamp and
+    valid-after block, and the node refuses a second deploy with the same
+    three. This returns the current time, or one millisecond past the last
+    value returned for ``deployer`` in this process, whichever is later.
+    """
+    with _timestamp_lock:
+        now = time.time_ns() // 1_000_000
+        last = _last_timestamp_millis.get(deployer)
+        stamp = now if last is None or now > last else last + 1
+        _last_timestamp_millis[deployer] = stamp
+        return stamp
 
 
 def _gen_deploy_sig_content(data: DeployDataProto) -> bytes:
@@ -68,7 +88,7 @@ def create_deploy_data(
         shard_id: str = '',
 ) -> DeployDataProto:
     if timestamp_millis < 0:
-        timestamp_millis = int(time.time() * 1000)
+        timestamp_millis = next_timestamp_millis(key.get_public_key().to_bytes())
     data = DeployDataProto(
         deployer=key.get_public_key().to_bytes(),
         term=term,
@@ -105,7 +125,7 @@ def create_file_upload_metadata(
     term is generated automatically.
     """
     if timestamp_millis < 0:
-        timestamp_millis = int(time.time() * 1000)
+        timestamp_millis = next_timestamp_millis(key.get_public_key().to_bytes())
 
     if term is None:
         term = (

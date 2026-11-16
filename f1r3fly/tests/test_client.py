@@ -1,11 +1,13 @@
 from concurrent import futures
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Generator, Iterator, Tuple, Union
+from types import SimpleNamespace
+from typing import Generator, Iterator, List, Tuple, Union
 
 import grpc
 import pytest
 
+from f1r3fly import util
 from f1r3fly.client import F1r3flyClient
 from f1r3fly.crypto import PrivateKey
 from f1r3fly.pb.CasperMessage_pb2 import DeployDataProto
@@ -56,9 +58,12 @@ TEST_HOST = '127.0.0.1'
     (key, "@0!(2)", 10, 200000, 10, 3000),
 ])
 def test_client_deploy(key: PrivateKey, terms: str, phlo_price: int, phlo_limit: int, valid_after_block_no: int,
-                       timestamp_millis: int) -> None:
+                       timestamp_millis: int, monkeypatch: pytest.MonkeyPatch) -> None:
+    received: List[DeployDataProto] = []
+
     class DummyDeploySerivce(DeployServiceServicer):
         def doDeploy(self, request: DeployDataProto, context: grpc.ServicerContext) -> DeployResponse:
+            received.append(request)
             return DeployResponse(result=request.sig.hex())
 
     with deploy_service(DummyDeploySerivce()) as (server, port), \
@@ -67,6 +72,18 @@ def test_client_deploy(key: PrivateKey, terms: str, phlo_price: int, phlo_limit:
         assert verify_deploy_data(key.get_public_key(), bytes.fromhex(ret),
                                   create_deploy_data(key, terms, phlo_price, phlo_limit, valid_after_block_no,
                                                      timestamp_millis))
+        assert received[0].timestamp == timestamp_millis
+
+        # Deploys from one key that leave the timestamp to the client share
+        # their valid-after block here, so they must not share a timestamp,
+        # even within one millisecond.
+        monkeypatch.setattr(util, 'time', SimpleNamespace(time=lambda: 5.0, time_ns=lambda: 5_000_000_000))
+        with futures.ThreadPoolExecutor(max_workers=8) as executor:
+            list(executor.map(
+                lambda _: client.deploy(key, terms, phlo_price, phlo_limit, valid_after_block_no),
+                range(8),
+            ))
+        assert len({deploy.timestamp for deploy in received[1:]}) == 8
 
 
 def test_client_show_block() -> None:
