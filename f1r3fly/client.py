@@ -285,8 +285,10 @@ class F1r3flyClient:
         self._check_response(response)
         return response
 
-    def previewPrivateNames(self, public_key: PublicKey, timestamp: int, nameQty: int) -> PrivateNamePreviewResponse:
-        query = PrivateNamePreviewQuery(user=public_key.to_bytes(), timestamp=timestamp, nameQty=nameQty)
+    def previewPrivateNames(self, public_key: PublicKey, timestamp: int, valid_after_block_no: int,
+                            nameQty: int) -> PrivateNamePreviewResponse:
+        query = PrivateNamePreviewQuery(user=public_key.to_bytes(), timestamp=timestamp,
+                                        validAfterBlockNumber=valid_after_block_no, nameQty=nameQty)
         response = self._deploy_stub.previewPrivateNames(query, timeout=self.timeout)
         self._check_response(response)
         return response
