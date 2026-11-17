@@ -47,6 +47,8 @@ GRPC_Response_T = Union[ProposeResponse,
 GRPC_StreamResponse_T = Union[BlockInfoResponse, VisualizeBlocksResponse]
 T = TypeVar("T")
 
+logger = logging.getLogger(__name__)
+
 DEFAULT_CHUNK_SIZE = 1024 * 1024  # 1 MB
 
 propose_result_match = re.compile(r'Success! Block (?P<block_hash>[0-9a-f]+) created and added.')
@@ -97,7 +99,7 @@ class F1r3flyClient:
         self.param = param
 
     def _check_response(self, response: GRPC_Response_T) -> None:
-        logging.debug('gRPC response: %s', str(response))
+        logger.debug('gRPC response: %s', response)
         if response.WhichOneof("message") == 'error':
             raise F1r3flyClientException('\n'.join(response.error.messages))
 

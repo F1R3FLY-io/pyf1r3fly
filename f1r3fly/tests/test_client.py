@@ -1,3 +1,4 @@
+import logging
 from concurrent import futures
 from contextlib import contextmanager
 from pathlib import Path
@@ -226,6 +227,23 @@ def test_client_propose() -> None:
             F1r3flyClient(TEST_HOST, port) as client:
         hash = client.propose()
         assert hash == block_hash
+
+
+def test_client_logs_responses_on_its_own_logger(caplog: pytest.LogCaptureFixture) -> None:
+    class DummyProposeService(ProposeServiceServicer):
+        def propose(self, request: ProposeQuery, context: grpc.ServicerContext) -> ProposeResponse:
+            return ProposeResponse(result="Success! Block abc created and added.")
+
+    with deploy_service(DummyProposeService()) as (server, port), \
+            F1r3flyClient(TEST_HOST, port) as client:
+        with caplog.at_level(logging.DEBUG, logger="f1r3fly.client"):
+            client.propose()
+        assert [r.name for r in caplog.records if r.getMessage().startswith("gRPC response")] == [
+            "f1r3fly.client"]
+        caplog.clear()
+        with caplog.at_level(logging.DEBUG), caplog.at_level(logging.INFO, logger="f1r3fly.client"):
+            client.propose()
+        assert not [r for r in caplog.records if r.getMessage().startswith("gRPC response")]
 
 
 def test_client_find_deploy() -> None:
