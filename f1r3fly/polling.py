@@ -118,6 +118,12 @@ def wait_for_finalized(client: F1r3flyClient, block_number: int, timeout: int) -
     )
 
 
+#: ``DeployFinalizationStateProto.DEPLOY_STATE_REJECTED`` (node #990). A deploy
+#: queue reports it for a deploy the node refused on release; a node never
+#: does. The bundled protobuf predates it, so the value is fixed here.
+DEPLOY_STATE_REJECTED = 5
+
+
 def wait_for_deploy_finalized(
     client: F1r3flyClient,
     deploy_id: str,
@@ -143,8 +149,9 @@ def wait_for_deploy_finalized(
 
     Raises:
         DeployError: If the deploy reaches terminal DEPLOY_STATE_FAILED
-            (explicit Rholang failure) or DEPLOY_STATE_EXPIRED (past
-            deployLifespan without successful inclusion).
+            (explicit Rholang failure), DEPLOY_STATE_EXPIRED (past
+            deployLifespan without successful inclusion) or, from a deploy
+            queue, DEPLOY_STATE_REJECTED (the node refused it on release).
         TimeoutError: If the deploy stays in Pending past ``timeout``.
     """
     from .pb.DeployServiceCommon_pb2 import (
@@ -171,6 +178,11 @@ def wait_for_deploy_finalized(
                 raise DeployError(
                     f"Deploy {deploy_id[:24]} reached terminal state Expired "
                     f"(rejection_count={info.rejectionCount})"
+                )
+            if info.state == DEPLOY_STATE_REJECTED:
+                raise DeployError(
+                    f"Deploy {deploy_id[:24]} reached terminal state Rejected: "
+                    f"the node refused it when its deploy queue released it"
                 )
         except DeployError:
             raise
