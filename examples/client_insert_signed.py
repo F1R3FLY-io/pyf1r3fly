@@ -14,7 +14,9 @@ nonce = 9223372036854775807
 publicKey = deployKey.get_public_key()
 
 with F1r3flyClient(host, port) as client:
-    ret = client.previewPrivateNames(publicKey, timestamp, 3)
+    # The deploy must use this timestamp and valid-after block for the names to match.
+    validAfterBlockNumber = client.show_blocks(1)[0].blockNumber
+    ret = client.previewPrivateNames(publicKey, timestamp, validAfterBlockNumber, 3)
     unforgeable = ret.payload.ids[0]
 
 print(unforgeable)

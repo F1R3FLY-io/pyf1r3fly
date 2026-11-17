@@ -15,7 +15,6 @@ dev mode.
 """
 import dataclasses
 import string
-import time
 from typing import Dict, List, Mapping, Tuple
 
 from .client import F1r3flyClient
@@ -170,9 +169,8 @@ class PosAPI:
         read it after inclusion with :meth:`read_result`.
         """
         contract = render_contract_template(BOND_RHO_TPL, {"amount": str(amount)})
-        timestamp_mill = int(time.time() * 1000)
         return self.client.deploy_with_vabn_filled(
-            key, contract, phlo_price, phlo_limit, timestamp_mill, self.shard_id,
+            key, contract, phlo_price, phlo_limit, shard_id=self.shard_id,
         )
 
     def withdraw(self, key: PrivateKey,
@@ -185,9 +183,8 @@ class PosAPI:
         channel; read it after inclusion with :meth:`read_result`.
         """
         contract = WITHDRAW_RHO_TPL
-        timestamp_mill = int(time.time() * 1000)
         return self.client.deploy_with_vabn_filled(
-            key, contract, phlo_price, phlo_limit, timestamp_mill, self.shard_id,
+            key, contract, phlo_price, phlo_limit, shard_id=self.shard_id,
         )
 
     def commit_random_image(self, key: PrivateKey, image_hex: str,
@@ -196,9 +193,8 @@ class PosAPI:
         """Commit the keccak256 ``image_hex`` (hex, no ``0x``) for the validator
         identified by ``key``. Read the ack with :meth:`read_result`."""
         contract = render_contract_template(COMMIT_RANDOM_IMAGE_RHO_TPL, {"image": image_hex})
-        timestamp_mill = int(time.time() * 1000)
         return self.client.deploy_with_vabn_filled(
-            key, contract, phlo_price, phlo_limit, timestamp_mill, self.shard_id,
+            key, contract, phlo_price, phlo_limit, shard_id=self.shard_id,
         )
 
     def reveal_random(self, key: PrivateKey, random_hex: str,
@@ -208,9 +204,8 @@ class PosAPI:
         identified by ``key``. The contract keccak256-hashes it and compares to the
         committed image. Read the ack with :meth:`read_result`."""
         contract = render_contract_template(REVEAL_RANDOM_RHO_TPL, {"random": random_hex})
-        timestamp_mill = int(time.time() * 1000)
         return self.client.deploy_with_vabn_filled(
-            key, contract, phlo_price, phlo_limit, timestamp_mill, self.shard_id,
+            key, contract, phlo_price, phlo_limit, shard_id=self.shard_id,
         )
 
     def pos_vault_transfer(self, key: PrivateKey, target_address: str, amount: int,
@@ -221,9 +216,8 @@ class PosAPI:
         ``(false, "You have not permission to transfer.")``. Read with :meth:`read_result`."""
         contract = render_contract_template(
             POS_VAULT_TRANSFER_RHO_TPL, {"target": target_address, "amount": str(amount)})
-        timestamp_mill = int(time.time() * 1000)
         return self.client.deploy_with_vabn_filled(
-            key, contract, phlo_price, phlo_limit, timestamp_mill, self.shard_id,
+            key, contract, phlo_price, phlo_limit, shard_id=self.shard_id,
         )
 
     def call_auth_gated_invalid_token(self, key: PrivateKey, method: str,
@@ -237,9 +231,8 @@ class PosAPI:
             raise ValueError(f"unsupported auth-gated method {method!r}")
         contract = render_contract_template(
             AUTH_BAD_TOKEN_RHO_TPL, {"call": _AUTH_GATED_BAD_TOKEN_CALLS[method]})
-        timestamp_mill = int(time.time() * 1000)
         return self.client.deploy_with_vabn_filled(
-            key, contract, phlo_price, phlo_limit, timestamp_mill, self.shard_id,
+            key, contract, phlo_price, phlo_limit, shard_id=self.shard_id,
         )
 
     def read_result(self, deploy_id: str, block_hash: str = "") -> PosResult:
