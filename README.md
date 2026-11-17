@@ -106,9 +106,34 @@ corresponding to the protcol buffers into `f1r3fly.pb` package (`./f1r3fly/pb`).
 
 For node [#789](https://github.com/F1R3FLY-io/f1r3node-rust/pull/789),
 `send_deploy` raises `DeployAdmissionRefused` only for an explicit gRPC service
-error with the leading code `deploy_pool_busy` or `deploy_admission_busy`.
-Its `code` distinguishes the reasons and `deploy_id` retains the signed ID.
-Other service errors keep `F1r3flyClientException`.
+error with one of these leading codes. Its `code` distinguishes the reasons,
+`deploy_id` retains the signed ID and `retryable` says whether the same signed
+deploy can be sent again. Other service errors keep `F1r3flyClientException`.
+
+| Code | `retryable` |
+|---|---|
+| `deploy_pool_busy`, `deploy_admission_busy` | Yes |
+| `invalid_deploy_window` | Yes, once the chain reaches the validity height |
+| `deploy_too_large`, `deploy_expired` | No, build a new deploy |
+
+A service error saying `Deploy already known` for this signature means the
+node already holds the deploy, so `send_deploy` returns its ID.
+
+A [deploy queue (#990)](https://github.com/F1R3FLY-io/f1r3node-rust/pull/990)
+can serve a validator's client ports. It answers the node's own refusals as
+above. Its capacity and availability refusals are gRPC statuses, which
+`send_deploy` also raises as `DeployAdmissionRefused`, with `retry_after` in
+seconds from the `retry-after` metadata. The queue did not hold the deploy.
+
+| gRPC status | `code` | `congestion` | `retryable` |
+|---|---|---|---|
+| `RESOURCE_EXHAUSTED` | `deploy_queue_full` | `validator`, `validator_idle`, `shard`, `storage` | No: after `retry_after`, sign a new deploy with a current `valid_after_block_number`; for `validator_idle`, send it to another validator |
+| `RESOURCE_EXHAUSTED` | `deploy_queue_full` | `deployer_share` | Yes |
+| `UNAVAILABLE` | `node_unavailable`, `deploy_queue_stopped` | none | Yes |
+
+A queue reports `DEPLOY_STATE_REJECTED` (value 5) for a deploy the node refused
+when the queue released it; `wait_for_deploy_finalized` raises `DeployError`
+for it instead of waiting until its timeout.
 
 RPC failures (including deadlines and unavailability) raise
 `DeploySubmissionUnknown`, with the original `deploy_id` and chained RPC error.

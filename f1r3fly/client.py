@@ -3,7 +3,7 @@ import os
 import re
 from types import TracebackType
 from typing import (
-    Any, Iterable, Iterator, List, Optional, Tuple, Type, TypeVar, Union,
+    Any, Dict, Iterable, Iterator, List, Optional, Tuple, Type, TypeVar, Union,
 )
 
 import grpc
@@ -58,15 +58,96 @@ class F1r3flyClientException(Exception):
         super().__init__(message)
 
 
-class DeployAdmissionRefused(F1r3flyClientException):
-    """The node explicitly did not accept this signed deploy."""
+#: Node service-error codes (node #789) and whether the same signed deploy
+#: can be sent again later.
+NODE_REFUSAL_CODES: Dict[str, bool] = {
+    'deploy_pool_busy': True,
+    'deploy_admission_busy': True,
+    'invalid_deploy_window': True,
+    'deploy_too_large': False,
+    'deploy_expired': False,
+}
 
-    def __init__(self, deploy_id: str, code: str, message: str) -> None:
+#: A deploy queue's gRPC refusals (node #990): status, message prefix, code
+#: and congestion. The queue did not hold the deploy.
+_QUEUE_REFUSALS = (
+    (grpc.StatusCode.RESOURCE_EXHAUSTED,
+     'deploy queue is full for this deployer', 'deploy_queue_full', 'deployer_share'),
+    (grpc.StatusCode.RESOURCE_EXHAUSTED,
+     'deploy queue is full: the validator has created no block', 'deploy_queue_full',
+     'validator_idle'),
+    (grpc.StatusCode.RESOURCE_EXHAUSTED,
+     'deploy queue is full: the validator is taking fewer deploys', 'deploy_queue_full',
+     'validator'),
+    (grpc.StatusCode.RESOURCE_EXHAUSTED,
+     "deploy queue is full: the shard's finality", 'deploy_queue_full', 'shard'),
+    (grpc.StatusCode.RESOURCE_EXHAUSTED,
+     'deploy queue is full: the signed deploys the queue holds', 'deploy_queue_full',
+     'storage'),
+    (grpc.StatusCode.RESOURCE_EXHAUSTED, 'deploy queue is full:', 'deploy_queue_full', None),
+    (grpc.StatusCode.UNAVAILABLE,
+     'deploy queue is not connected to its node', 'node_unavailable', None),
+    (grpc.StatusCode.UNAVAILABLE, 'deploy queue is shutting down', 'deploy_queue_stopped', None),
+)
+
+_ALREADY_KNOWN = 'Deploy already known'
+
+
+class DeployAdmissionRefused(F1r3flyClientException):
+    """The node or its deploy queue explicitly did not accept this deploy.
+
+    ``retryable`` says whether the same signed deploy can be sent again,
+    after ``retry_after`` seconds when the deploy queue gave a wait. A full
+    deploy queue (other than this deployer's share) admits a deploy only if
+    it lands with time to spare in its validity window: sign a new deploy
+    with a current ``valid_after_block_number`` instead. ``congestion``
+    names what holds a full queue back: ``validator``, ``validator_idle``
+    (send to another validator's queue), ``shard``, ``storage`` or
+    ``deployer_share``.
+    """
+
+    def __init__(
+        self,
+        deploy_id: str,
+        code: str,
+        message: str,
+        retryable: Optional[bool] = None,
+        retry_after: Optional[float] = None,
+        congestion: Optional[str] = None,
+    ) -> None:
         self.deploy_id = deploy_id
         self.code = code
+        self.retryable = NODE_REFUSAL_CODES.get(code, False) if retryable is None else retryable
+        self.retry_after = retry_after
+        self.congestion = congestion
         super().__init__(
             f"Deploy {deploy_id} not accepted ({code}): {message}"
         )
+
+
+def _retry_after(error: grpc.RpcError) -> Optional[float]:
+    metadata = getattr(error, 'trailing_metadata', None)
+    for key, value in (metadata() if callable(metadata) else None) or ():
+        if key == 'retry-after':
+            text = value.decode() if isinstance(value, bytes) else str(value)
+            if text.strip().isdigit():
+                return float(text.strip())
+    return None
+
+
+def _queue_refusal(deploy_id: str, error: grpc.RpcError) -> Optional[DeployAdmissionRefused]:
+    code_fn = getattr(error, 'code', None)
+    details_fn = getattr(error, 'details', None)
+    if not callable(code_fn) or not callable(details_fn):
+        return None
+    status, details = code_fn(), details_fn() or ''
+    for expected, prefix, code, congestion in _QUEUE_REFUSALS:
+        if status == expected and details.startswith(prefix):
+            retryable = code != 'deploy_queue_full' or congestion == 'deployer_share'
+            return DeployAdmissionRefused(
+                deploy_id, code, details, retryable, _retry_after(error), congestion,
+            )
+    return None
 
 
 class DeploySubmissionUnknown(F1r3flyClientException):
@@ -189,13 +270,19 @@ class F1r3flyClient:
         try:
             response = self._deploy_stub.doDeploy(deploy, timeout=self.timeout)
         except grpc.RpcError as error:
+            refusal = _queue_refusal(deploy_id, error)
+            if refusal is not None:
+                raise refusal from error
             raise DeploySubmissionUnknown(deploy_id, str(error)) from error
         if response.WhichOneof("message") == 'error':
             messages = list(response.error.messages)
             if len(messages) == 1:
                 code = messages[0].partition(':')[0].strip()
-                if code in ('deploy_pool_busy', 'deploy_admission_busy'):
+                if code in NODE_REFUSAL_CODES:
                     raise DeployAdmissionRefused(deploy_id, code, messages[0])
+                # The node or its deploy queue already holds this signed deploy.
+                if _ALREADY_KNOWN in messages[0] and deploy_id in messages[0].lower():
+                    return deploy_id
         self._check_response(response)
         if response.WhichOneof("message") != 'result':
             raise DeploySubmissionUnknown(deploy_id, "missing deploy response")
@@ -242,7 +329,8 @@ class F1r3flyClient:
 
         Returns a ``DeployFinalizationStatusInfo`` with:
           - ``state``: ``DeployFinalizationStateProto`` enum
-            (``DEPLOY_STATE_FINALIZED`` / ``FAILED`` / ``PENDING`` / ``EXPIRED``)
+            (``DEPLOY_STATE_FINALIZED`` / ``FAILED`` / ``PENDING`` / ``EXPIRED``,
+            or value 5, ``REJECTED``, from a deploy queue)
           - ``rejectionCount``: number of times this deploy was rejected during
             merges (monotonically increases, carries through to terminal states)
           - ``latestBlockHash``: bytes of the most recent canonical block
