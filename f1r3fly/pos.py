@@ -127,7 +127,7 @@ new return, PoSCh, rl(`rho:registry:lookup`) in {
 }
 """
 
-BOND_PHLO_LIMIT = 100_000_000
+BOND_PHLO_LIMIT = 10_000_000
 BOND_PHLO_PRICE = 1
 
 
