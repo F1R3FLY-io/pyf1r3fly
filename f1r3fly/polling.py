@@ -23,6 +23,8 @@ import logging
 import time
 from typing import TYPE_CHECKING, Callable, List, Optional, TypeVar
 
+from .client import DeployAdmissionRefused, DeploySubmissionUnknown
+
 if TYPE_CHECKING:
     from .client import F1r3flyClient
     from .crypto import PrivateKey
@@ -37,7 +39,7 @@ T = TypeVar("T")
 
 def poll_until(
     predicate: Callable[[], Optional[T]],
-    timeout: int,
+    timeout: float,
     interval: float = 3.0,
     description: str = "",
 ) -> T:
@@ -50,11 +52,11 @@ def poll_until(
     If ``predicate`` raises an exception, it is caught and retried.
     The last exception is included in the timeout error message.
     """
-    deadline = time.time() + timeout
+    deadline = time.monotonic() + timeout
     last_err: Optional[Exception] = None
     attempts = 0
 
-    while time.time() < deadline:
+    while time.monotonic() < deadline:
         attempts += 1
         try:
             result = predicate()
@@ -62,7 +64,9 @@ def poll_until(
                 return result
         except Exception as e:
             last_err = e
-        time.sleep(interval)
+        remaining = deadline - time.monotonic()
+        if remaining > 0:
+            time.sleep(min(interval, remaining))
 
     err_detail = f" (last error: {last_err})" if last_err else ""
     raise TimeoutError(
@@ -71,7 +75,7 @@ def poll_until(
     )
 
 
-def wait_for_deploy_included(client: F1r3flyClient, deploy_id: str, timeout: int) -> LightBlockInfo:
+def wait_for_deploy_included(client: F1r3flyClient, deploy_id: str, timeout: float) -> LightBlockInfo:
     """Poll ``find_deploy`` until the deploy is included in a block.
 
     Args:
@@ -297,17 +301,17 @@ def deploy_with_fallback(
     valid_after_block_no: Optional[int] = None,
     shard_id: str = "root",
 ) -> tuple:
-    """Submit a deploy, falling back to other clients if inclusion times out.
+    """Submit one signed deploy and look for its inclusion across clients.
 
-    Builds the deploy proto once, submits to the first client, polls for
-    inclusion. If timed out, resubmits the same signed deploy to the next
-    client.
+    Polls for inclusion after acceptance or an unknown submission outcome.
+    Fallbacks send the original signed deploy. A refusal that permits resending
+    can fall back after its retry wait, if that wait fits within the timeout.
 
     Args:
         clients: List of F1r3flyClient instances to try.
         term: Rholang code to deploy.
         private_key: PrivateKey for signing.
-        timeout_per_client: Seconds to wait for inclusion on each client.
+        timeout_per_client: Seconds to wait for inclusion or a retry on each client.
         phlo_limit: Maximum phlo to spend.
         phlo_price: Phlo price per unit.
         valid_after_block_no: If None, auto-filled from the first client.
@@ -317,7 +321,11 @@ def deploy_with_fallback(
         Tuple of (deploy_id, block_info).
 
     Raises:
-        TimeoutError: If no client includes the deploy.
+        DeployAdmissionRefused: If a refusal stops submission and no attempt
+            could have been accepted.
+        DeploySubmissionUnknown: If a submission remains unresolved.
+        TimeoutError: If inclusion times out after acknowledgment, or no
+            client acknowledges the deploy or returns an explicit refusal.
     """
     from .util import create_deploy_data
 
@@ -330,31 +338,67 @@ def deploy_with_fallback(
         valid_after_block_no, shard_id=shard_id,
     )
     deploy_id = proto.sig.hex()
+    last_refusal: Optional[DeployAdmissionRefused] = None
+    unknown_submission: Optional[DeploySubmissionUnknown] = None
+    acknowledged = False
+    submitted_client: Optional[F1r3flyClient] = None
 
     for i, client in enumerate(clients):
+        poll_client = client
+        poll_timeout: float = timeout_per_client
+        can_fallback = True
         try:
             client.send_deploy(proto)
+        except DeployAdmissionRefused as error:
+            last_refusal = error
+            logger.warning("Client %d refused deploy %s", i + 1, error)
+            if not error.retryable or i + 1 == len(clients):
+                break
+            if not error.retry_after:
+                continue
+            can_fallback = error.retry_after <= timeout_per_client
+            if submitted_client is None:
+                if not can_fallback:
+                    break
+                time.sleep(error.retry_after)
+                continue
+            poll_client = submitted_client
+            poll_timeout = min(error.retry_after, timeout_per_client)
+        except DeploySubmissionUnknown as error:
+            if unknown_submission is None:
+                unknown_submission = error
+            submitted_client = client
+            logger.warning("Client %d returned an unknown outcome: %s", i + 1, error)
+        except Exception as error:
+            logger.warning("Failed to submit deploy to client %d: %s", i + 1, error)
+            continue
+        else:
+            acknowledged = True
+            submitted_client = client
             logger.info(
                 "Deploy %s submitted to client %d/%d",
                 deploy_id[:24], i + 1, len(clients),
             )
-        except Exception as e:
-            logger.warning("Failed to submit deploy to client %d: %s", i + 1, e)
-            continue
 
         try:
-            block_info = wait_for_deploy_included(client, deploy_id, timeout_per_client)
+            block_info = wait_for_deploy_included(poll_client, deploy_id, poll_timeout)
             return deploy_id, block_info
         except TimeoutError:
             logger.warning(
-                "Deploy %s not included on client %d within %ds, trying next",
-                deploy_id[:24], i + 1, timeout_per_client,
+                "Deploy %s not included while processing client %d within %gs",
+                deploy_id[:24], i + 1, poll_timeout,
             )
+        if not can_fallback:
+            break
 
+    if unknown_submission is not None:
+        raise unknown_submission
+    if not acknowledged and last_refusal is not None:
+        raise last_refusal
     raise TimeoutError(
         f"Deploy {deploy_id[:24]} not included on any of "
         f"{len(clients)} clients (timeout={timeout_per_client}s each)"
-    )
+    ) from last_refusal
 
 
 class DeployError(Exception):

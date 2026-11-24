@@ -69,7 +69,7 @@ NODE_REFUSAL_CODES: Dict[str, bool] = {
 }
 
 #: A deploy queue's gRPC refusals (node #990): status, message prefix, code
-#: and congestion. The queue did not hold the deploy.
+#: and legacy congestion. The queue did not hold the deploy.
 _QUEUE_REFUSALS = (
     (grpc.StatusCode.RESOURCE_EXHAUSTED,
      'deploy queue is full for this deployer', 'deploy_queue_full', 'deployer_share'),
@@ -90,6 +90,10 @@ _QUEUE_REFUSALS = (
     (grpc.StatusCode.UNAVAILABLE, 'deploy queue is shutting down', 'deploy_queue_stopped', None),
 )
 
+_QUEUE_CONGESTION_CAUSES = {
+    congestion for _, _, _, congestion in _QUEUE_REFUSALS if congestion is not None
+}
+
 _ALREADY_KNOWN = 'Deploy already known'
 
 
@@ -98,12 +102,10 @@ class DeployAdmissionRefused(F1r3flyClientException):
 
     ``retryable`` says whether the same signed deploy can be sent again,
     after ``retry_after`` seconds when the deploy queue gave a wait. A full
-    deploy queue (other than this deployer's share) admits a deploy only if
-    it lands with time to spare in its validity window: sign a new deploy
-    with a current ``valid_after_block_number`` instead. ``congestion``
-    names what holds a full queue back: ``validator``, ``validator_idle``
-    (send to another validator's queue), ``shard``, ``storage`` or
-    ``deployer_share``.
+    deploy queue reports ``congestion`` as ``validator``, ``validator_idle``,
+    ``shard``, ``storage``, ``deployer_share`` or ``None`` if the cause is
+    unavailable or unrecognized. Of these, only ``deployer_share`` permits
+    resending the same signed deploy.
     """
 
     def __init__(
@@ -125,13 +127,13 @@ class DeployAdmissionRefused(F1r3flyClientException):
         )
 
 
-def _retry_after(error: grpc.RpcError) -> Optional[float]:
-    metadata = getattr(error, 'trailing_metadata', None)
-    for key, value in (metadata() if callable(metadata) else None) or ():
+def _retry_after(trailers: Tuple[Tuple[str, Union[str, bytes]], ...]) -> Optional[float]:
+    for key, value in trailers:
         if key == 'retry-after':
-            text = value.decode() if isinstance(value, bytes) else str(value)
-            if text.strip().isdigit():
-                return float(text.strip())
+            text = value.decode('ascii', errors='replace') if isinstance(value, bytes) else value
+            seconds = text.strip()
+            if seconds.isascii() and seconds.isdigit():
+                return float(seconds)
     return None
 
 
@@ -143,9 +145,19 @@ def _queue_refusal(deploy_id: str, error: grpc.RpcError) -> Optional[DeployAdmis
     status, details = code_fn(), details_fn() or ''
     for expected, prefix, code, congestion in _QUEUE_REFUSALS:
         if status == expected and details.startswith(prefix):
+            metadata_fn = getattr(error, 'trailing_metadata', None)
+            trailers = tuple((metadata_fn() if callable(metadata_fn) else None) or ())
+            if code == 'deploy_queue_full':
+                # Structured cause (node #1123) overrides the legacy message.
+                for key, value in trailers:
+                    if key == 'cause' and value and value.isascii():
+                        cause = value.decode('ascii') if isinstance(value, bytes) else value
+                        if cause.isprintable():
+                            congestion = cause if cause in _QUEUE_CONGESTION_CAUSES else None
+                            break
             retryable = code != 'deploy_queue_full' or congestion == 'deployer_share'
             return DeployAdmissionRefused(
-                deploy_id, code, details, retryable, _retry_after(error), congestion,
+                deploy_id, code, details, retryable, _retry_after(trailers), congestion,
             )
     return None
 

@@ -128,8 +128,16 @@ seconds from the `retry-after` metadata. The queue did not hold the deploy.
 | gRPC status | `code` | `congestion` | `retryable` |
 |---|---|---|---|
 | `RESOURCE_EXHAUSTED` | `deploy_queue_full` | `validator`, `validator_idle`, `shard`, `storage` | No: after `retry_after`, sign a new deploy with a current `valid_after_block_number`; for `validator_idle`, send it to another validator |
-| `RESOURCE_EXHAUSTED` | `deploy_queue_full` | `deployer_share` | Yes |
+| `RESOURCE_EXHAUSTED` | `deploy_queue_full` | `deployer_share` | Yes, after `retry_after` |
+| `RESOURCE_EXHAUSTED` | `deploy_queue_full` | none | No |
 | `UNAVAILABLE` | `node_unavailable`, `deploy_queue_stopped` | none | Yes |
+
+[Node #1123](https://github.com/F1R3FLY-io/f1r3node-rust/pull/1123) adds
+structured gRPC `cause` metadata to queue-full refusals. Once the status and
+message identify a queue-full refusal, `send_deploy` uses this metadata for
+`congestion`. An unfamiliar value leaves `congestion` unset. A missing, empty,
+or undecodable value falls back to the older queue's message. Other
+`RESOURCE_EXHAUSTED` statuses can leave the submission outcome unknown.
 
 A queue reports `DEPLOY_STATE_REJECTED` (value 5) for a deploy the node refused
 when the queue released it; `wait_for_deploy_finalized` raises `DeployError`
@@ -138,5 +146,13 @@ for it instead of waiting until its timeout.
 RPC failures (including deadlines and unavailability) raise
 `DeploySubmissionUnknown`, with the original `deploy_id` and chained RPC error.
 They do not establish that the deploy was rejected. Reconcile that ID before
-creating a new payment. No automatic retry or new signature is added; callers
-that retry should retain the original signed proto and pass it to `send_deploy`.
+creating a new payment. Callers that retry should retain the original signed
+proto and pass it to `send_deploy`.
+
+`deploy_with_fallback` polls for inclusion by the original ID after an unknown
+submission or acknowledgment. When it falls back to another endpoint, it sends
+the same signed proto. A non-retryable refusal or a retry wait longer than
+`timeout_per_client` stops fallback. The helper honors shorter retry waits
+before trying another endpoint and checks for inclusion during the wait when
+an earlier attempt may have been accepted. If an earlier unknown submission
+remains unresolved, the helper returns that error even after a later refusal.
