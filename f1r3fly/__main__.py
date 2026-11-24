@@ -3,6 +3,7 @@ from typing import Any, Dict, List
 
 import click
 
+from f1r3fly import token_amount
 from f1r3fly.client import F1r3flyClient
 from f1r3fly.crypto import PrivateKey, PublicKey, generate_vault_addr_from_eth
 from f1r3fly.pb.CasperMessage_pb2 import DeployDataProto
@@ -86,7 +87,7 @@ def submit_deploy(ctx: click.core.Context, deployer: str, term: str, phlo_price:
     deploy = DeployDataProto(
         deployer=bytes.fromhex(deployer),
         term=term,
-        phloPrice=phlo_price,
+        phloPrice=token_amount.encode(phlo_price),
         phloLimit=phlo_limit,
         validAfterBlockNumber=valid_after_block_number,
         timestamp=timestamp,

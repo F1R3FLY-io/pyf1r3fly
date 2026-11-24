@@ -236,21 +236,30 @@ class PrivateNamePreviewQuery(_message.Message):
     USER_FIELD_NUMBER: _builtins.int
     TIMESTAMP_FIELD_NUMBER: _builtins.int
     NAMEQTY_FIELD_NUMBER: _builtins.int
+    VALIDAFTERBLOCKNUMBER_FIELD_NUMBER: _builtins.int
     user: _builtins.bytes
     """public key a la DeployData"""
     timestamp: _builtins.int
     """millisecond timestamp"""
     nameQty: _builtins.int
     """how many names to preview? (max: 1024)"""
+    validAfterBlockNumber: _builtins.int
+    """the deploy's validAfterBlockNumber; required"""
     def __init__(
         self,
         *,
         user: _builtins.bytes = ...,
         timestamp: _builtins.int = ...,
         nameQty: _builtins.int = ...,
+        validAfterBlockNumber: _builtins.int | None = ...,
     ) -> None: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["nameQty", b"nameQty", "timestamp", b"timestamp", "user", b"user"]  # noqa: Y015
+    _HasFieldArgType: _TypeAlias = _typing.Literal["_validAfterBlockNumber", b"_validAfterBlockNumber", "validAfterBlockNumber", b"validAfterBlockNumber"]  # noqa: Y015
+    def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["_validAfterBlockNumber", b"_validAfterBlockNumber", "nameQty", b"nameQty", "timestamp", b"timestamp", "user", b"user", "validAfterBlockNumber", b"validAfterBlockNumber"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
+    _WhichOneofReturnType__validAfterBlockNumber: _TypeAlias = _typing.Literal["validAfterBlockNumber"]  # noqa: Y015
+    _WhichOneofArgType__validAfterBlockNumber: _TypeAlias = _typing.Literal["_validAfterBlockNumber", b"_validAfterBlockNumber"]  # noqa: Y015
+    def WhichOneof(self, oneof_group: _WhichOneofArgType__validAfterBlockNumber) -> _WhichOneofReturnType__validAfterBlockNumber | None: ...
 
 Global___PrivateNamePreviewQuery: _TypeAlias = PrivateNamePreviewQuery  # noqa: Y015
 
@@ -371,12 +380,12 @@ class BondInfo(_message.Message):
     VALIDATOR_FIELD_NUMBER: _builtins.int
     STAKE_FIELD_NUMBER: _builtins.int
     validator: _builtins.str
-    stake: _builtins.int
+    stake: _builtins.str
     def __init__(
         self,
         *,
         validator: _builtins.str = ...,
-        stake: _builtins.int = ...,
+        stake: _builtins.str = ...,
     ) -> None: ...
     _ClearFieldArgType: _TypeAlias = _typing.Literal["stake", b"stake", "validator", b"validator"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
@@ -422,7 +431,7 @@ class DeployInfo(_message.Message):
     timestamp: _builtins.int
     sig: _builtins.str
     sigAlgorithm: _builtins.str
-    phloPrice: _builtins.int
+    phloPrice: _builtins.str
     phloLimit: _builtins.int
     validAfterBlockNumber: _builtins.int
     cost: _builtins.int
@@ -436,7 +445,7 @@ class DeployInfo(_message.Message):
         timestamp: _builtins.int = ...,
         sig: _builtins.str = ...,
         sigAlgorithm: _builtins.str = ...,
-        phloPrice: _builtins.int = ...,
+        phloPrice: _builtins.str = ...,
         phloLimit: _builtins.int = ...,
         validAfterBlockNumber: _builtins.int = ...,
         cost: _builtins.int = ...,
@@ -906,7 +915,7 @@ class Status(_message.Message):
     shardId: _builtins.str
     peers: _builtins.int
     nodes: _builtins.int
-    minPhloPrice: _builtins.int
+    minPhloPrice: _builtins.str
     nativeTokenName: _builtins.str
     nativeTokenSymbol: _builtins.str
     nativeTokenDecimals: _builtins.int
@@ -929,7 +938,7 @@ class Status(_message.Message):
         shardId: _builtins.str = ...,
         peers: _builtins.int = ...,
         nodes: _builtins.int = ...,
-        minPhloPrice: _builtins.int = ...,
+        minPhloPrice: _builtins.str = ...,
         peerList: _abc.Iterable[Global___PeerInfo] | None = ...,
         nativeTokenName: _builtins.str = ...,
         nativeTokenSymbol: _builtins.str = ...,

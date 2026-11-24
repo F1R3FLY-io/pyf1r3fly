@@ -421,8 +421,8 @@ class DeployDataProto(_message.Message):
     """signature of (hash(term) + timestamp) using private key"""
     sigAlgorithm: _builtins.str
     """name of the algorithm used to sign"""
-    phloPrice: _builtins.int
-    """phlo price"""
+    phloPrice: _builtins.bytes
+    """phlo price: unsigned 256-bit big-endian, exactly 32 bytes"""
     phloLimit: _builtins.int
     """phlo limit for the deployment"""
     validAfterBlockNumber: _builtins.int
@@ -438,7 +438,7 @@ class DeployDataProto(_message.Message):
         timestamp: _builtins.int = ...,
         sig: _builtins.bytes = ...,
         sigAlgorithm: _builtins.str = ...,
-        phloPrice: _builtins.int = ...,
+        phloPrice: _builtins.bytes = ...,
         phloLimit: _builtins.int = ...,
         validAfterBlockNumber: _builtins.int = ...,
         shardId: _builtins.str = ...,
@@ -805,12 +805,13 @@ class BondProto(_message.Message):
     VALIDATOR_FIELD_NUMBER: _builtins.int
     STAKE_FIELD_NUMBER: _builtins.int
     validator: _builtins.bytes
-    stake: _builtins.int
+    stake: _builtins.bytes
+    """unsigned 256-bit big-endian, exactly 32 bytes"""
     def __init__(
         self,
         *,
         validator: _builtins.bytes = ...,
-        stake: _builtins.int = ...,
+        stake: _builtins.bytes = ...,
     ) -> None: ...
     _ClearFieldArgType: _TypeAlias = _typing.Literal["stake", b"stake", "validator", b"validator"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...

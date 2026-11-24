@@ -1,6 +1,5 @@
 import dataclasses
 import string
-import time
 from typing import Mapping
 
 from .client import F1r3flyClient
@@ -158,9 +157,8 @@ class VaultAPI:
                 'amount': str(amount),
             }
         )
-        timestamp_mill = int(time.time() * 1000)
         return self.client.deploy_with_vabn_filled(
-            key, contract, phlo_price, phlo_limit, timestamp_mill, self.shard_id,
+            key, contract, phlo_price, phlo_limit, shard_id=self.shard_id,
         )
 
     def transfer_ensure(self, from_addr: str, to_addr: str, amount: int, key: PrivateKey,
@@ -178,9 +176,8 @@ class VaultAPI:
                 'amount': str(amount),
             }
         )
-        timestamp_mill = int(time.time() * 1000)
         return self.client.deploy_with_vabn_filled(
-            key, contract, phlo_price, phlo_limit, timestamp_mill, self.shard_id,
+            key, contract, phlo_price, phlo_limit, shard_id=self.shard_id,
         )
 
     def read_transfer_result(self, deploy_id: str, block_hash: str = "") -> TransferResult:
@@ -208,7 +205,6 @@ class VaultAPI:
             CREATE_VAULT_RHO_TPL,
             {'addr': addr},
         )
-        timestamp_mill = int(time.time() * 1000)
         return self.client.deploy_with_vabn_filled(
-            key, contract, phlo_price, phlo_limit, timestamp_mill, self.shard_id,
+            key, contract, phlo_price, phlo_limit, shard_id=self.shard_id,
         )

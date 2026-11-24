@@ -4,6 +4,7 @@ import grpc
 import pytest
 from click.testing import CliRunner
 
+from f1r3fly import token_amount
 from f1r3fly.__main__ import cli
 from f1r3fly.crypto import PrivateKey
 from f1r3fly.pb.CasperMessage_pb2 import DeployDataProto
@@ -85,7 +86,7 @@ def test_sign_deploy(key: PrivateKey, terms: str, phlo_price: int, phlo_limit: i
     data = DeployDataProto(
         deployer=key.get_public_key().to_bytes(),
         term=terms,
-        phloPrice=phlo_price,
+        phloPrice=token_amount.encode(phlo_price),
         phloLimit=phlo_limit,
         validAfterBlockNumber=valid_after_block_no,
         timestamp=timestamp_millis,

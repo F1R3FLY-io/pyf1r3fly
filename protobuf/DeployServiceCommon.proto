@@ -74,6 +74,7 @@ message PrivateNamePreviewQuery {
   bytes  user      = 1; // public key a la DeployData
   int64  timestamp = 2; // millisecond timestamp
   int32  nameQty   = 3; // how many names to preview? (max: 1024)
+  optional int64 validAfterBlockNumber = 4; // the deploy's validAfterBlockNumber; required
 }
 
 message LastFinalizedBlockQuery {
@@ -115,7 +116,8 @@ message ExploratoryDeployQuery{
 
 message BondInfo{
   string validator = 1;
-  int64  stake     = 2;
+  reserved 2;
+  string stake = 3;
 }
 
 message JustificationInfo{
@@ -129,7 +131,8 @@ message DeployInfo{
   int64  timestamp            = 3;
   string  sig                 = 4;
   string sigAlgorithm         = 5;
-  int64 phloPrice             = 7;
+  reserved 7;
+  string phloPrice            = 16;
   int64 phloLimit             = 8;
   int64 validAfterBlockNumber = 9;
   uint64 cost                 = 10;
@@ -265,7 +268,8 @@ message Status {
   string shardId      = 4;
   int32 peers         = 5;
   int32 nodes         = 6;
-  int64 minPhloPrice  = 7;
+  reserved 7;
+  string minPhloPrice = 18;
   repeated PeerInfo peerList         = 8;
   string nativeTokenName             = 9;
   string nativeTokenSymbol           = 10;
