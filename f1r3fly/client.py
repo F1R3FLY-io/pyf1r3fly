@@ -8,6 +8,8 @@ from typing import (
 
 import grpc
 
+from . import token_amount
+from .const import DEFAULT_PHLO_LIMIT
 from .crypto import PrivateKey, PublicKey
 from .par import par_as_int, par_value
 from .param import Params
@@ -114,8 +116,8 @@ class F1r3flyClient:
             self,
             key: PrivateKey,
             term: str,
-            phlo_price: int,
-            phlo_limit: int,
+            phlo_price: Optional[int] = None,
+            phlo_limit: int = DEFAULT_PHLO_LIMIT,
             timestamp_millis: int = -1,
             shard_id: str = '',
     ) -> str:
@@ -154,12 +156,13 @@ class F1r3flyClient:
             self,
             key: PrivateKey,
             term: str,
-            phlo_price: int,
-            phlo_limit: int,
+            phlo_price: Optional[int] = None,
+            phlo_limit: int = DEFAULT_PHLO_LIMIT,
             valid_after_block_no: int = -1,
             timestamp_millis: int = -1,
             shard_id: str = '',
     ) -> str:
+        phlo_price, phlo_limit = self.resolve_deploy_phlo(phlo_price, phlo_limit)
         deploy_data = create_deploy_data(
             key, term, phlo_price, phlo_limit, valid_after_block_no, timestamp_millis, shard_id
         )
@@ -229,6 +232,36 @@ class F1r3flyClient:
         response = self._deploy_stub.status(Empty(), timeout=self.timeout)
         self._check_response(response)
         return response.status
+
+    def resolve_deploy_phlo(self, price: Optional[int], limit: int) -> Tuple[int, int]:
+        """Resolve the price and limit to sign for a deploy on this node.
+
+        An omitted ``price`` becomes the node's exact minimum. An explicit
+        price is kept but must not be below that minimum. A reported
+        ``maxPhloLimit`` caps the requested ``limit``; without one the limit
+        is kept as requested.
+
+        Raises:
+            ValueError: If the limit is not a positive int64, the price is
+                not a valid token amount, the price is below the node's
+                minimum, or the node reports a non-positive limit cap.
+        """
+        if isinstance(limit, bool) or not isinstance(limit, int) or not 0 < limit < 2**63:
+            raise ValueError("Phlo limit must be a positive int64")
+        status = self.status()
+        minimum = max(1, token_amount.parse(status.minPhloPrice))
+        if price is None:
+            price = minimum
+        else:
+            token_amount.encode(price)
+            if price < minimum:
+                raise ValueError(f"Phlo price is below the validator minimum of {minimum}")
+        if status.HasField("maxPhloLimit"):
+            cap = status.maxPhloLimit
+            if cap <= 0:
+                raise ValueError("Validator reported an invalid maximum Phlo limit")
+            limit = min(limit, cap)
+        return price, limit
 
     def bond_status(self, public_key_hex: str) -> bool:
         """Check if a public key is bonded. Returns bool."""

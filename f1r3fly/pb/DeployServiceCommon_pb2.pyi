@@ -910,6 +910,7 @@ class Status(_message.Message):
     ISREADY_FIELD_NUMBER: _builtins.int
     CURRENTEPOCH_FIELD_NUMBER: _builtins.int
     EPOCHLENGTH_FIELD_NUMBER: _builtins.int
+    MAXPHLOLIMIT_FIELD_NUMBER: _builtins.int
     address: _builtins.str
     networkId: _builtins.str
     shardId: _builtins.str
@@ -925,6 +926,7 @@ class Status(_message.Message):
     isReady: _builtins.bool
     currentEpoch: _builtins.int
     epochLength: _builtins.int
+    maxPhloLimit: _builtins.int
     @_builtins.property
     def version(self) -> Global___VersionInfo: ...
     @_builtins.property
@@ -949,10 +951,11 @@ class Status(_message.Message):
         isReady: _builtins.bool = ...,
         currentEpoch: _builtins.int = ...,
         epochLength: _builtins.int = ...,
+        maxPhloLimit: _builtins.int | None = ...,
     ) -> None: ...
-    _HasFieldArgType: _TypeAlias = _typing.Literal["version", b"version"]  # noqa: Y015
+    _HasFieldArgType: _TypeAlias = _typing.Literal["maxPhloLimit", b"maxPhloLimit", "version", b"version"]  # noqa: Y015
     def HasField(self, field_name: _HasFieldArgType) -> _builtins.bool: ...
-    _ClearFieldArgType: _TypeAlias = _typing.Literal["address", b"address", "currentEpoch", b"currentEpoch", "epochLength", b"epochLength", "isReadOnly", b"isReadOnly", "isReady", b"isReady", "isValidator", b"isValidator", "lastFinalizedBlockNumber", b"lastFinalizedBlockNumber", "minPhloPrice", b"minPhloPrice", "nativeTokenDecimals", b"nativeTokenDecimals", "nativeTokenName", b"nativeTokenName", "nativeTokenSymbol", b"nativeTokenSymbol", "networkId", b"networkId", "nodes", b"nodes", "peerList", b"peerList", "peers", b"peers", "shardId", b"shardId", "version", b"version"]  # noqa: Y015
+    _ClearFieldArgType: _TypeAlias = _typing.Literal["address", b"address", "currentEpoch", b"currentEpoch", "epochLength", b"epochLength", "isReadOnly", b"isReadOnly", "isReady", b"isReady", "isValidator", b"isValidator", "lastFinalizedBlockNumber", b"lastFinalizedBlockNumber", "maxPhloLimit", b"maxPhloLimit", "minPhloPrice", b"minPhloPrice", "nativeTokenDecimals", b"nativeTokenDecimals", "nativeTokenName", b"nativeTokenName", "nativeTokenSymbol", b"nativeTokenSymbol", "networkId", b"networkId", "nodes", b"nodes", "peerList", b"peerList", "peers", b"peers", "shardId", b"shardId", "version", b"version"]  # noqa: Y015
     def ClearField(self, field_name: _ClearFieldArgType) -> None: ...
 
 Global___Status: _TypeAlias = Status  # noqa: Y015
