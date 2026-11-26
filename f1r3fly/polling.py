@@ -304,8 +304,10 @@ def deploy_with_fallback(
     """Submit one signed deploy and look for its inclusion across clients.
 
     Polls for inclusion after acceptance or an unknown submission outcome.
-    Fallbacks send the original signed deploy. A refusal that permits resending
-    can fall back after its retry wait, if that wait fits within the timeout.
+    Fallbacks send the original signed deploy. A retryable refusal falls back
+    to another endpoint immediately: its ``retry_after`` describes the queue
+    that refused, not the next queue. After an unknown outcome, inclusion is
+    checked on another client before resending because inclusion is chain-wide.
 
     Args:
         clients: List of F1r3flyClient instances to try.
@@ -341,12 +343,11 @@ def deploy_with_fallback(
     last_refusal: Optional[DeployAdmissionRefused] = None
     unknown_submission: Optional[DeploySubmissionUnknown] = None
     acknowledged = False
-    submitted_client: Optional[F1r3flyClient] = None
+    may_have_been_submitted = False
 
     for i, client in enumerate(clients):
         poll_client = client
         poll_timeout: float = timeout_per_client
-        can_fallback = True
         try:
             client.send_deploy(proto)
         except DeployAdmissionRefused as error:
@@ -354,27 +355,30 @@ def deploy_with_fallback(
             logger.warning("Client %d refused deploy %s", i + 1, error)
             if not error.retryable or i + 1 == len(clients):
                 break
+            if not may_have_been_submitted:
+                # The refusal is specific to this endpoint. Try the next one
+                # now; its retry_after does not apply to a different queue.
+                continue
             if not error.retry_after:
                 continue
-            can_fallback = error.retry_after <= timeout_per_client
-            if submitted_client is None:
-                if not can_fallback:
-                    break
-                time.sleep(error.retry_after)
-                continue
-            poll_client = submitted_client
+            # An earlier attempt may be included. Use the advertised wait to
+            # check inclusion on this reachable endpoint before resending.
             poll_timeout = min(error.retry_after, timeout_per_client)
         except DeploySubmissionUnknown as error:
             if unknown_submission is None:
                 unknown_submission = error
-            submitted_client = client
+            may_have_been_submitted = True
             logger.warning("Client %d returned an unknown outcome: %s", i + 1, error)
+            # The endpoint that lost the response may be down. Inclusion is
+            # chain-wide, so check the next client when there is one.
+            if i + 1 < len(clients):
+                poll_client = clients[i + 1]
         except Exception as error:
             logger.warning("Failed to submit deploy to client %d: %s", i + 1, error)
             continue
         else:
             acknowledged = True
-            submitted_client = client
+            may_have_been_submitted = True
             logger.info(
                 "Deploy %s submitted to client %d/%d",
                 deploy_id[:24], i + 1, len(clients),
@@ -388,8 +392,6 @@ def deploy_with_fallback(
                 "Deploy %s not included while processing client %d within %gs",
                 deploy_id[:24], i + 1, poll_timeout,
             )
-        if not can_fallback:
-            break
 
     if unknown_submission is not None:
         raise unknown_submission

@@ -114,10 +114,14 @@ deploy can be sent again. Other service errors keep `F1r3flyClientException`.
 |---|---|
 | `deploy_pool_busy`, `deploy_admission_busy` | Yes |
 | `invalid_deploy_window` | Yes, once the chain reaches the validity height |
+| `validator_not_bonded` | Yes, send the same signed deploy to a bonded validator while it remains valid |
 | `deploy_too_large`, `deploy_expired` | No, build a new deploy |
+| `seed_reuse` | No, sign a new deploy with a different timestamp; the message names the deploy holding the seed |
 
-A service error saying `Deploy already known` for this signature means the
-node already holds the deploy, so `send_deploy` returns its ID.
+A service error saying exactly `Deploy already known: <signature hex>` for the
+submitted signature means the node already holds the deploy, so `send_deploy`
+returns its ID. A message that merely contains that phrase and signature is
+not treated as acceptance.
 
 A [deploy queue (#990)](https://github.com/F1R3FLY-io/f1r3node-rust/pull/990)
 can serve a validator's client ports. It answers the node's own refusals as
@@ -133,11 +137,12 @@ seconds from the `retry-after` metadata. The queue did not hold the deploy.
 | `UNAVAILABLE` | `node_unavailable`, `deploy_queue_stopped` | none | Yes |
 
 [Node #1123](https://github.com/F1R3FLY-io/f1r3node-rust/pull/1123) adds
-structured gRPC `cause` metadata to queue-full refusals. Once the status and
-message identify a queue-full refusal, `send_deploy` uses this metadata for
-`congestion`. An unfamiliar value leaves `congestion` unset. A missing, empty,
-or undecodable value falls back to the older queue's message. Other
-`RESOURCE_EXHAUSTED` statuses can leave the submission outcome unknown.
+structured gRPC `cause` metadata to queue-full refusals. A recognized cause on
+`RESOURCE_EXHAUSTED` identifies a queue-full refusal even if the message is
+reworded, and `send_deploy` uses it for `congestion`. The message prefix remains
+the fallback for older queues. An unfamiliar value leaves `congestion` unset.
+A missing, empty, or undecodable value falls back to the older queue's message.
+Other `RESOURCE_EXHAUSTED` statuses can leave the submission outcome unknown.
 
 A queue reports `DEPLOY_STATE_REJECTED` (value 5) for a deploy the node refused
 when the queue released it; `wait_for_deploy_finalized` raises `DeployError`
@@ -151,8 +156,10 @@ proto and pass it to `send_deploy`.
 
 `deploy_with_fallback` polls for inclusion by the original ID after an unknown
 submission or acknowledgment. When it falls back to another endpoint, it sends
-the same signed proto. A non-retryable refusal or a retry wait longer than
-`timeout_per_client` stops fallback. The helper honors shorter retry waits
-before trying another endpoint and checks for inclusion during the wait when
-an earlier attempt may have been accepted. If an earlier unknown submission
+the same signed proto. A retryable refusal falls back immediately: its
+`retry_after` describes the queue that refused and is not a wait before a
+different queue. When an earlier attempt may have been accepted, the helper
+uses that wait to check inclusion on a reachable client before resending. After
+an unknown outcome it checks another client, because inclusion is chain-wide.
+A non-retryable refusal stops fallback. If an earlier unknown submission
 remains unresolved, the helper returns that error even after a later refusal.

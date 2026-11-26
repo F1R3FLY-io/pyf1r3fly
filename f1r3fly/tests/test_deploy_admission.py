@@ -23,7 +23,8 @@ from f1r3fly.util import create_deploy_data
 
 @contextmanager
 def submission_client(message=None, status=None, missing=False, details=None,
-                      retry_after=None, cause=None, inclusion_height=None):
+                      retry_after=None, cause=None, inclusion_height=None,
+                      inclusion_global=False):
     seen = []
 
     class Service(DeployServiceServicer):
@@ -45,8 +46,11 @@ def submission_client(message=None, status=None, missing=False, details=None,
             return DeployResponse(result=request.sig.hex())
 
         def findDeploy(self, request, context):
-            if inclusion_height is not None and any(
-                DeployDataProto.FromString(payload).sig == request.deployId for payload in seen
+            if inclusion_height is not None and (
+                inclusion_global or any(
+                    DeployDataProto.FromString(payload).sig == request.deployId
+                    for payload in seen
+                )
             ):
                 return FindDeployResponse(blockInfo=LightBlockInfo(blockNumber=inclusion_height))
             return FindDeployResponse(error=ServiceError(messages=["Deploy not found"]))
@@ -128,6 +132,7 @@ def test_other_node_refusal_codes_are_classified(signed, code, retryable):
             client.send_deploy(signed)
         assert caught.value.code == code
         assert caught.value.retryable is retryable
+        assert caught.value.deploy_id == signed.sig.hex()
         assert caught.value.retry_after is None
         assert len(seen) == 1
 
@@ -137,6 +142,37 @@ def test_node_busy_refusals_allow_the_same_deploy(signed):
         with pytest.raises(DeployAdmissionRefused) as caught:
             client.send_deploy(signed)
         assert caught.value.retryable is True
+
+
+def test_seed_reuse_keeps_the_submitted_id_and_needs_a_new_signature(signed):
+    holder = "ab" * 32
+    message = (
+        f"seed_reuse: deploy {holder} has the same deployer, timestamp and "
+        "valid-after block, so it would create the same names. Sign this "
+        "deploy with a different timestamp."
+    )
+    with submission_client(message=message) as (client, seen):
+        with pytest.raises(DeployAdmissionRefused) as caught:
+            client.send_deploy(signed)
+        assert caught.value.code == "seed_reuse"
+        assert caught.value.retryable is False
+        assert caught.value.deploy_id == signed.sig.hex()
+        assert caught.value.deploy_id != holder
+        assert holder in str(caught.value)
+        assert len(seen) == 1
+
+
+def test_validator_not_bonded_keeps_the_submitted_id_and_allows_a_bonded_node(signed):
+    message = (
+        "validator_not_bonded: Deploy was rejected because node's validator "
+        "is not bonded."
+    )
+    with submission_client(message=message) as (client, _):
+        with pytest.raises(DeployAdmissionRefused) as caught:
+            client.send_deploy(signed)
+        assert caught.value.code == "validator_not_bonded"
+        assert caught.value.retryable is True
+        assert caught.value.deploy_id == signed.sig.hex()
 
 
 @pytest.mark.parametrize("details,congestion,retryable", [
@@ -172,6 +208,8 @@ def test_full_deploy_queue_is_a_refusal_with_wait_and_cause(signed, details, con
     ("validator_idle", "deploy queue is full for this deployer", "validator_idle", False),
     ("shard", "deploy queue is full for this deployer", "shard", False),
     ("storage", "deploy queue is full for this deployer", "storage", False),
+    ("shard", "capacity exhausted for this deploy", "shard", False),
+    ("deployer_share", "capacity exhausted for this deploy", "deployer_share", True),
     ("new_cause", "deploy queue is full for this deployer", None, False),
     ("", "deploy queue is full for this deployer", "deployer_share", True),
     (None, "deploy queue is full: newly worded reason", None, False),
@@ -228,13 +266,14 @@ def test_unavailable_deploy_queue_is_a_retryable_refusal(signed, details, code, 
         assert caught.value.retry_after == (float(retry_after) if retry_after else None)
 
 
-@pytest.mark.parametrize("status,details", [
-    (grpc.StatusCode.RESOURCE_EXHAUSTED, "message length too large"),
-    (grpc.StatusCode.INTERNAL, "queue store failed"),
-    (grpc.StatusCode.UNKNOWN, "deploy queue is full: the shard's finality"),
+@pytest.mark.parametrize("status,details,cause", [
+    (grpc.StatusCode.RESOURCE_EXHAUSTED, "message length too large", None),
+    (grpc.StatusCode.RESOURCE_EXHAUSTED, "capacity exhausted for this deploy", "new_cause"),
+    (grpc.StatusCode.INTERNAL, "queue store failed", "deployer_share"),
+    (grpc.StatusCode.UNKNOWN, "deploy queue is full: the shard's finality", "deployer_share"),
 ])
-def test_other_rpc_statuses_stay_unknown(signed, status, details):
-    with submission_client(status=status, details=details, cause="deployer_share",
+def test_other_rpc_statuses_stay_unknown(signed, status, details, cause):
+    with submission_client(status=status, details=details, cause=cause,
                            retry_after="12") as (client, _):
         with pytest.raises(DeploySubmissionUnknown) as caught:
             client.send_deploy(signed)
@@ -255,6 +294,21 @@ def test_another_deploy_already_known_is_not_acceptance(signed):
         assert type(caught.value) is F1r3flyClientException
 
 
+def test_an_already_known_phrase_with_a_suffix_is_not_acceptance(signed):
+    message = "Deploy already known: " + signed.sig.hex() + " (unexpected suffix)"
+    with submission_client(message=message) as (client, _):
+        with pytest.raises(F1r3flyClientException) as caught:
+            client.send_deploy(signed)
+        assert type(caught.value) is F1r3flyClientException
+
+
+def test_an_empty_signature_is_not_acceptance():
+    with submission_client(message="Deploy already known: ") as (client, _):
+        with pytest.raises(F1r3flyClientException) as caught:
+            client.send_deploy(DeployDataProto())
+        assert type(caught.value) is F1r3flyClientException
+
+
 @pytest.fixture
 def fallback_clock(monkeypatch):
     class Clock:
@@ -271,42 +325,39 @@ def fallback_clock(monkeypatch):
     return clock
 
 
-@pytest.mark.parametrize("cause,retry_after,timeout", [
-    ("storage", "1", 5),
-    ("future_cause", "1", 5),
-    ("deployer_share", "12", 5),
-])
-def test_fallback_surfaces_refusal_when_it_cannot_resend(cause, retry_after, timeout):
+@pytest.mark.parametrize("cause", ["storage", "future_cause"])
+def test_fallback_surfaces_non_retryable_refusal(cause):
     with (
         submission_client(status=grpc.StatusCode.RESOURCE_EXHAUSTED, cause=cause,
                           details="deploy queue is full for this deployer",
-                          retry_after=retry_after) as (first, sent_first),
+                          retry_after="1") as (first, sent_first),
         submission_client(inclusion_height=7) as (second, sent_second),
     ):
         with pytest.raises(DeployAdmissionRefused) as caught:
             polling.deploy_with_fallback(
-                [first, second], "Nil", PrivateKey.generate(), timeout, valid_after_block_no=1,
+                [first, second], "Nil", PrivateKey.generate(), 5, valid_after_block_no=1,
             )
         assert caught.value.code == "deploy_queue_full"
-        assert caught.value.retry_after == float(retry_after)
+        assert caught.value.retryable is False
+        assert caught.value.retry_after == 1.0
         assert caught.value.deploy_id == DeployDataProto.FromString(sent_first[0]).sig.hex()
         assert len(sent_first) == 1
         assert sent_second == []
 
 
-def test_fallback_waits_before_resending_same_bytes(fallback_clock, monkeypatch):
+def test_fallback_tries_another_endpoint_without_the_refused_queue_wait(fallback_clock, monkeypatch):
     with (
         submission_client(status=grpc.StatusCode.RESOURCE_EXHAUSTED, cause="deployer_share",
-                          details="deploy queue is full: refusal", retry_after="2") as (first, sent_first),
+                          details="deploy queue is full: refusal", retry_after="12") as (first, sent_first),
         submission_client(inclusion_height=7) as (second, sent_second),
     ):
         send_deploy = second.send_deploy
 
-        def send_after_wait(proto):
-            assert fallback_clock.now == 2
+        def send_immediately(proto):
+            assert fallback_clock.now == 0
             return send_deploy(proto)
 
-        monkeypatch.setattr(second, "send_deploy", send_after_wait)
+        monkeypatch.setattr(second, "send_deploy", send_immediately)
         deploy_id, block = polling.deploy_with_fallback(
             [first, second], "Nil", PrivateKey.generate(), 5, valid_after_block_no=1,
         )
@@ -316,17 +367,52 @@ def test_fallback_waits_before_resending_same_bytes(fallback_clock, monkeypatch)
         assert block.blockNumber == 7
 
 
-def test_fallback_reconciles_unknown_submission_before_resending():
+def test_fallback_resends_validator_not_bonded_to_another_client():
+    message = "validator_not_bonded: Deploy was rejected because node's validator is not bonded."
     with (
-        submission_client(status=grpc.StatusCode.DEADLINE_EXCEEDED, inclusion_height=7) as (first, sent_first),
-        submission_client() as (second, sent_second),
+        submission_client(message=message) as (first, sent_first),
+        submission_client(inclusion_height=7) as (second, sent_second),
     ):
         deploy_id, block = polling.deploy_with_fallback(
             [first, second], "Nil", PrivateKey.generate(), 5, valid_after_block_no=1,
         )
         assert deploy_id == DeployDataProto.FromString(sent_first[0]).sig.hex()
         assert block.blockNumber == 7
+        assert sent_second == sent_first
+
+
+def test_fallback_stops_on_seed_reuse():
+    holder = "ab" * 32
+    message = f"seed_reuse: deploy {holder} has the same deployer and timestamp."
+    with (
+        submission_client(message=message) as (first, sent_first),
+        submission_client(inclusion_height=7) as (second, sent_second),
+    ):
+        with pytest.raises(DeployAdmissionRefused) as caught:
+            polling.deploy_with_fallback(
+                [first, second], "Nil", PrivateKey.generate(), 5, valid_after_block_no=1,
+            )
+        assert caught.value.code == "seed_reuse"
+        assert caught.value.retryable is False
+        assert caught.value.deploy_id == DeployDataProto.FromString(sent_first[0]).sig.hex()
+        assert caught.value.deploy_id != holder
         assert sent_second == []
+
+
+def test_fallback_polls_another_client_after_unknown(monkeypatch):
+    with (
+        submission_client(status=grpc.StatusCode.DEADLINE_EXCEEDED) as (first, sent_first),
+        submission_client(inclusion_height=7, inclusion_global=True) as (second, sent_second),
+    ):
+        first_find = []
+        monkeypatch.setattr(first, "find_deploy", lambda deploy_id: first_find.append(deploy_id))
+        deploy_id, block = polling.deploy_with_fallback(
+            [first, second], "Nil", PrivateKey.generate(), 5, valid_after_block_no=1,
+        )
+        assert deploy_id == DeployDataProto.FromString(sent_first[0]).sig.hex()
+        assert block.blockNumber == 7
+        assert sent_second == []
+        assert first_find == []
 
 
 def test_fallback_preserves_unknown_outcome_after_later_refusal(fallback_clock):
@@ -346,27 +432,36 @@ def test_fallback_preserves_unknown_outcome_after_later_refusal(fallback_clock):
         assert sent_third == []
 
 
-def test_fallback_checks_prior_submission_during_retry_wait(fallback_clock, monkeypatch):
+def test_fallback_checks_inclusion_during_retry_wait_on_a_reachable_client(
+    fallback_clock, monkeypatch,
+):
     with (
         submission_client(status=grpc.StatusCode.DEADLINE_EXCEEDED) as (first, sent_first),
         submission_client(status=grpc.StatusCode.RESOURCE_EXHAUSTED, cause="deployer_share",
                           details="deploy queue is full: refusal", retry_after="2") as (second, sent_second),
         submission_client() as (third, sent_third),
     ):
-        def find_after_first_timeout(deploy_id):
+        first_find = []
+        monkeypatch.setattr(first, "find_deploy", lambda deploy_id: first_find.append(deploy_id))
+        second_find = []
+
+        def find_on_second(deploy_id):
             assert deploy_id == DeployDataProto.FromString(sent_first[0]).sig.hex()
-            if fallback_clock.now < 2:
+            second_find.append(fallback_clock.now)
+            if len(second_find) < 2:
                 raise F1r3flyClientException("Deploy not found")
             return LightBlockInfo(blockNumber=7)
 
-        monkeypatch.setattr(first, "find_deploy", find_after_first_timeout)
+        monkeypatch.setattr(second, "find_deploy", find_on_second)
         deploy_id, block = polling.deploy_with_fallback(
             [first, second, third], "Nil", PrivateKey.generate(), 2, valid_after_block_no=1,
         )
         assert deploy_id == DeployDataProto.FromString(sent_first[0]).sig.hex()
         assert block.blockNumber == 7
+        assert second_find == [0.0, 2.0]
         assert sent_second == sent_first
         assert sent_third == []
+        assert first_find == []
 
 
 def test_fallback_preserves_acknowledged_submission_after_later_refusal(fallback_clock):
