@@ -115,7 +115,7 @@ class VaultAPI:
         private_key: PrivateKey,
         inclusion_timeout: int,
         finalization_timeout: int,
-        phlo_price: int = TRANSFER_PHLO_PRICE,
+        phlo_price: int | None = None,
         phlo_limit: int = TRANSFER_PHLO_LIMIT,
     ) -> int:
         """Query vault balance via a real deploy (works on any node).
@@ -139,7 +139,7 @@ class VaultAPI:
         return par_as_int(pars[0])
 
     def transfer(self, from_addr: str, to_addr: str, amount: int, key: PrivateKey,
-                 phlo_price: int = TRANSFER_PHLO_PRICE,
+                 phlo_price: int | None = None,
                  phlo_limit: int = TRANSFER_PHLO_LIMIT) -> str:
         """Transfer tokens from one vault to another. Returns the deploy ID.
 
@@ -162,7 +162,7 @@ class VaultAPI:
         )
 
     def transfer_ensure(self, from_addr: str, to_addr: str, amount: int, key: PrivateKey,
-                        phlo_price: int = TRANSFER_PHLO_PRICE,
+                        phlo_price: int | None = None,
                         phlo_limit: int = TRANSFER_PHLO_LIMIT) -> str:
         """Transfer tokens, creating the recipient vault if needed. Returns the deploy ID.
 
@@ -199,7 +199,7 @@ class VaultAPI:
             return TransferResult(deploy_id=deploy_id, success=False, reason=f"unexpected data: {par}")
 
     def create_vault(self, addr: str, key: PrivateKey,
-                     phlo_price: int = TRANSFER_PHLO_PRICE,
+                     phlo_price: int | None = None,
                      phlo_limit: int = TRANSFER_PHLO_LIMIT) -> str:
         contract = render_contract_template(
             CREATE_VAULT_RHO_TPL,

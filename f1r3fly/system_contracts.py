@@ -90,7 +90,7 @@ def deploy_query_token_metadata(
     inclusion_timeout: int,
     finalization_timeout: int,
     phlo_limit: int = 100_000,
-    phlo_price: int = 1,
+    phlo_price: int | None = None,
     shard_id: str = "root",
 ) -> TokenMetadata:
     """Query all native token metadata via a real deploy.

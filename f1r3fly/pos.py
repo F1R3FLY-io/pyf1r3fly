@@ -158,7 +158,7 @@ class PosAPI:
     # ── Mutating deploys (signed by the acting validator's key) ──────────
 
     def bond(self, key: PrivateKey, amount: int,
-             phlo_price: int = BOND_PHLO_PRICE,
+             phlo_price: int | None = None,
              phlo_limit: int = BOND_PHLO_LIMIT) -> str:
         """Bond ``amount`` for the validator identified by ``key``. Returns the
         deploy ID.
@@ -174,7 +174,7 @@ class PosAPI:
         )
 
     def withdraw(self, key: PrivateKey,
-                 phlo_price: int = BOND_PHLO_PRICE,
+                 phlo_price: int | None = None,
                  phlo_limit: int = BOND_PHLO_LIMIT) -> str:
         """Withdraw (unbond) the validator identified by ``key``. Returns the
         deploy ID.
@@ -188,7 +188,7 @@ class PosAPI:
         )
 
     def commit_random_image(self, key: PrivateKey, image_hex: str,
-                            phlo_price: int = BOND_PHLO_PRICE,
+                            phlo_price: int | None = None,
                             phlo_limit: int = BOND_PHLO_LIMIT) -> str:
         """Commit the keccak256 ``image_hex`` (hex, no ``0x``) for the validator
         identified by ``key``. Read the ack with :meth:`read_result`."""
@@ -198,7 +198,7 @@ class PosAPI:
         )
 
     def reveal_random(self, key: PrivateKey, random_hex: str,
-                      phlo_price: int = BOND_PHLO_PRICE,
+                      phlo_price: int | None = None,
                       phlo_limit: int = BOND_PHLO_LIMIT) -> str:
         """Reveal the ``random_hex`` (hex, no ``0x``) preimage for the validator
         identified by ``key``. The contract keccak256-hashes it and compares to the
@@ -209,7 +209,7 @@ class PosAPI:
         )
 
     def pos_vault_transfer(self, key: PrivateKey, target_address: str, amount: int,
-                           phlo_price: int = BOND_PHLO_PRICE,
+                           phlo_price: int | None = None,
                            phlo_limit: int = BOND_PHLO_LIMIT) -> str:
         """Request a posVault transfer of ``amount`` to ``target_address``, signed by
         ``key``. Only the PoS contract key is authorized; any other deployer gets
@@ -221,7 +221,7 @@ class PosAPI:
         )
 
     def call_auth_gated_invalid_token(self, key: PrivateKey, method: str,
-                                      phlo_price: int = BOND_PHLO_PRICE,
+                                      phlo_price: int | None = None,
                                       phlo_limit: int = BOND_PHLO_LIMIT) -> str:
         """Invoke an auth-token-gated system method (``chargeDeploy`` / ``refundDeploy`` /
         ``closeBlock``) with a bogus token (Nil), driving the "Invalid system auth token"

@@ -280,6 +280,7 @@ message Status {
   bool   isReady                     = 15;
   int64  currentEpoch                = 16;
   int32  epochLength                 = 17;
+  optional int64 maxPhloLimit        = 23;
 }
 
 message VersionInfo {

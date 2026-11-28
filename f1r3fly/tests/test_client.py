@@ -3,24 +3,24 @@ from concurrent import futures
 from contextlib import contextmanager
 from pathlib import Path
 from types import SimpleNamespace
-from typing import Generator, Iterator, List, Tuple, Union
+from typing import Generator, Iterator, List, Optional, Tuple, Union
 
 import grpc
 import pytest
 
-from f1r3fly import util
+from f1r3fly import token_amount, util
 from f1r3fly.client import F1r3flyClient
 from f1r3fly.crypto import PrivateKey
 from f1r3fly.pb.CasperMessage_pb2 import DeployDataProto
 from f1r3fly.pb.DeployServiceCommon_pb2 import (
     BlockInfo, BlockQuery, BlocksQuery, BondInfo, DeployInfo, FindDeployQuery,
-    IsFinalizedQuery, LastFinalizedBlockQuery, LightBlockInfo,
+    IsFinalizedQuery, LastFinalizedBlockQuery, LightBlockInfo, Status,
 )
 from f1r3fly.pb.DeployServiceV1_pb2 import (
     BlockInfoResponse, BlockResponse, DeployResponse, FileDownloadChunk,
     FileDownloadMetadata, FileDownloadRequest, FileUploadMetadata,
     FileUploadResponse, FileUploadResult, FindDeployResponse,
-    IsFinalizedResponse, LastFinalizedBlockResponse,
+    IsFinalizedResponse, LastFinalizedBlockResponse, StatusResponse,
 )
 from f1r3fly.pb.DeployServiceV1_pb2_grpc import (
     DeployServiceServicer, add_DeployServiceServicer_to_server,
@@ -43,11 +43,13 @@ def deploy_service(deploy_service: Union[DeployServiceServicer, ProposeServiceSe
         add_DeployServiceServicer_to_server(deploy_service, server)
     if isinstance(deploy_service, ProposeServiceServicer):
         add_ProposeServiceServicer_to_server(deploy_service, server)
-    port = server.add_insecure_port("0.0.0.0:9766")
+    port = server.add_insecure_port("0.0.0.0:0")
     assert port != 0
     server.start()
-    yield server, port
-    server.stop(0)
+    try:
+        yield server, port
+    finally:
+        server.stop(0)
 
 
 TEST_HOST = '127.0.0.1'
@@ -67,6 +69,9 @@ def test_client_deploy(key: PrivateKey, terms: str, phlo_price: int, phlo_limit:
             received.append(request)
             return DeployResponse(result=request.sig.hex())
 
+        def status(self, request: object, context: grpc.ServicerContext) -> StatusResponse:
+            return StatusResponse(status=Status(minPhloPrice='1'))
+
     with deploy_service(DummyDeploySerivce()) as (server, port), \
             F1r3flyClient(TEST_HOST, port) as client:
         ret = client.deploy(key, terms, phlo_price, phlo_limit, valid_after_block_no, timestamp_millis)
@@ -85,6 +90,96 @@ def test_client_deploy(key: PrivateKey, terms: str, phlo_price: int, phlo_limit:
                 range(8),
             ))
         assert len({deploy.timestamp for deploy in received[1:]}) == 8
+
+
+class StubDeployService(DeployServiceServicer):
+    """Records deploys and reports a configurable node status."""
+
+    def __init__(
+        self,
+        min_phlo_price: str = '1',
+        max_phlo_limit: Optional[int] = None,
+        block_number: int = 1,
+    ) -> None:
+        self.min_phlo_price = min_phlo_price
+        self.max_phlo_limit = max_phlo_limit
+        self.block_number = block_number
+        self.deploys: List[DeployDataProto] = []
+
+    def doDeploy(self, request: DeployDataProto, context: grpc.ServicerContext) -> DeployResponse:
+        self.deploys.append(request)
+        return DeployResponse(result=request.sig.hex())
+
+    def status(self, request: object, context: grpc.ServicerContext) -> StatusResponse:
+        status = Status(minPhloPrice=self.min_phlo_price)
+        if self.max_phlo_limit is not None:
+            status.maxPhloLimit = self.max_phlo_limit
+        return StatusResponse(status=status)
+
+    def getBlocks(self, request: BlocksQuery, context: grpc.ServicerContext) -> Generator[
+            BlockInfoResponse, None, None]:
+        yield BlockInfoResponse(blockInfo=LightBlockInfo(blockNumber=self.block_number))
+
+
+def test_deploy_defaults_to_validator_minimum_price() -> None:
+    service = StubDeployService(min_phlo_price='100000000000')
+    with deploy_service(service) as (server, port), \
+            F1r3flyClient(TEST_HOST, port) as client:
+        client.deploy(key, '@0!(1)', phlo_limit=100_000)
+
+    assert token_amount.decode(service.deploys[0].phloPrice) == 100_000_000_000
+    assert service.deploys[0].phloLimit == 100_000
+
+
+def test_deploy_with_vabn_filled_defaults_to_validator_minimum_price() -> None:
+    service = StubDeployService(min_phlo_price='42', block_number=7)
+    with deploy_service(service) as (server, port), \
+            F1r3flyClient(TEST_HOST, port) as client:
+        client.deploy_with_vabn_filled(key, '@0!(1)')
+
+    assert token_amount.decode(service.deploys[0].phloPrice) == 42
+    assert service.deploys[0].validAfterBlockNumber == 7
+
+
+def test_deploy_rejects_price_below_validator_minimum() -> None:
+    service = StubDeployService(min_phlo_price='42')
+    with deploy_service(service) as (server, port), \
+            F1r3flyClient(TEST_HOST, port) as client:
+        with pytest.raises(ValueError, match='below the validator minimum of 42'):
+            client.deploy(key, '@0!(1)', phlo_price=41)
+
+    assert service.deploys == []
+
+
+def test_deploy_caps_limit_at_validator_maximum() -> None:
+    service = StubDeployService(min_phlo_price='1', max_phlo_limit=20_000_000)
+    with deploy_service(service) as (server, port), \
+            F1r3flyClient(TEST_HOST, port) as client:
+        client.deploy(key, '@0!(1)', phlo_price=1, phlo_limit=100_000_000)
+
+    assert token_amount.decode(service.deploys[0].phloPrice) == 1
+    assert service.deploys[0].phloLimit == 20_000_000
+
+
+def test_deploy_keeps_requested_limit_without_validator_cap() -> None:
+    service = StubDeployService(min_phlo_price='1')
+    with deploy_service(service) as (server, port), \
+            F1r3flyClient(TEST_HOST, port) as client:
+        client.deploy(key, '@0!(1)', phlo_price=7, phlo_limit=50_000)
+
+    assert token_amount.decode(service.deploys[0].phloPrice) == 7
+    assert service.deploys[0].phloLimit == 50_000
+
+
+@pytest.mark.parametrize('cap', [0, -1])
+def test_deploy_rejects_invalid_validator_limit_cap(cap: int) -> None:
+    service = StubDeployService(min_phlo_price='1', max_phlo_limit=cap)
+    with deploy_service(service) as (server, port), \
+            F1r3flyClient(TEST_HOST, port) as client:
+        with pytest.raises(ValueError, match='invalid maximum Phlo limit'):
+            client.deploy(key, '@0!(1)', phlo_price=1, phlo_limit=50_000)
+
+    assert service.deploys == []
 
 
 def test_client_show_block() -> None:

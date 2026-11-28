@@ -212,7 +212,7 @@ def deploy_and_read(
     inclusion_timeout: int,
     finalization_timeout: int,
     phlo_limit: int = 100_000,
-    phlo_price: int = 1,
+    phlo_price: Optional[int] = None,
     shard_id: str = "root",
 ) -> tuple:
     """Deploy Rholang code, wait for canonical-state finalization, read deployId channel.
@@ -235,7 +235,7 @@ def deploy_and_read(
         inclusion_timeout: Seconds to wait for first block inclusion.
         finalization_timeout: Seconds to wait for canonical-state finalization.
         phlo_limit: Maximum phlo to spend.
-        phlo_price: Phlo price per unit.
+        phlo_price: Phlo price per unit, defaulting to the validator minimum.
         shard_id: Target shard identifier.
 
     Returns:
@@ -297,7 +297,7 @@ def deploy_with_fallback(
     private_key: PrivateKey,
     timeout_per_client: int,
     phlo_limit: int = 100_000,
-    phlo_price: int = 1,
+    phlo_price: Optional[int] = None,
     valid_after_block_no: Optional[int] = None,
     shard_id: str = "root",
 ) -> tuple:
@@ -315,7 +315,7 @@ def deploy_with_fallback(
         private_key: PrivateKey for signing.
         timeout_per_client: Seconds to wait for inclusion or a retry on each client.
         phlo_limit: Maximum phlo to spend.
-        phlo_price: Phlo price per unit.
+        phlo_price: Phlo price per unit, defaulting to the first validator minimum.
         valid_after_block_no: If None, auto-filled from the first client.
         shard_id: Target shard identifier.
 
@@ -335,6 +335,7 @@ def deploy_with_fallback(
         blocks = clients[0].show_blocks(1)
         valid_after_block_no = blocks[0].blockNumber if blocks else 0
 
+    phlo_price, phlo_limit = clients[0].resolve_deploy_phlo(phlo_price, phlo_limit)
     proto = create_deploy_data(
         private_key, term, phlo_price, phlo_limit,
         valid_after_block_no, shard_id=shard_id,
