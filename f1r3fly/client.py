@@ -3,7 +3,7 @@ import os
 import re
 from types import TracebackType
 from typing import (
-    Any, Iterable, Iterator, List, Optional, Tuple, Type, TypeVar, Union,
+    Any, Dict, Iterable, Iterator, List, Optional, Tuple, Type, TypeVar, Union,
 )
 
 import grpc
@@ -58,6 +58,156 @@ class F1r3flyClientException(Exception):
 
     def __init__(self, message: str) -> None:
         super().__init__(message)
+
+
+#: Node service-error codes (node #789) and whether the same signed deploy
+#: can be sent again later. ``seed_reuse`` needs a new timestamp and signature;
+#: ``validator_not_bonded`` can go to a bonded validator while it is valid.
+NODE_REFUSAL_CODES: Dict[str, bool] = {
+    'deploy_pool_busy': True,
+    'deploy_admission_busy': True,
+    'invalid_deploy_window': True,
+    'validator_not_bonded': True,
+    'deploy_too_large': False,
+    'deploy_expired': False,
+    'seed_reuse': False,
+}
+
+#: A deploy queue's full-queue message prefixes and their legacy congestion
+#: causes (node #990). The queue did not hold the deploy.
+_QUEUE_FULL_PREFIXES = (
+    ('deploy queue is full for this deployer', 'deployer_share'),
+    ('deploy queue is full: the validator has created no block', 'validator_idle'),
+    ('deploy queue is full: the validator is taking fewer deploys', 'validator'),
+    ("deploy queue is full: the shard's finality", 'shard'),
+    ('deploy queue is full: the signed deploys the queue holds', 'storage'),
+    ('deploy queue is full:', None),
+)
+
+#: A deploy queue's availability refusals (node #990): message prefix and code.
+_QUEUE_UNAVAILABLE = (
+    ('deploy queue is not connected to its node', 'node_unavailable'),
+    ('deploy queue is shutting down', 'deploy_queue_stopped'),
+)
+
+_QUEUE_CONGESTION_CAUSES = frozenset({
+    'validator', 'validator_idle', 'shard', 'storage', 'deployer_share',
+})
+
+_QUEUE_FULL_CODE = 'deploy_queue_full'
+
+_ALREADY_KNOWN_PREFIX = 'Deploy already known: '
+
+
+class DeployAdmissionRefused(F1r3flyClientException):
+    """The node or its deploy queue explicitly did not accept this deploy.
+
+    ``retryable`` says whether the same signed deploy can be sent again,
+    after ``retry_after`` seconds when the deploy queue gave a wait.
+    ``seed_reuse`` is not retryable: it needs a new timestamp and signature.
+    ``validator_not_bonded`` is retryable on a bonded validator while the
+    deploy remains valid. A full deploy queue reports ``congestion`` as
+    ``validator``, ``validator_idle``, ``shard``, ``storage``,
+    ``deployer_share`` or ``None`` if the cause is unavailable or
+    unrecognized. Of these, only ``deployer_share`` permits resending the
+    same signed deploy.
+
+    ``deploy_id`` is always the submitted deploy's signature. For
+    ``seed_reuse``, the message names the other deploy that holds the seed.
+    """
+
+    def __init__(
+        self,
+        deploy_id: str,
+        code: str,
+        message: str,
+        retryable: Optional[bool] = None,
+        retry_after: Optional[float] = None,
+        congestion: Optional[str] = None,
+    ) -> None:
+        self.deploy_id = deploy_id
+        self.code = code
+        self.retryable = NODE_REFUSAL_CODES.get(code, False) if retryable is None else retryable
+        self.retry_after = retry_after
+        self.congestion = congestion
+        super().__init__(
+            f"Deploy {deploy_id} not accepted ({code}): {message}"
+        )
+
+
+def _retry_after(trailers: Tuple[Tuple[str, Union[str, bytes]], ...]) -> Optional[float]:
+    for key, value in trailers:
+        if key == 'retry-after':
+            text = value.decode('ascii', errors='replace') if isinstance(value, bytes) else value
+            seconds = text.strip()
+            if seconds.isascii() and seconds.isdigit():
+                return float(seconds)
+    return None
+
+
+def _queue_cause(
+    trailers: Tuple[Tuple[str, Union[str, bytes]], ...]
+) -> Tuple[bool, Optional[str]]:
+    """Return whether a usable ``cause`` trailer is present and its value.
+
+    A present but unrecognized cause returns ``(True, None)`` so it still
+    overrides the legacy message. Missing, empty or undecodable values return
+    ``(False, None)`` so the message remains authoritative.
+    """
+    for key, value in trailers:
+        if key != 'cause' or not value or not value.isascii():
+            continue
+        cause = value.decode('ascii') if isinstance(value, bytes) else value
+        if cause.isprintable():
+            return True, cause if cause in _QUEUE_CONGESTION_CAUSES else None
+    return False, None
+
+
+def _queue_refusal(deploy_id: str, error: grpc.RpcError) -> Optional[DeployAdmissionRefused]:
+    code_fn = getattr(error, 'code', None)
+    details_fn = getattr(error, 'details', None)
+    if not callable(code_fn) or not callable(details_fn):
+        return None
+    status, details = code_fn(), details_fn() or ''
+    metadata_fn = getattr(error, 'trailing_metadata', None)
+    trailers = tuple((metadata_fn() if callable(metadata_fn) else None) or ())
+
+    if status == grpc.StatusCode.RESOURCE_EXHAUSTED:
+        cause_present, cause = _queue_cause(trailers)
+        if cause is not None:
+            # A recognized structured cause (node #1123) identifies a
+            # queue-full refusal even if the queue rewords its message.
+            return DeployAdmissionRefused(
+                deploy_id, _QUEUE_FULL_CODE, details,
+                cause == 'deployer_share', _retry_after(trailers), cause,
+            )
+        for prefix, legacy_congestion in _QUEUE_FULL_PREFIXES:
+            if details.startswith(prefix):
+                congestion = None if cause_present else legacy_congestion
+                return DeployAdmissionRefused(
+                    deploy_id, _QUEUE_FULL_CODE, details,
+                    congestion == 'deployer_share',
+                    _retry_after(trailers), congestion,
+                )
+        return None
+
+    if status == grpc.StatusCode.UNAVAILABLE:
+        for prefix, code in _QUEUE_UNAVAILABLE:
+            if details.startswith(prefix):
+                return DeployAdmissionRefused(
+                    deploy_id, code, details, True, _retry_after(trailers), None,
+                )
+    return None
+
+
+class DeploySubmissionUnknown(F1r3flyClientException):
+    """A lost RPC response may follow admission; reconcile this deploy ID."""
+
+    def __init__(self, deploy_id: str, message: str) -> None:
+        self.deploy_id = deploy_id
+        super().__init__(
+            f"Deploy {deploy_id} submission outcome unknown: {message}"
+        )
 
 
 class DataQueries:
@@ -166,10 +316,31 @@ class F1r3flyClient:
         return self.send_deploy(deploy_data)
 
     def send_deploy(self, deploy: DeployDataProto) -> str:
-        response = self._deploy_stub.doDeploy(deploy, timeout=self.timeout)
+        deploy_id = deploy.sig.hex()
+        try:
+            response = self._deploy_stub.doDeploy(deploy, timeout=self.timeout)
+        except grpc.RpcError as error:
+            refusal = _queue_refusal(deploy_id, error)
+            if refusal is not None:
+                raise refusal from error
+            raise DeploySubmissionUnknown(deploy_id, str(error)) from error
+        if response.WhichOneof("message") == 'error':
+            messages = list(response.error.messages)
+            if len(messages) == 1:
+                message = messages[0]
+                code = message.partition(':')[0].strip()
+                if code in NODE_REFUSAL_CODES:
+                    raise DeployAdmissionRefused(deploy_id, code, message)
+                # The node or its deploy queue already holds this signed deploy.
+                # Match the complete sentence, not a message that happens to
+                # contain both the phrase and this signature.
+                if deploy_id and message == _ALREADY_KNOWN_PREFIX + deploy_id:
+                    return deploy_id
         self._check_response(response)
-        # sig of deploy data is deployId
-        return deploy.sig.hex()
+        if response.WhichOneof("message") != 'result':
+            raise DeploySubmissionUnknown(deploy_id, "missing deploy response")
+        # The signature identifies the original signed deploy; never re-sign here.
+        return deploy_id
 
     def show_block(self, block_hash: str) -> BlockInfo:
         block_query = BlockQuery(hash=block_hash)
@@ -211,7 +382,8 @@ class F1r3flyClient:
 
         Returns a ``DeployFinalizationStatusInfo`` with:
           - ``state``: ``DeployFinalizationStateProto`` enum
-            (``DEPLOY_STATE_FINALIZED`` / ``FAILED`` / ``PENDING`` / ``EXPIRED``)
+            (``DEPLOY_STATE_FINALIZED`` / ``FAILED`` / ``PENDING`` / ``EXPIRED``,
+            or value 5, ``REJECTED``, from a deploy queue)
           - ``rejectionCount``: number of times this deploy was rejected during
             merges (monotonically increases, carries through to terminal states)
           - ``latestBlockHash``: bytes of the most recent canonical block

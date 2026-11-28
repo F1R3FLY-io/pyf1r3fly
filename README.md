@@ -101,3 +101,65 @@ corresponding to the protcol buffers into `f1r3fly.pb` package (`./f1r3fly/pb`).
 	python -m pytest f1r3fly/tests
     python -m mypy f1r3fly
     isort --recursive --check-only f1r3fly
+
+## Deploy admission failures
+
+For node [#789](https://github.com/F1R3FLY-io/f1r3node-rust/pull/789),
+`send_deploy` raises `DeployAdmissionRefused` only for an explicit gRPC service
+error with one of these leading codes. Its `code` distinguishes the reasons,
+`deploy_id` retains the signed ID and `retryable` says whether the same signed
+deploy can be sent again. Other service errors keep `F1r3flyClientException`.
+
+| Code | `retryable` |
+|---|---|
+| `deploy_pool_busy`, `deploy_admission_busy` | Yes |
+| `invalid_deploy_window` | Yes, once the chain reaches the validity height |
+| `validator_not_bonded` | Yes, send the same signed deploy to a bonded validator while it remains valid |
+| `deploy_too_large`, `deploy_expired` | No, build a new deploy |
+| `seed_reuse` | No, sign a new deploy with a different timestamp; the message names the deploy holding the seed |
+
+A service error saying exactly `Deploy already known: <signature hex>` for the
+submitted signature means the node already holds the deploy, so `send_deploy`
+returns its ID. A message that merely contains that phrase and signature is
+not treated as acceptance.
+
+A [deploy queue (#990)](https://github.com/F1R3FLY-io/f1r3node-rust/pull/990)
+can serve a validator's client ports. It answers the node's own refusals as
+above. Its capacity and availability refusals are gRPC statuses, which
+`send_deploy` also raises as `DeployAdmissionRefused`, with `retry_after` in
+seconds from the `retry-after` metadata. The queue did not hold the deploy.
+
+| gRPC status | `code` | `congestion` | `retryable` |
+|---|---|---|---|
+| `RESOURCE_EXHAUSTED` | `deploy_queue_full` | `validator`, `validator_idle`, `shard`, `storage` | No: after `retry_after`, sign a new deploy with a current `valid_after_block_number`; for `validator_idle`, send it to another validator |
+| `RESOURCE_EXHAUSTED` | `deploy_queue_full` | `deployer_share` | Yes, after `retry_after` |
+| `RESOURCE_EXHAUSTED` | `deploy_queue_full` | none | No |
+| `UNAVAILABLE` | `node_unavailable`, `deploy_queue_stopped` | none | Yes |
+
+[Node #1123](https://github.com/F1R3FLY-io/f1r3node-rust/pull/1123) adds
+structured gRPC `cause` metadata to queue-full refusals. A recognized cause on
+`RESOURCE_EXHAUSTED` identifies a queue-full refusal even if the message is
+reworded, and `send_deploy` uses it for `congestion`. The message prefix remains
+the fallback for older queues. An unfamiliar value leaves `congestion` unset.
+A missing, empty, or undecodable value falls back to the older queue's message.
+Other `RESOURCE_EXHAUSTED` statuses can leave the submission outcome unknown.
+
+A queue reports `DEPLOY_STATE_REJECTED` (value 5) for a deploy the node refused
+when the queue released it; `wait_for_deploy_finalized` raises `DeployError`
+for it instead of waiting until its timeout.
+
+RPC failures (including deadlines and unavailability) raise
+`DeploySubmissionUnknown`, with the original `deploy_id` and chained RPC error.
+They do not establish that the deploy was rejected. Reconcile that ID before
+creating a new payment. Callers that retry should retain the original signed
+proto and pass it to `send_deploy`.
+
+`deploy_with_fallback` polls for inclusion by the original ID after an unknown
+submission or acknowledgment. When it falls back to another endpoint, it sends
+the same signed proto. A retryable refusal falls back immediately: its
+`retry_after` describes the queue that refused and is not a wait before a
+different queue. When an earlier attempt may have been accepted, the helper
+uses that wait to check inclusion on a reachable client before resending. After
+an unknown outcome it checks another client, because inclusion is chain-wide.
+A non-retryable refusal stops fallback. If an earlier unknown submission
+remains unresolved, the helper returns that error even after a later refusal.
